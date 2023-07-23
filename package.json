@@ -14,8 +14,12 @@
     "expo": "~49.0.3",
     "expo-splash-screen": "~0.20.4",
     "expo-status-bar": "~1.6.0",
+    "firebase": "^10.1.0",
+    "i": "^0.3.7",
+    "npm": "^9.8.1",
     "react": "18.2.0",
     "react-native": "0.72.3",
+    "react-native-incall-manager": "^4.1.0",
     "react-native-webrtc": "^111.0.3"
   },
   "devDependencies": {

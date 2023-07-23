@@ -48,6 +48,10 @@
         </dict>
       </dict>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>This app uses the camera to scan barcodes on event tickets.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Microphone permission description</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

@@ -14,7 +14,11 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.benjaminhrose.videochatapp"
+      "bundleIdentifier": "com.benjaminhrose.videochatapp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
+        "NSMicrophoneUsageDescription": "Microphone permission description"
+      }
     },
     "android": {
       "adaptiveIcon": {
