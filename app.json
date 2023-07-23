@@ -11,20 +11,21 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.benjaminhrose.videochatapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.benjaminhrose.videochatapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     }
-  }
+  },
+  "plugins": ["@config-plugins/react-native-webrtc"]
 }
