@@ -18,7 +18,12 @@ import {
 import { db } from "./api/firebase";
 
 const configuration: RTCConfiguration = {
-  iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  iceServers: [
+    {
+      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+    },
+  ],
+  iceCandidatePoolSize: 10,
 };
 
 let sessionConstraints = {
@@ -31,121 +36,163 @@ let sessionConstraints = {
 
 const VideoChatScreen: React.FC = () => {
   const [webcamStarted, setWebcamStarted] = useState(false);
+  const [callStarted, setCallStarted] = useState(false);
+
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+
   const [channelId, setChannelId] = useState("");
-  const peerConnection = useRef(new RTCPeerConnection(configuration));
+
+  const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
   useEffect(() => {
-    if (!channelId) return;
-
+    if (!channelId || !webcamStarted) return;
     const channelDoc = db.collection("channels").doc(channelId);
     const offers = channelDoc.collection("offers");
     const answers = channelDoc.collection("answers");
 
-    const unsubscribeOffers = offers.onSnapshot((snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          const data = change.doc.data();
-          peerConnection.current.addIceCandidate(new RTCIceCandidate(data));
-        }
-      });
-    });
-    const unsubscribeAnswers = answers.onSnapshot((snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          const data = change.doc.data();
-          peerConnection.current.addIceCandidate(new RTCIceCandidate(data));
-        }
-      });
-    });
-    () => {
-      unsubscribeOffers();
-      unsubscribeAnswers();
-    };
-  }, [channelId]);
-
-  useEffect(() => {
-    if (!channelId) return;
-    const channelDoc = db.collection("channels").doc(channelId);
-    const offers = channelDoc.collection("offers");
-    const answers = channelDoc.collection("answers");
-
-    peerConnection.current.addEventListener("track", (event: any) => {
-      console.log("triggered", event);
+    peerConnection.addEventListener("track", (event: any) => {
       if (event.streams && event.streams.length > 0) {
-        console.log("triggered");
+        console.log("remote stream set");
         setRemoteStream(event.streams[0]);
       }
     });
 
-    peerConnection.current.addEventListener(
-      "icecandidate",
-      async (event: any) => {
-        if (event.candidate) {
-          await offers.add(event.candidate.toJSON());
-          await answers.add(event.candidate.toJSON());
-        }
+    peerConnection.addEventListener("icecandidate", async (event: any) => {
+      if (event.candidate) {
+        await offers.add(event.candidate.toJSON());
+        await answers.add(event.candidate.toJSON());
       }
-    );
-  }, []);
+    });
+    () => {
+      peerConnection.removeEventListener("track");
+      peerConnection.removeEventListener("icecandidate");
+    };
+  }, [channelId, webcamStarted]);
+
+  useEffect(() => {
+    if (!channelId) return;
+
+    const channelDoc = db.collection("channels").doc(channelId);
+    // Listen for remote answer
+    channelDoc.onSnapshot((snapshot) => {
+      const data = snapshot.data();
+      if (!peerConnection.remoteDescription && data?.answer) {
+        const answerDescription = new RTCSessionDescription(data.answer);
+        peerConnection.setRemoteDescription(answerDescription);
+      }
+    });
+  }, [channelId]);
+
+  useEffect(() => {
+    if (!channelId || !callStarted) return;
+
+    const channelDoc = db.collection("channels").doc(channelId);
+
+    const offerCandidates = channelDoc.collection("offers");
+    const answerCandidates = channelDoc.collection("answers");
+
+    const unsubscribeOffers = offerCandidates.onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach(async (change) => {
+        if (change.type === "added") {
+          const data = change.doc.data();
+          try {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(data));
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      });
+    });
+
+    const unsubscribeAnswers = answerCandidates.onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach(async (change) => {
+        if (change.type === "added") {
+          const data = change.doc.data();
+          try {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(data));
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      });
+    });
+
+    () => {
+      unsubscribeOffers();
+      unsubscribeAnswers();
+    };
+  }, [channelId, callStarted]);
 
   const startWebcam = async () => {
     try {
-      const localStream = await mediaDevices.getUserMedia({
+      const local = await mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
-      const audioTracks = localStream.getAudioTracks();
-      peerConnection.current.addTrack(audioTracks[0], localStream);
-      setLocalStream(localStream);
-
-      const remoteStream = new MediaStream(undefined);
-      setRemoteStream(remoteStream);
-
+      local.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, local);
+      });
+      setLocalStream(local);
+      const remote = new MediaStream(undefined);
+      setRemoteStream(remote);
+      peerConnection.getSenders().forEach((sender) => {
+        let track = sender.track;
+        if (track) {
+          remote.addTrack(track);
+        }
+      });
       setWebcamStarted(true);
     } catch (e: any) {
-      console.log(e.message);
+      console.error("startWebcam Error:", e);
     }
   };
 
   const startCall = async () => {
-    const channelDoc = db.collection("channels").doc();
-    setChannelId(channelDoc.id);
+    try {
+      const channelDoc = db.collection("channels").doc();
+      const offerCandidates = channelDoc.collection("offers");
+      const answerCandidates = channelDoc.collection("answers");
 
-    const offerDescription = await peerConnection.current.createOffer(
-      sessionConstraints
-    );
-    await peerConnection.current.setLocalDescription(offerDescription);
+      setChannelId(channelDoc.id);
 
-    const offer = {
-      sdp: offerDescription.sdp,
-      type: offerDescription.type,
-    };
+      const offerDescription = await peerConnection.createOffer(
+        sessionConstraints
+      );
 
-    await channelDoc.set({ offer });
+      await peerConnection.setLocalDescription(offerDescription);
+
+      const offer = {
+        sdp: offerDescription.sdp,
+        type: offerDescription.type,
+      };
+      await channelDoc.set({ offer });
+      setCallStarted(true);
+    } catch (e) {
+      console.error("startCall Error:", e);
+    }
   };
 
   const joinCall = async () => {
-    const channelDoc = db.collection("channels").doc(channelId);
-    const channelDocument = await channelDoc.get();
-    const channelData = channelDocument.data();
+    try {
+      const channelDoc = db.collection("channels").doc(channelId);
+      const channelDocument = await channelDoc.get();
+      const channelData = channelDocument.data();
+      const offerDescription = channelData?.offer;
+      await peerConnection.setRemoteDescription(
+        new RTCSessionDescription(offerDescription)
+      );
+      const answerDescription = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answerDescription);
+      const answer = {
+        type: answerDescription.type,
+        sdp: answerDescription.sdp,
+      };
 
-    const offerDescription = channelData?.offer;
-
-    await peerConnection.current.setRemoteDescription(
-      new RTCSessionDescription(offerDescription)
-    );
-
-    const answerDescription = await peerConnection.current.createAnswer();
-    await peerConnection.current.setLocalDescription(answerDescription);
-
-    const answer = {
-      type: answerDescription.type,
-      sdp: answerDescription.sdp,
-    };
-
-    await channelDoc.update({ answer });
+      await channelDoc.update({ answer });
+    } catch (e) {
+      console.error("joinCall Error:", e);
+    }
   };
 
   console.log("webcamStarted", webcamStarted);
