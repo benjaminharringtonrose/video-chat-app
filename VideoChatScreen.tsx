@@ -19,12 +19,6 @@ import {
 } from "react-native-webrtc";
 import { db } from "./api/firebase";
 
-interface IICECandidateParams {
-  candidate?: string | undefined;
-  sdpMLineIndex?: null | undefined;
-  sdpMid?: null | undefined;
-}
-
 const configuration: RTCConfiguration = {
   iceServers: [
     {
@@ -55,27 +49,25 @@ const VideoChatScreen: React.FC = () => {
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
   useEffect(() => {
-    if (!channelId || !webcamStarted) return;
-    console.log("WEBCAM STARTED");
-
-    const addRemoteTracks = (event: any) => {
+    const onTrack = (event: any) => {
+      const remote = new MediaStream(undefined);
       if (event.streams && event.streams.length > 0) {
         event.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
-          remoteStream?.addTrack(track);
+          remote.addTrack(track);
         });
-        setRemoteStream(event.streams[0]);
+        setRemoteStream(remote);
       }
     };
 
-    peerConnection.addEventListener("track", addRemoteTracks);
+    peerConnection.addEventListener("track", onTrack);
 
     return () => {
-      peerConnection.removeEventListener("track", addRemoteTracks);
+      peerConnection.removeEventListener("track", onTrack);
     };
-  }, [channelId, webcamStarted]);
+  }, []);
 
   useEffect(() => {
-    if (!channelId || !callStarted) return;
+    if (!channelId) return;
     console.log("CALL STARTED");
 
     const channelDoc = db.collection("channels").doc(channelId);
@@ -122,7 +114,7 @@ const VideoChatScreen: React.FC = () => {
       unsubscribeAnswerCandidates();
       unsubscribeAnswer();
     };
-  }, [channelId, callStarted]);
+  }, [channelId]);
 
   useEffect(() => {
     if (!channelId || !callJoined) return;
@@ -173,10 +165,10 @@ const VideoChatScreen: React.FC = () => {
         peerConnection.addTrack(track, local);
       });
 
-      setLocalStream(local);
-
       const remote = new MediaStream(undefined);
       setRemoteStream(remote);
+
+      setLocalStream(local);
 
       setWebcamStarted(true);
     } catch (e: any) {
@@ -237,7 +229,8 @@ const VideoChatScreen: React.FC = () => {
     }
   };
 
-  console.log("remoteStream", remoteStream?._tracks.length);
+  console.log("localStream", localStream?._reactTag);
+  console.log("remoteStream", remoteStream?._reactTag);
 
   return (
     <KeyboardAvoidingView style={styles.body} behavior="position">
@@ -275,6 +268,7 @@ const VideoChatScreen: React.FC = () => {
               />
             </View>
           )}
+          <Text>{localStream?._reactTag}</Text>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
