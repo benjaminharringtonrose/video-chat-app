@@ -29,7 +29,7 @@ let sessionConstraints = {
 
 export const useWebRTC = () => {
   const [webcamStarted, setWebcamStarted] = useState(false);
-  const [callJoined, setCallJoined] = useState(false);
+  const [roomJoined, setRoomJoined] = useState(false);
 
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [remoteStream, setRemoteStream] = useState<MediaStream>();
@@ -57,9 +57,9 @@ export const useWebRTC = () => {
   useEffect(() => {
     if (!roomId) return;
 
-    const channelDoc = db.collection("rooms").doc(roomId);
-    const offerCandidates = channelDoc.collection("offerCandidates");
-    const answerCandidates = channelDoc.collection("answerCandidates");
+    const room = db.collection("rooms").doc(roomId);
+    const offerCandidates = room.collection("offerCandidates");
+    const answerCandidates = room.collection("answerCandidates");
 
     const onIceCandidateAdded = async (event: any) => {
       if (event.candidate) {
@@ -69,7 +69,7 @@ export const useWebRTC = () => {
 
     peerConnection.addEventListener("icecandidate", onIceCandidateAdded);
 
-    const unsubscribeAnswer = channelDoc.onSnapshot((snapshot) => {
+    const unsubscribeAnswer = room.onSnapshot((snapshot) => {
       const data = snapshot.data();
       if (!peerConnection.remoteDescription && data?.answer) {
         const answerDescription = new RTCSessionDescription(data.answer);
@@ -100,11 +100,11 @@ export const useWebRTC = () => {
   }, [roomId]);
 
   useEffect(() => {
-    if (!roomId || !callJoined) return;
+    if (!roomId || !roomJoined) return;
 
-    const channelDoc = db.collection("rooms").doc(roomId);
-    const offerCandidates = channelDoc.collection("offerCandidates");
-    const answerCandidates = channelDoc.collection("answerCandidates");
+    const room = db.collection("rooms").doc(roomId);
+    const offerCandidates = room.collection("offerCandidates");
+    const answerCandidates = room.collection("answerCandidates");
 
     const onIceCandidateAdded = async (event: any) => {
       if (event.candidate) {
@@ -133,7 +133,7 @@ export const useWebRTC = () => {
       peerConnection.removeEventListener("icecandidate", onIceCandidateAdded);
       unsubscribeOfferCandidates();
     };
-  }, [roomId, callJoined]);
+  }, [roomId, roomJoined]);
 
   const startWebcam = async () => {
     try {
@@ -157,7 +157,7 @@ export const useWebRTC = () => {
     }
   };
 
-  const startCall = async () => {
+  const createRoom = async () => {
     try {
       const channelDoc = db.collection("rooms").doc();
 
@@ -179,7 +179,7 @@ export const useWebRTC = () => {
     }
   };
 
-  const joinCall = async () => {
+  const joinRoom = async () => {
     try {
       const channelDoc = db.collection("rooms").doc(roomId);
       const channelDocument = await channelDoc.get();
@@ -202,9 +202,9 @@ export const useWebRTC = () => {
 
       await channelDoc.update({ answer });
 
-      setCallJoined(true);
+      setRoomJoined(true);
     } catch (e) {
-      console.error("joinCall Error:", e);
+      console.error("joinRoom Error:", e);
     }
   };
 
@@ -214,8 +214,8 @@ export const useWebRTC = () => {
     localStream,
     remoteStream,
     startWebcam,
-    startCall,
-    joinCall,
+    createRoom,
+    joinRoom,
     setRoomId,
   };
 };

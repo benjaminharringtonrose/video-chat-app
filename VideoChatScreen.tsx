@@ -21,8 +21,8 @@ const VideoChatScreen: React.FC = () => {
     remoteStream,
     webcamStarted,
     startWebcam,
-    startCall,
-    joinCall,
+    createRoom,
+    joinRoom,
     setRoomId,
   } = useWebRTC();
 
@@ -82,7 +82,7 @@ const VideoChatScreen: React.FC = () => {
         {webcamStarted && (
           <Button
             label={"Create Room"}
-            onPress={startCall}
+            onPress={createRoom}
             labelColor={Color.white}
             backgroundColor={Color.primary}
             borderRadius={10}
@@ -94,7 +94,7 @@ const VideoChatScreen: React.FC = () => {
             <View>
               <Button
                 label={"Join Room"}
-                onPress={joinCall}
+                onPress={joinRoom}
                 labelColor={Color.white}
                 backgroundColor={Color.primary}
                 style={{ marginRight: 20 }}
