@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
@@ -6,293 +6,116 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Text,
-  Button,
+  useWindowDimensions,
 } from "react-native";
-import {
-  RTCView,
-  mediaDevices,
-  MediaStream,
-  RTCPeerConnection,
-  RTCSessionDescription,
-  RTCIceCandidate,
-  MediaStreamTrack,
-} from "react-native-webrtc";
-import { db } from "./api/firebase";
-
-const configuration: RTCConfiguration = {
-  iceServers: [
-    {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
-    },
-  ],
-  iceCandidatePoolSize: 10,
-};
-
-let sessionConstraints = {
-  mandatory: {
-    OfferToReceiveAudio: true,
-    OfferToReceiveVideo: true,
-    VoiceActivityDetection: true,
-  },
-};
+import { RTCView } from "react-native-webrtc";
+import { useWebRTC } from "./src/hooks/useWebRTC";
+import Button from "./src/components/Button";
+import { Color } from "./src/constants";
 
 const VideoChatScreen: React.FC = () => {
-  const [webcamStarted, setWebcamStarted] = useState(false);
-  const [callStarted, setCallStarted] = useState(false);
-  const [callJoined, setCallJoined] = useState(false);
+  const { width, height } = useWindowDimensions();
+  const {
+    roomId,
+    localStream,
+    remoteStream,
+    webcamStarted,
+    startWebcam,
+    startCall,
+    joinCall,
+    setRoomId,
+  } = useWebRTC();
 
-  const [localStream, setLocalStream] = useState<MediaStream>();
-  const [remoteStream, setRemoteStream] = useState<MediaStream>();
-
-  const [channelId, setChannelId] = useState("");
-
-  const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
-
-  useEffect(() => {
-    const onTrack = (event: any) => {
-      const remote = new MediaStream(undefined);
-      if (event.streams && event.streams.length > 0) {
-        event.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
-          remote.addTrack(track);
-        });
-        setRemoteStream(remote);
-      }
-    };
-
-    peerConnection.addEventListener("track", onTrack);
-
-    return () => {
-      peerConnection.removeEventListener("track", onTrack);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!channelId) return;
-    console.log("CALL STARTED");
-
-    const channelDoc = db.collection("channels").doc(channelId);
-    const offerCandidates = channelDoc.collection("offerCandidates");
-    const answerCandidates = channelDoc.collection("answerCandidates");
-
-    const handleIceCandidate = async (event: any) => {
-      if (event.candidate) {
-        console.log("offer candidate added as ICE candidate");
-        await offerCandidates.add(event.candidate.toJSON());
-      }
-    };
-
-    peerConnection.addEventListener("icecandidate", handleIceCandidate);
-
-    // Listen for remote answer
-    const unsubscribeAnswer = channelDoc.onSnapshot((snapshot) => {
-      const data = snapshot.data();
-      if (!peerConnection.remoteDescription && data?.answer) {
-        const answerDescription = new RTCSessionDescription(data.answer);
-        peerConnection.setRemoteDescription(answerDescription);
-      }
-    });
-
-    // When answered, add candidate to peer connection
-    const unsubscribeAnswerCandidates = answerCandidates.onSnapshot(
-      (snapshot) => {
-        snapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const data = change.doc.data();
-            try {
-              console.log("answer candidate added as ICE candidate");
-              await peerConnection.addIceCandidate(new RTCIceCandidate(data));
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        });
-      }
-    );
-
-    return () => {
-      peerConnection.removeEventListener("icecandidate", handleIceCandidate);
-      unsubscribeAnswerCandidates();
-      unsubscribeAnswer();
-    };
-  }, [channelId]);
-
-  useEffect(() => {
-    if (!channelId || !callJoined) return;
-    console.log("CALL JOINED");
-
-    const channelDoc = db.collection("channels").doc(channelId);
-    const offerCandidates = channelDoc.collection("offerCandidates");
-    const answerCandidates = channelDoc.collection("answerCandidates");
-
-    const handleIceCandidate = async (event: any) => {
-      if (event.candidate) {
-        console.log("answer candidate added");
-        await answerCandidates.add(event.candidate.toJSON());
-      }
-    };
-
-    // When offer candidate added, add to peer connection
-    const unsubscribeOfferCandidates = offerCandidates.onSnapshot(
-      (snapshot) => {
-        snapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const data = change.doc.data();
-            try {
-              console.log("offer candidate added as ICE candidate");
-              await peerConnection.addIceCandidate(new RTCIceCandidate(data));
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        });
-      }
-    );
-
-    return () => {
-      peerConnection.removeEventListener("icecandidate", handleIceCandidate);
-      unsubscribeOfferCandidates();
-    };
-  }, [channelId, callJoined]);
-
-  const startWebcam = async () => {
-    try {
-      const local = await mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-
-      local.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, local);
-      });
-
-      const remote = new MediaStream(undefined);
-      setRemoteStream(remote);
-
-      setLocalStream(local);
-
-      setWebcamStarted(true);
-    } catch (e: any) {
-      console.error("startWebcam Error:", e);
-    }
-  };
-
-  const startCall = async () => {
-    try {
-      const channelDoc = db.collection("channels").doc();
-
-      setChannelId(channelDoc.id);
-
-      const offerDescription = await peerConnection.createOffer(
-        sessionConstraints
-      );
-      await peerConnection.setLocalDescription(offerDescription);
-
-      const offer = {
-        sdp: offerDescription.sdp,
-        type: offerDescription.type,
-      };
-
-      await channelDoc.set({ offer });
-
-      setCallStarted(true);
-    } catch (e) {
-      console.error("startCall Error:", e);
-    }
-  };
-
-  const joinCall = async () => {
-    try {
-      const channelDoc = db.collection("channels").doc(channelId);
-      const channelDocument = await channelDoc.get();
-      const channelData = channelDocument.data();
-
-      const offerDescription = channelData?.offer;
-
-      await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(offerDescription)
-      );
-
-      const answerDescription = await peerConnection.createAnswer();
-
-      await peerConnection.setLocalDescription(answerDescription);
-
-      const answer = {
-        type: answerDescription.type,
-        sdp: answerDescription.sdp,
-      };
-
-      await channelDoc.update({ answer });
-
-      setCallJoined(true);
-    } catch (e) {
-      console.error("joinCall Error:", e);
-    }
-  };
-
-  console.log("localStream", localStream?._reactTag);
-  console.log("remoteStream", remoteStream?._reactTag);
+  const localWidth = width / 3;
+  const localHeight = height / 3;
 
   return (
-    <KeyboardAvoidingView style={styles.body} behavior="position">
-      <SafeAreaView>
-        {localStream && (
-          <RTCView
-            style={styles.stream}
-            streamURL={localStream.toURL()}
-            objectFit="cover"
-            mirror
-          />
-        )}
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
+      {remoteStream && (
+        <RTCView
+          streamURL={remoteStream.toURL()}
+          style={{
+            position: "absolute",
+            width,
+            height,
+            zIndex: 0,
+          }}
+          objectFit={"cover"}
+          mirror
+          zOrder={0}
+        />
+      )}
 
-        {remoteStream && (
-          <RTCView
-            streamURL={remoteStream.toURL()}
-            style={styles.stream}
-            objectFit="cover"
-            mirror
+      {localStream && (
+        <RTCView
+          style={{
+            width: localWidth,
+            height: localHeight,
+            position: "absolute",
+            left: width - localWidth - 40,
+            top: height - localHeight - 240,
+            borderRadius: 10,
+          }}
+          streamURL={localStream.toURL()}
+          objectFit={"cover"}
+          mirror
+          zOrder={1}
+        />
+      )}
+      <View
+        style={{
+          zIndex: 2,
+          position: "absolute",
+          top: height - 200,
+          marginLeft: 20,
+        }}
+      >
+        {!webcamStarted && (
+          <Button
+            label={"Start webcam"}
+            onPress={startWebcam}
+            labelColor={Color.white}
+            backgroundColor={Color.primary}
+            borderRadius={10}
           />
         )}
-        <View>
-          {!webcamStarted && (
-            <Button title="Start webcam" onPress={startWebcam} />
-          )}
-          {webcamStarted && <Button title="Start call" onPress={startCall} />}
-          {webcamStarted && (
-            <View style={{ flexDirection: "row" }}>
-              <Button title="Join call" onPress={joinCall} />
-              <TextInput
-                value={channelId}
-                placeholder="callId"
-                style={{ borderWidth: 1, padding: 5 }}
-                onChangeText={(newText) => setChannelId(newText)}
+        {webcamStarted && (
+          <Button
+            label={"Create Room"}
+            onPress={startCall}
+            labelColor={Color.white}
+            backgroundColor={Color.primary}
+            borderRadius={10}
+            style={{ marginBottom: 20 }}
+          />
+        )}
+        {webcamStarted && (
+          <View style={{ flexDirection: "row" }}>
+            <View>
+              <Button
+                label={"Join Room"}
+                onPress={joinCall}
+                labelColor={Color.white}
+                backgroundColor={Color.primary}
+                style={{ marginRight: 20 }}
               />
             </View>
-          )}
-          <Text>{localStream?._reactTag}</Text>
-        </View>
-      </SafeAreaView>
+            <TextInput
+              value={roomId}
+              placeholder={"roomId"}
+              style={{
+                borderWidth: 1,
+                backgroundColor: "white",
+                minHeight: 40,
+                maxHeight: 50,
+              }}
+              onChangeText={(newText) => setRoomId(newText)}
+            />
+          </View>
+        )}
+      </View>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  body: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  stream: {
-    flex: 2,
-    width: 200,
-    height: 200,
-    borderWidth: 1,
-    borderColor: "red",
-  },
-  buttons: {
-    alignItems: "flex-start",
-    flexDirection: "column",
-  },
-});
 
 export default VideoChatScreen;

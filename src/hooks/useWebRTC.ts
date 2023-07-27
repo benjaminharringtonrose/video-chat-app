@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  RTCView,
   mediaDevices,
   MediaStream,
   RTCPeerConnection,
@@ -30,13 +29,12 @@ let sessionConstraints = {
 
 export const useWebRTC = () => {
   const [webcamStarted, setWebcamStarted] = useState(false);
-  const [callStarted, setCallStarted] = useState(false);
   const [callJoined, setCallJoined] = useState(false);
 
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [remoteStream, setRemoteStream] = useState<MediaStream>();
 
-  const [channelId, setChannelId] = useState("");
+  const [roomId, setRoomId] = useState("");
 
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
@@ -57,19 +55,19 @@ export const useWebRTC = () => {
   }, []);
 
   useEffect(() => {
-    if (!channelId) return;
+    if (!roomId) return;
 
-    const channelDoc = db.collection("channels").doc(channelId);
+    const channelDoc = db.collection("rooms").doc(roomId);
     const offerCandidates = channelDoc.collection("offerCandidates");
     const answerCandidates = channelDoc.collection("answerCandidates");
 
-    const onIceCandidate = async (event: any) => {
+    const onIceCandidateAdded = async (event: any) => {
       if (event.candidate) {
         await offerCandidates.add(event.candidate.toJSON());
       }
     };
 
-    peerConnection.addEventListener("icecandidate", onIceCandidate);
+    peerConnection.addEventListener("icecandidate", onIceCandidateAdded);
 
     const unsubscribeAnswer = channelDoc.onSnapshot((snapshot) => {
       const data = snapshot.data();
@@ -95,9 +93,129 @@ export const useWebRTC = () => {
     );
 
     return () => {
-      peerConnection.removeEventListener("icecandidate", onIceCandidate);
+      peerConnection.removeEventListener("icecandidate", onIceCandidateAdded);
       unsubscribeAnswerCandidates();
       unsubscribeAnswer();
     };
-  }, [channelId]);
+  }, [roomId]);
+
+  useEffect(() => {
+    if (!roomId || !callJoined) return;
+
+    const channelDoc = db.collection("rooms").doc(roomId);
+    const offerCandidates = channelDoc.collection("offerCandidates");
+    const answerCandidates = channelDoc.collection("answerCandidates");
+
+    const onIceCandidateAdded = async (event: any) => {
+      if (event.candidate) {
+        await answerCandidates.add(event.candidate.toJSON());
+      }
+    };
+
+    peerConnection.addEventListener("icecandidate", onIceCandidateAdded);
+
+    const unsubscribeOfferCandidates = offerCandidates.onSnapshot(
+      (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          if (change.type === "added") {
+            const data = change.doc.data();
+            try {
+              await peerConnection.addIceCandidate(new RTCIceCandidate(data));
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        });
+      }
+    );
+
+    return () => {
+      peerConnection.removeEventListener("icecandidate", onIceCandidateAdded);
+      unsubscribeOfferCandidates();
+    };
+  }, [roomId, callJoined]);
+
+  const startWebcam = async () => {
+    try {
+      const local = await mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+
+      local.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, local);
+      });
+
+      const remote = new MediaStream(undefined);
+      setRemoteStream(remote);
+
+      setLocalStream(local);
+
+      setWebcamStarted(true);
+    } catch (e: any) {
+      console.error("startWebcam Error:", e);
+    }
+  };
+
+  const startCall = async () => {
+    try {
+      const channelDoc = db.collection("rooms").doc();
+
+      setRoomId(channelDoc.id);
+
+      const offerDescription = await peerConnection.createOffer(
+        sessionConstraints
+      );
+      await peerConnection.setLocalDescription(offerDescription);
+
+      const offer = {
+        sdp: offerDescription.sdp,
+        type: offerDescription.type,
+      };
+
+      await channelDoc.set({ offer });
+    } catch (e) {
+      console.error("startCall Error:", e);
+    }
+  };
+
+  const joinCall = async () => {
+    try {
+      const channelDoc = db.collection("rooms").doc(roomId);
+      const channelDocument = await channelDoc.get();
+      const channelData = channelDocument.data();
+
+      const offerDescription = channelData?.offer;
+
+      await peerConnection.setRemoteDescription(
+        new RTCSessionDescription(offerDescription)
+      );
+
+      const answerDescription = await peerConnection.createAnswer();
+
+      await peerConnection.setLocalDescription(answerDescription);
+
+      const answer = {
+        type: answerDescription.type,
+        sdp: answerDescription.sdp,
+      };
+
+      await channelDoc.update({ answer });
+
+      setCallJoined(true);
+    } catch (e) {
+      console.error("joinCall Error:", e);
+    }
+  };
+
+  return {
+    roomId,
+    webcamStarted,
+    localStream,
+    remoteStream,
+    startWebcam,
+    startCall,
+    joinCall,
+    setRoomId,
+  };
 };
