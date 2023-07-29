@@ -8,7 +8,7 @@ import {
   MediaStreamTrack,
 } from "react-native-webrtc";
 
-import { db } from "../../api/firebase";
+import { db } from "../api/firebase";
 
 const configuration: RTCConfiguration = {
   iceServers: [

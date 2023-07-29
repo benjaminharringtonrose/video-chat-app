@@ -1,19 +1,16 @@
-import React from "react";
+import React, { FC } from "react";
 import {
   View,
-  StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   TextInput,
-  Text,
   useWindowDimensions,
 } from "react-native";
 import { RTCView } from "react-native-webrtc";
-import { useWebRTC } from "./src/hooks/useWebRTC";
-import Button from "./src/components/Button";
-import { Color } from "./src/constants";
+import { useWebRTC } from "../../hooks/useWebRTC";
+import Button from "../../components/Button";
+import { Color } from "../../constants";
 
-const VideoChatScreen: React.FC = () => {
+const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
   const {
     roomId,
