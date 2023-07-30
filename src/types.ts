@@ -6,4 +6,15 @@ export interface IUser {
   isAnonymous: boolean;
   createdAt?: string;
   lastLoginAt?: string;
+  friends?: string[];
+}
+
+export enum NotificationType {
+  FriendRequest = "FriendRequest",
+}
+
+export interface INotification {
+  senderId: string;
+  recieverId: string;
+  type: NotificationType;
 }

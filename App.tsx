@@ -1,8 +1,9 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { RootNavigator } from "./src/navigation";
-
 import { RecoilRoot } from "recoil";
+
+import { RootNavigator } from "./src/navigation";
+import { Listeners } from "./src/components";
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
+      <Listeners />
     </RecoilRoot>
   );
 }

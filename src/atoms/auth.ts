@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import firebase from "firebase/compat/app";
+import { useState } from "react";
 import { atom, useRecoilState } from "recoil";
 import { auth, db } from "../api/firebase";
 import * as deviceStorage from "../utils";
@@ -32,26 +31,6 @@ export const useAuth = () => {
     }
   };
 
-  async function onAuthStateChanged(user: firebase.User | null) {
-    if (user) {
-      const doc = await db.collection("users").doc(user.uid).get();
-      if (doc.exists) {
-        const userData = doc.data() as IUser;
-        await deviceStorage.setUser(user.uid);
-        setUser(userData);
-      }
-    }
-    if (initializing) {
-      setInitializing(false);
-    }
-  }
-
-  useEffect(() => {
-    getPersistedUser();
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
   const setUser = async (user: IUser | null) => {
     setState((state) => ({ ...state, user }));
   };
@@ -66,6 +45,8 @@ export const useAuth = () => {
     initializing,
     user: state.user,
     setUser,
+    setInitializing,
     signOut,
+    getPersistedUser,
   };
 };
