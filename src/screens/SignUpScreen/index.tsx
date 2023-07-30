@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { SafeAreaView, View } from "react-native";
 import {
@@ -10,8 +9,6 @@ import {
   FormInput,
   FormPasswordInput,
   FormSection,
-  useMockRequest,
-  usePrevious,
 } from "react-native-benji";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as yup from "yup";

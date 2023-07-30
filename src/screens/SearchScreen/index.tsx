@@ -16,9 +16,6 @@ const SearchScreen: FC = () => {
   const [searchResults, setSearchResults] = useState<IUser[]>([]);
 
   const { user } = useAuth();
-  const { friendRequests } = useRecoilValue(notificationsState);
-
-  console.log(friendRequests);
 
   const onSearch = async () => {
     const users = await db.collection("users").get();
@@ -40,17 +37,10 @@ const SearchScreen: FC = () => {
   const sendFriendRequest = async (uid: string) => {
     await db.collection("notifications").add({
       senderId: user?.uid,
+      senderUsername: user?.username,
       recieverId: uid,
       type: NotificationType.FriendRequest,
     });
-  };
-
-  const acceptFriendRequest = async (senderId: string) => {
-    db.collection("users")
-      .doc(user?.uid)
-      .update({
-        friends: firebase.firestore.FieldValue.arrayUnion(senderId),
-      });
   };
 
   return (
@@ -62,7 +52,6 @@ const SearchScreen: FC = () => {
         style={{ marginTop: 10 }}
       />
       <ScrollView>
-        <Text>{"Search Results"}</Text>
         {searchResults?.map((searchResult) => {
           return (
             <ListItem
@@ -70,17 +59,6 @@ const SearchScreen: FC = () => {
               key={searchResult.uid}
               label={searchResult.username ?? "--"}
               onPress={() => sendFriendRequest(searchResult.uid)}
-            />
-          );
-        })}
-        <Text>{"Friend Requests"}</Text>
-        {friendRequests?.map((friendRequest) => {
-          return (
-            <ListItem
-              type={ListItemType.User}
-              key={friendRequest.senderId}
-              label={"you have a friend request"}
-              onPress={() => acceptFriendRequest(friendRequest.senderId)}
             />
           );
         })}

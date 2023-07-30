@@ -4,6 +4,8 @@ import {
   createNativeStackNavigator,
 } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Icon from "@expo/vector-icons/Ionicons";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import firebase from "firebase/compat/app";
 import * as deviceStorage from "../utils";
 import {
@@ -13,35 +15,72 @@ import {
   AccountScreen,
   HomeScreen,
   SearchScreen,
+  NotificationsScreen,
 } from "../screens";
 import { useAuth } from "../atoms/auth";
 import { IUser } from "../types";
 import { auth, db } from "../api/firebase";
-
-export enum Routes {
-  Login = "Login",
-  SignUp = "SignUp",
-  Tabs = "Tabs",
-  Home = "Home",
-  VideoChat = "VideoChat",
-  Search = "Search",
-  Account = "Account",
-}
-
-type AnyParams = {
-  [key: string]: any;
-};
-
-export type NavProp = NativeStackNavigationProp<AnyParams, string>;
+import { Color } from "../constants";
+import { AnyParams, Routes } from "./types";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator: FC = () => (
-  <Tab.Navigator>
-    <Tab.Screen name={Routes.Home} component={HomeScreen} />
-    <Tab.Screen name={Routes.VideoChat} component={VideoChatScreen} />
-    <Tab.Screen name={Routes.Search} component={SearchScreen} />
-    <Tab.Screen name={Routes.Account} component={AccountScreen} />
+  <Tab.Navigator
+    screenOptions={{
+      tabBarActiveTintColor: Color.primary,
+    }}
+  >
+    <Tab.Screen
+      name={Routes.Home}
+      component={HomeScreen}
+      options={{
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="home" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name={Routes.VideoChat}
+      component={VideoChatScreen}
+      options={{
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="ios-videocam" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name={Routes.Search}
+      component={SearchScreen}
+      options={{
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="ios-search" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name={Routes.Notifications}
+      component={NotificationsScreen}
+      options={{
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="notifications" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name={Routes.Account}
+      component={AccountScreen}
+      options={{
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="person" color={color} size={size} />
+        ),
+      }}
+    />
   </Tab.Navigator>
 );
 

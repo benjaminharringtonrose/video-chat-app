@@ -18,9 +18,8 @@ import * as yup from "yup";
 
 import styles from "./styles";
 import { Color } from "../../constants";
-import { NavProp, Routes } from "../../navigation";
+import { NavProp, Routes } from "../../navigation/types";
 import { auth } from "../../api/firebase";
-import { IUser } from "../../types";
 
 export interface ILoginForm {
   email: string;

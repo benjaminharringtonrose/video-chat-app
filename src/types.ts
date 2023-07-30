@@ -15,6 +15,7 @@ export enum NotificationType {
 
 export interface INotification {
   senderId: string;
+  senderUsername: string;
   recieverId: string;
   type: NotificationType;
 }
