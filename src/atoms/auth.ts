@@ -32,18 +32,14 @@ export const useAuth = () => {
     }
   };
 
-  function onAuthStateChanged(user: firebase.User | null) {
+  async function onAuthStateChanged(user: firebase.User | null) {
     if (user) {
-      const userData: IUser = {
-        uid: user.uid,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        isAnonymous: user.isAnonymous,
-        createdAt: user.metadata.creationTime,
-        lastLoginAt: user.metadata.lastSignInTime,
-      };
       deviceStorage.setUser(user.uid);
-      setUser(userData);
+      const doc = await db.collection("users").doc(user.uid).get();
+      if (doc.exists) {
+        const userData = doc.data() as IUser;
+        setUser(userData);
+      }
     } else {
       deviceStorage.removeUser();
       setUser(null);
