@@ -20,6 +20,7 @@ import styles from "./styles";
 import { Color } from "../../constants";
 import { NavProp, Routes } from "../../navigation";
 import { auth } from "../../api/firebase";
+import { IUser } from "../../types";
 
 export interface ILoginForm {
   email: string;
@@ -58,10 +59,7 @@ const LoginScreen: FC = () => {
 
   const onSubmit = async (data: ILoginForm) => {
     try {
-      const { user } = await auth.signInWithEmailAndPassword(
-        data.email,
-        data.password
-      );
+      await auth.signInWithEmailAndPassword(data.email, data.password);
     } catch (e) {
       console.log(e);
     }

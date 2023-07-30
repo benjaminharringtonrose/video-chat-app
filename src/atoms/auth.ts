@@ -3,9 +3,10 @@ import firebase from "firebase/compat/app";
 import { atom, useRecoilState } from "recoil";
 import { auth, db } from "../api/firebase";
 import * as deviceStorage from "../utils";
+import { IUser } from "../types";
 
 interface IAuthState {
-  user: firebase.User | null;
+  user: IUser | null;
 }
 
 export const authState = atom<IAuthState>({
@@ -21,16 +22,28 @@ export const useAuth = () => {
   const [state, setState] = useRecoilState(authState);
 
   const getPersistedUser = async () => {
-    const user = await deviceStorage.getUser();
-    if (user) {
-      setUser(user);
+    const uid = await deviceStorage.getUser();
+    if (uid) {
+      const doc = await db.collection("users").doc(uid).get();
+      if (doc.exists) {
+        const userData = doc.data() as IUser;
+        setUser(userData);
+      }
     }
   };
 
   function onAuthStateChanged(user: firebase.User | null) {
     if (user) {
-      deviceStorage.setUser(user);
-      setUser(user);
+      const userData: IUser = {
+        uid: user.uid,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        isAnonymous: user.isAnonymous,
+        createdAt: user.metadata.creationTime,
+        lastLoginAt: user.metadata.lastSignInTime,
+      };
+      deviceStorage.setUser(user.uid);
+      setUser(userData);
     } else {
       deviceStorage.removeUser();
       setUser(null);
@@ -46,7 +59,7 @@ export const useAuth = () => {
     return subscriber;
   }, []);
 
-  const setUser = async (user: firebase.User | null) => {
+  const setUser = async (user: IUser | null) => {
     setState((state) => ({ ...state, user }));
   };
 

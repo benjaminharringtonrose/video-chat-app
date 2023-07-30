@@ -19,6 +19,7 @@ import * as yup from "yup";
 import styles from "./styles";
 import { Color } from "../../constants";
 import { auth, db } from "../../api/firebase";
+import { IUser } from "../../types";
 
 const TITLE = "Welcome Back!";
 
@@ -26,24 +27,24 @@ const DESCRIPTION =
   "Some user instructions may go here and it can wrap multiple times. Here's some more text to fill it up.";
 
 export interface ILoginForm {
+  username: string;
   email: string;
   password: string;
 }
 
 const schema = yup.object<ILoginForm>().shape({
+  username: yup.string().required("username required"),
   email: yup.string().required("email required").email("email is not valid"),
   password: yup.string().required("password required"),
 });
 
 const DEFAULT_VALUES: ILoginForm = {
+  username: "",
   email: "",
   password: "",
 };
 
 const SignUpScreen: FC = () => {
-  const navigation = useNavigation<any>();
-  const { loading, error, onRequest } = useMockRequest();
-
   const { control, handleSubmit, setFocus, formState } = useForm({
     defaultValues: DEFAULT_VALUES,
     mode: "onSubmit",
@@ -58,9 +59,19 @@ const SignUpScreen: FC = () => {
         data.email,
         data.password
       );
+
       if (user) {
-        const userDoc = db.collection("users").doc();
-        await userDoc.set(user);
+        const userData: IUser = {
+          uid: user.uid,
+          username: data.username,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          isAnonymous: user.isAnonymous,
+          createdAt: user.metadata.creationTime,
+          lastLoginAt: user.metadata.lastSignInTime,
+        };
+
+        await db.collection("users").doc(user.uid).set(userData);
       }
     } catch (e) {
       console.log(e);
@@ -87,34 +98,40 @@ const SignUpScreen: FC = () => {
           title={"Sign Up"}
           description={"We need just a couple things from you to get started"}
         >
-          <View>
-            <FormInput
-              name="email"
-              label="Email"
-              control={control}
-              error={errors.email}
-              returnKeyType="next"
-              onSubmitEditing={() => setFocus("password")}
-              style={[styles.marginTop]}
-            />
-            <FormPasswordInput
-              name="password"
-              label="Password"
-              control={control}
-              error={errors.password}
-              returnKeyType="done"
-              onSubmitEditing={handleSubmit(onSubmit)}
-              style={styles.marginTop}
-              showPasswordValidator
-            />
-          </View>
+          <FormInput
+            name="username"
+            label="Username"
+            control={control}
+            error={errors.username}
+            returnKeyType="next"
+            onSubmitEditing={() => setFocus("email")}
+            style={[styles.marginTop]}
+          />
+          <FormInput
+            name="email"
+            label="Email"
+            control={control}
+            error={errors.email}
+            returnKeyType="next"
+            onSubmitEditing={() => setFocus("password")}
+            style={[styles.marginTop]}
+          />
+          <FormPasswordInput
+            name="password"
+            label="Password"
+            control={control}
+            error={errors.password}
+            returnKeyType="done"
+            onSubmitEditing={handleSubmit(onSubmit)}
+            style={styles.marginTop}
+            showPasswordValidator
+          />
         </FormSection>
         <Button
           label="Sign Up"
           onPress={handleSubmit(onSubmit)}
           labelColor={Color.white}
           backgroundColor={Color.primary}
-          loading={loading}
           style={{ marginHorizontal: 10 }}
         />
       </KeyboardAwareScrollView>
