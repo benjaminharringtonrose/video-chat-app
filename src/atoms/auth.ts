@@ -34,15 +34,12 @@ export const useAuth = () => {
 
   async function onAuthStateChanged(user: firebase.User | null) {
     if (user) {
-      deviceStorage.setUser(user.uid);
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
         const userData = doc.data() as IUser;
+        await deviceStorage.setUser(user.uid);
         setUser(userData);
       }
-    } else {
-      deviceStorage.removeUser();
-      setUser(null);
     }
     if (initializing) {
       setInitializing(false);
