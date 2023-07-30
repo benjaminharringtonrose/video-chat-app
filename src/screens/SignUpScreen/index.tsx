@@ -18,7 +18,7 @@ import * as yup from "yup";
 
 import styles from "./styles";
 import { Color } from "../../constants";
-import { auth } from "../../api/firebase";
+import { auth, db } from "../../api/firebase";
 
 const TITLE = "Welcome Back!";
 
@@ -58,6 +58,10 @@ const SignUpScreen: FC = () => {
         data.email,
         data.password
       );
+      if (user) {
+        const userDoc = db.collection("users").doc();
+        await userDoc.set(user);
+      }
     } catch (e) {
       console.log(e);
     }

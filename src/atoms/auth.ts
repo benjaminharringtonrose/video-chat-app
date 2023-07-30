@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import firebase from "firebase/compat/app";
 import { atom, useRecoilState } from "recoil";
-import { auth } from "../api/firebase";
+import { auth, db } from "../api/firebase";
 import * as deviceStorage from "../utils";
 
 interface IAuthState {
   user: firebase.User | null;
 }
 
-const authState = atom<IAuthState>({
+export const authState = atom<IAuthState>({
   key: "authState",
   default: {
     user: null,
@@ -30,8 +30,11 @@ export const useAuth = () => {
   function onAuthStateChanged(user: firebase.User | null) {
     if (user) {
       deviceStorage.setUser(user);
+      setUser(user);
+    } else {
+      deviceStorage.removeUser();
+      setUser(null);
     }
-    setUser(user);
     if (initializing) {
       setInitializing(false);
     }
@@ -43,13 +46,20 @@ export const useAuth = () => {
     return subscriber;
   }, []);
 
-  const setUser = (user: firebase.User | null) => {
+  const setUser = async (user: firebase.User | null) => {
     setState((state) => ({ ...state, user }));
+  };
+
+  const signOut = async () => {
+    await auth.signOut();
+    await deviceStorage.removeUser();
+    setState((state) => ({ ...state, user: null }));
   };
 
   return {
     initializing,
     user: state.user,
     setUser,
+    signOut,
   };
 };

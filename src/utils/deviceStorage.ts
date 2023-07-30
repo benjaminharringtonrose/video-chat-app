@@ -13,3 +13,7 @@ export const getUser = async () => {
 export const setUser = async (user: firebase.User) => {
   await SecureStore.setItemAsync("user", JSON.stringify(user));
 };
+
+export const removeUser = async () => {
+  await SecureStore.deleteItemAsync("user");
+};
