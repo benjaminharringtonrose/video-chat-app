@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { View, Text, FlatList, LayoutAnimation } from "react-native";
 import styles from "./styles";
-import SearchInput from "../../components/SeachInput";
+import SearchInput from "../../components/SearchInput";
 import { db } from "../../api/firebase";
 import { IUser, NotificationType } from "../../types";
 import { useAuth } from "../../atoms/auth";
@@ -47,7 +47,7 @@ const SearchScreen: FC = () => {
         value={searchText}
         onChangeText={setSearchText}
         onSearch={onSearch}
-        placeholder={"Search for a friend's username"}
+        placeholder={"Search"}
         style={styles.searchInput}
       />
       {!searchResults.length && (

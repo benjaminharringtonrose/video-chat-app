@@ -6,8 +6,8 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import Icon from "@expo/vector-icons/Ionicons";
-import { Color, FontFamily } from "../../constants";
+import Icon from "@expo/vector-icons/FontAwesome";
+import { Color } from "../../constants";
 import styles from "./styles";
 
 interface IProps {
@@ -27,23 +27,24 @@ const SearchInput: FC<IProps> = ({
 }) => {
   return (
     <View style={[styles.root, { backgroundColor: Color.card }, style]}>
-      <TextInput
-        onChangeText={onChangeText}
-        value={value}
-        selectionColor={Color.secondary}
-        style={[styles.textInput, { color: Color.input }]}
-        placeholder={placeholder}
-        placeholderTextColor={Color.placeholder}
-        cursorColor={Color.placeholder}
-      />
-      <TouchableOpacity onPress={onSearch}>
+      <TouchableOpacity onPress={onSearch} style={{ padding: 10 }}>
         <Icon
           name={"search"}
           size={20}
           style={{ justifyContent: "flex-end" }}
-          color={Color.primary}
+          color={Color.text}
         />
       </TouchableOpacity>
+      <TextInput
+        onChangeText={onChangeText}
+        value={value}
+        selectionColor={Color.grey}
+        style={[styles.textInput, { color: Color.input }]}
+        placeholder={placeholder}
+        placeholderTextColor={Color.placeholder}
+        cursorColor={Color.placeholder}
+        onSubmitEditing={onSearch}
+      />
     </View>
   );
 };

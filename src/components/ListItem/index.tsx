@@ -36,29 +36,6 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
         </TouchableOpacity>
       );
     case ListItemType.Results:
-      return (
-        <View style={[styles.searchResult, { backgroundColor: Color.card }]}>
-          <View style={styles.searchResultInner}>
-            <Image
-              style={styles.avatar}
-              source={{ uri: "https://picsum.photos/id/239/200/300" }}
-            />
-            <Text
-              style={{
-                paddingLeft: 10,
-                color: Color.text,
-                fontFamily: FontFamily.Bold,
-              }}
-            >
-              {label}
-            </Text>
-          </View>
-
-          <TouchableOpacity style={styles.searchResultButton} onPress={onPress}>
-            <Icon name={"add"} color={Color.white} size={20} />
-          </TouchableOpacity>
-        </View>
-      );
     case ListItemType.FriendRequest:
     default:
       return (

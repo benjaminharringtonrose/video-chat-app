@@ -10,14 +10,23 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.Light,
   },
   noResultsContainer: {
+    flex: 1,
     borderRadius: 10,
     margin: 10,
+    padding: 10,
   },
-  noResultsText: {
-    paddingVertical: 20,
+  noResultsTitle: {
+    paddingHorizontal: 10,
+    textAlign: "center",
+    fontFamily: FontFamily.Bold,
+    fontSize: 24,
+  },
+  noResultsDescription: {
+    paddingVertical: 40,
     paddingHorizontal: 10,
     textAlign: "center",
     fontFamily: FontFamily.Light,
+    fontSize: 18,
   },
 });
 

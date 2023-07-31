@@ -6,6 +6,8 @@ import {
   SectionListRenderItemInfo,
   SectionListData,
 } from "react-native";
+import LottieView from "lottie-react-native";
+
 import styles from "./styles";
 import { ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
@@ -51,21 +53,6 @@ const HomeScreen: FC = () => {
     );
   };
 
-  const renderSectionFooter = () => {
-    if (isEmpty) {
-      return (
-        <View
-          style={[styles.noResultsContainer, { backgroundColor: Color.card }]}
-        >
-          <Text style={[styles.noResultsText, { color: Color.text }]}>
-            {"No friends"}
-          </Text>
-        </View>
-      );
-    }
-    return null;
-  };
-
   const sections = [
     {
       title: "Friends",
@@ -75,13 +62,41 @@ const HomeScreen: FC = () => {
 
   const isEmpty = !friends.length;
 
+  if (isEmpty) {
+    return (
+      <View style={[styles.noResultsContainer]}>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <LottieView
+            source={require("../../../assets/lottie/empty.json")}
+            style={{
+              alignSelf: "center",
+              width: 150,
+              height: 150,
+            }}
+            loop={false}
+            autoPlay={true}
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={[styles.noResultsTitle, { color: Color.text }]}>
+            {"You don't have any friends yet"}
+          </Text>
+          <Text style={[styles.noResultsDescription, { color: Color.text }]}>
+            {
+              "Search for your friends or send them an invitation to download the app"
+            }
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
-        renderSectionFooter={renderSectionFooter}
         keyExtractor={(item) => item.uid}
         contentContainerStyle={{ paddingTop: 20 }}
         refreshing={loadingFriends}
