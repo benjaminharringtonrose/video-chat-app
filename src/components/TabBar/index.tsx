@@ -1,15 +1,41 @@
-import { FC } from "react";
-import { TouchableOpacity, SafeAreaView, View } from "react-native";
+import { FC, useState } from "react";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Feather";
 import { Color } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Routes } from "../../navigation/types";
+import Reanimated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+import styles from "./styles";
 
 const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const { bottom } = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const tabWidth = (width - 20) / state.routes.length;
+
+  const tabIndicatorStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ translateX: withTiming(tabWidth * selectedIndex) }],
+    }),
+    [selectedIndex]
+  );
+
   return (
-    <View style={{ flexDirection: "row", marginBottom: bottom }}>
+    <View
+      style={[
+        styles.root,
+        {
+          marginBottom: bottom,
+          backgroundColor: Color.card,
+        },
+      ]}
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
 
@@ -23,13 +49,13 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            // The `merge: true` option makes sure that the params inside the tab screen are preserved
             navigation.navigate({
               name: route.name,
-              params: undefined,
+              params: route.params,
               merge: true,
             });
           }
+          setSelectedIndex(index);
         };
 
         const onLongPress = () => {
@@ -37,6 +63,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             type: "tabLongPress",
             target: route.key,
           });
+          setSelectedIndex(index);
         };
 
         const getIcon = (routeName: Routes) => {
@@ -44,41 +71,13 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
           const color = isFocused ? Color.primary : Color.grey;
           switch (routeName) {
             case Routes.HomeStack:
-              return (
-                <Icon
-                  name={"home"}
-                  size={30}
-                  color={color}
-                  style={{ paddingTop: 20 }}
-                />
-              );
+              return <Icon name={"home"} size={30} color={color} />;
             case Routes.SearchStack:
-              return (
-                <Icon
-                  name={"search"}
-                  size={30}
-                  color={color}
-                  style={{ paddingTop: 20 }}
-                />
-              );
+              return <Icon name={"search"} size={30} color={color} />;
             case Routes.NotificationsStack:
-              return (
-                <Icon
-                  name={"bell"}
-                  size={30}
-                  color={color}
-                  style={{ paddingTop: 20 }}
-                />
-              );
+              return <Icon name={"bell"} size={30} color={color} />;
             case Routes.AccountStack:
-              return (
-                <Icon
-                  name={"user"}
-                  size={30}
-                  color={color}
-                  style={{ paddingTop: 20 }}
-                />
-              );
+              return <Icon name={"user"} size={30} color={color} />;
           }
         };
 
@@ -97,6 +96,13 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
           </TouchableOpacity>
         );
       })}
+      <Reanimated.View
+        style={[
+          styles.tabIndicator,
+          { width: tabWidth, backgroundColor: Color.primary },
+          tabIndicatorStyle,
+        ]}
+      />
     </View>
   );
 };
