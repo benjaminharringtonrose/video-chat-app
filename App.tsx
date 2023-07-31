@@ -16,6 +16,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { RootNavigator } from "./src/navigation";
 import { Listeners } from "./src/components";
+import { Color } from "./src/constants";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,6 +29,14 @@ export default function App() {
     Nunito_700Bold,
     Caveat_400Regular,
   });
+
+  const Theme = {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      background: Color.background,
+    },
+  };
 
   useEffect(() => {
     const prepare = async () => {
@@ -46,7 +55,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <RecoilRoot>
         <StatusBar style={"light"} />
-        <NavigationContainer theme={DarkTheme}>
+        <NavigationContainer theme={Theme}>
           <RootNavigator />
         </NavigationContainer>
         <Listeners />

@@ -5,8 +5,8 @@ import {
   SectionList,
   SectionListRenderItemInfo,
   SectionListData,
-  StyleSheet,
 } from "react-native";
+import LottieView from "lottie-react-native";
 import styles from "./styles";
 import { useRecoilValue } from "recoil";
 import { notificationsState } from "../../atoms/notifications";
@@ -116,6 +116,16 @@ const NotificationsScreen: FC = () => {
                   { backgroundColor: Color.card },
                 ]}
               >
+                <LottieView
+                  source={require("../../../assets/lottie/no_notifications.json")}
+                  style={{
+                    alignSelf: "center",
+                    width: 100,
+                    height: 100,
+                  }}
+                  loop={false}
+                  autoPlay={true}
+                />
                 <Text style={[styles.noResultsText, { color: Color.text }]}>
                   {"No notifications"}
                 </Text>

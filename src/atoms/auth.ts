@@ -30,6 +30,7 @@ export const useAuth = () => {
         setUser(userData);
       }
     }
+    setInitializing(false);
   };
 
   const setUser = async (user: IUser | null) => {

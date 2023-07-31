@@ -8,12 +8,15 @@ const styles = StyleSheet.create({
   noResultsContainer: {
     borderRadius: 10,
     margin: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   noResultsText: {
-    paddingVertical: 20,
+    paddingBottom: 20,
     paddingHorizontal: 10,
     textAlign: "center",
-    fontFamily: FontFamily.Light,
+    fontFamily: FontFamily.Medium,
+    fontSize: 24,
   },
 });
 

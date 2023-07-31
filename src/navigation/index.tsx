@@ -20,27 +20,31 @@ import { auth, db } from "../api/firebase";
 import { Color, FontFamily } from "../constants";
 import { AnyParams, Routes } from "./types";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { TabBar } from "../components";
+
+const routesWithBackNav = new Set([Routes.FriendDetail, Routes.VideoChat]);
 
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator: FC = () => (
   <HomeStack.Navigator
-    screenOptions={({ navigation }) => ({
+    screenOptions={({ navigation, route }) => ({
       headerShown: true,
+      headerStyle: { backgroundColor: Color.background },
       headerTitle: "Chait",
       headerTitleStyle: {
-        color: Color.white,
+        color: Color.text,
         fontFamily: FontFamily.Header,
         fontSize: 36,
       },
-      headerStyle: {
-        backgroundColor: Color.background,
-        shadowColor: "transparent",
-      },
+      headerShadowVisible: false,
       headerLeft: () => {
-        if (navigation.canGoBack()) {
+        if (routesWithBackNav.has(route.name as Routes)) {
           return (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{ zIndex: 999 }}
+            >
               <Icon name={"chevron-back"} size={30} color={Color.text} />
             </TouchableOpacity>
           );
@@ -53,76 +57,114 @@ const HomeStackNavigator: FC = () => (
     <HomeStack.Screen
       name={Routes.FriendDetail}
       component={FriendDetailScreen}
+      options={{ headerTitle: "" }}
     />
-    <HomeStack.Screen name={Routes.VideoChat} component={VideoChatScreen} />
+    <HomeStack.Screen
+      name={Routes.VideoChat}
+      component={VideoChatScreen}
+      options={{ headerTitle: "" }}
+    />
   </HomeStack.Navigator>
 );
 
-const Tab = createBottomTabNavigator();
+const SearchStack = createNativeStackNavigator();
 
-const TabNavigator: FC = () => (
-  <Tab.Navigator
-    screenOptions={{
-      tabBarActiveTintColor: Color.primary,
-      tabBarInactiveTintColor: Color.medDarkGrey,
-      tabBarStyle: {
+const SearchStackNavigator: FC = () => (
+  <SearchStack.Navigator
+    screenOptions={() => ({
+      headerStyle: {
         backgroundColor: Color.background,
-        borderTopWidth: 0,
       },
       headerTitleStyle: {
         color: Color.white,
         fontFamily: FontFamily.Header,
         fontSize: 36,
       },
+      headerShadowVisible: false,
+    })}
+  >
+    <SearchStack.Screen name={Routes.Search} component={SearchScreen} />
+  </SearchStack.Navigator>
+);
+
+const NotificationsStack = createNativeStackNavigator();
+
+const NotificationsStackNavigator: FC = () => (
+  <NotificationsStack.Navigator
+    screenOptions={() => ({
       headerStyle: {
         backgroundColor: Color.background,
-        shadowColor: "transparent",
+      },
+      headerTitleStyle: {
+        color: Color.white,
+        fontFamily: FontFamily.Header,
+        fontSize: 36,
+      },
+      headerShadowVisible: false,
+    })}
+  >
+    <NotificationsStack.Screen
+      name={Routes.Notifications}
+      component={NotificationsScreen}
+    />
+  </NotificationsStack.Navigator>
+);
+
+const AccountStack = createNativeStackNavigator();
+
+const AccountStackNavigator: FC = () => (
+  <AccountStack.Navigator
+    screenOptions={() => ({
+      headerStyle: {
+        backgroundColor: Color.background,
+      },
+      headerTitleStyle: {
+        color: Color.white,
+        fontFamily: FontFamily.Header,
+        fontSize: 36,
+      },
+      headerShadowVisible: false,
+    })}
+  >
+    <AccountStack.Screen name={Routes.Account} component={AccountScreen} />
+  </AccountStack.Navigator>
+);
+
+const Tab = createBottomTabNavigator();
+
+const TabNavigator: FC = () => (
+  <Tab.Navigator
+    tabBar={(props) => <TabBar {...props} />}
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: Color.background,
+      },
+      headerTitleStyle: {
+        color: Color.white,
+        fontFamily: FontFamily.Header,
+        fontSize: 36,
       },
     }}
   >
     <Tab.Screen
       name={Routes.HomeStack}
       component={HomeStackNavigator}
-      options={{
-        tabBarShowLabel: false,
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="home" color={color} size={size} />
-        ),
-        headerShown: false,
-      }}
+      options={{ headerShown: false }}
     />
     <Tab.Screen
-      name={Routes.Search}
-      component={SearchScreen}
-      options={{
-        tabBarShowLabel: false,
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="ios-search" color={color} size={size} />
-        ),
-        headerTitle: "Chait",
-      }}
+      name={Routes.SearchStack}
+      component={SearchStackNavigator}
+      options={{ headerShown: false }}
     />
     <Tab.Screen
-      name={Routes.Notifications}
-      component={NotificationsScreen}
-      options={{
-        tabBarShowLabel: false,
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="notifications" color={color} size={size} />
-        ),
-        headerTitle: "Chait",
-      }}
+      name={Routes.NotificationsStack}
+      component={NotificationsStackNavigator}
+      options={{ headerShown: false }}
     />
     <Tab.Screen
-      name={Routes.Account}
-      component={AccountScreen}
-      options={{
-        tabBarShowLabel: false,
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="person" color={color} size={size} />
-        ),
-        headerTitle: "Chait",
-      }}
+      name={Routes.AccountStack}
+      component={AccountStackNavigator}
+      options={{ headerShown: false }}
     />
   </Tab.Navigator>
 );
@@ -130,8 +172,7 @@ const TabNavigator: FC = () => (
 const RootStack = createNativeStackNavigator<AnyParams>();
 
 export const RootNavigator: FC = () => {
-  const { user, initializing, setUser, setInitializing, getPersistedUser } =
-    useAuth();
+  const { user, initializing, setUser, getPersistedUser } = useAuth();
 
   async function onAuthStateChanged(user: firebase.User | null) {
     if (user) {
@@ -141,9 +182,6 @@ export const RootNavigator: FC = () => {
         await deviceStorage.setUser(user.uid);
         setUser(userData);
       }
-    }
-    if (initializing) {
-      setInitializing(false);
     }
   }
 
@@ -158,18 +196,14 @@ export const RootNavigator: FC = () => {
   if (initializing) return null;
 
   return (
-    <RootStack.Navigator>
+    <RootStack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (
         <>
-          <RootStack.Screen
-            name={Routes.Tabs}
-            component={TabNavigator}
-            options={{ headerShown: false }}
-          />
+          <RootStack.Screen name={Routes.Tabs} component={TabNavigator} />
         </>
       ) : (
         <RootStack.Group
-          screenOptions={({ navigation }) => ({
+          screenOptions={{
             headerTitle: "Chait",
             headerTitleStyle: {
               color: Color.white,
@@ -178,9 +212,8 @@ export const RootNavigator: FC = () => {
             },
             headerStyle: {
               backgroundColor: Color.background,
-              shadowColor: "transparent",
             },
-          })}
+          }}
         >
           <RootStack.Screen name={Routes.Login} component={LoginScreen} />
           <RootStack.Screen
