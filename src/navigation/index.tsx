@@ -191,8 +191,6 @@ export const RootNavigator: FC = () => {
     return subscriber;
   }, []);
 
-  console.log("initializing", initializing);
-
   if (initializing) return null;
 
   return (

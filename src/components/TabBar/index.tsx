@@ -67,7 +67,6 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
         };
 
         const getIcon = (routeName: Routes) => {
-          console.log(routeName);
           const color = isFocused ? Color.primary : Color.grey;
           switch (routeName) {
             case Routes.HomeStack:

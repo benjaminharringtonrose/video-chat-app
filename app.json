@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "video-chat-app",
+    "name": "Chait",
     "slug": "video-chat-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,8 +8,8 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#1F232B"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {

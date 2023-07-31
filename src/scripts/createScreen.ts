@@ -1,4 +1,3 @@
-console.log("yup");
 import fs from "fs-extra";
 
 const createScreen = async () => {

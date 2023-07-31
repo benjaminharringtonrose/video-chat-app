@@ -4,11 +4,13 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { authState } from "../../atoms/auth";
 import { INotification, IUser, NotificationType } from "../../types";
 import { notificationsState } from "../../atoms/notifications";
+import { friendsState } from "../../atoms/friends";
 
 const Listeners: FC = () => {
   const { user } = useRecoilValue(authState);
   const setNotifications = useSetRecoilState(notificationsState);
   const setAuth = useSetRecoilState(authState);
+  const setFriends = useSetRecoilState(friendsState);
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -37,10 +39,24 @@ const Listeners: FC = () => {
 
     db.collection("users")
       .where("uid", "==", user?.uid)
-      .onSnapshot((snapshot) => {
+      .onSnapshot(async (snapshot) => {
         if (snapshot.docs[0].exists) {
+          const friends: IUser[] = [];
+
           const data = snapshot.docs[0].data() as IUser;
+
           setAuth((state) => ({ ...state, user: data }));
+
+          if (data.friends) {
+            for (const friendId of data.friends) {
+              const doc = await db.collection("users").doc(friendId).get();
+              if (doc.exists) {
+                const friend = doc.data() as IUser;
+                friends.push(friend);
+              }
+            }
+            setFriends(friends);
+          }
         }
       });
   }, [user?.uid]);
