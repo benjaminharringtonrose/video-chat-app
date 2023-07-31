@@ -74,7 +74,7 @@ const VideoChatScreen: FC = () => {
           <Button
             label={"Start webcam"}
             onPress={startWebcam}
-            labelColor={Color.white}
+            labelColor={Color.text}
             backgroundColor={Color.primary}
             borderRadius={10}
           />
@@ -83,7 +83,7 @@ const VideoChatScreen: FC = () => {
           <Button
             label={"Create Room"}
             onPress={createRoom}
-            labelColor={Color.white}
+            labelColor={Color.text}
             backgroundColor={Color.primary}
             borderRadius={10}
             style={{ marginBottom: 20 }}
@@ -95,7 +95,7 @@ const VideoChatScreen: FC = () => {
               <Button
                 label={"Join Room"}
                 onPress={joinRoom}
-                labelColor={Color.white}
+                labelColor={Color.text}
                 backgroundColor={Color.primary}
                 style={{ marginRight: 20 }}
               />

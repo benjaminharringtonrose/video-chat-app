@@ -7,15 +7,18 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
-  searchResults: {
+  searchResult: {
     minHeight: 50,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
     marginTop: 10,
     padding: 10,
     borderRadius: 10,
+  },
+  searchResultInner: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   searchResultButton: {
     padding: 10,
@@ -40,6 +43,30 @@ const styles = StyleSheet.create({
   },
   addButton: {
     fontFamily: FontFamily.SemiBold,
+  },
+  spaceBetween: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  friendLabel: {
+    paddingLeft: 10,
+    color: Color.text,
+    fontFamily: FontFamily.Bold,
+  },
+  friendRequestLabel: {
+    flex: 1,
+    paddingLeft: 10,
+    fontFamily: FontFamily.Light,
+    color: Color.text,
+  },
+  friendRequestInner: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  friendRequestUsername: {
+    fontFamily: FontFamily.Bold,
+    color: Color.text,
   },
 });
 

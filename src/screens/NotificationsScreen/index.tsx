@@ -50,11 +50,11 @@ const NotificationsScreen: FC = () => {
   }) => {
     if (section.data?.length) {
       return (
-        <View>
+        <View style={{ backgroundColor: Color.background }}>
           <Text
             style={{
               paddingLeft: 10,
-              fontFamily: FontFamily.SemiBold,
+              fontFamily: FontFamily.Light,
               color: Color.text,
             }}
           >

@@ -1,10 +1,9 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import Icon from "@expo/vector-icons/Ionicons";
 import styles from "./styles";
 import { Color, FontFamily } from "../../constants";
-import { useFriends } from "../../atoms/friends";
 
 export enum ListItemType {
   Results = "Results",
@@ -30,21 +29,16 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
             style={styles.avatar}
             source={{ uri: "https://picsum.photos/id/239/200/300" }}
           />
-          <Text
-            style={{
-              paddingLeft: 10,
-              color: Color.white,
-              fontFamily: FontFamily.Bold,
-            }}
-          >
-            {label}
-          </Text>
+          <View style={styles.spaceBetween}>
+            <Text style={styles.friendLabel}>{label}</Text>
+            <Icon name={"chevron-forward"} size={20} color={Color.text} />
+          </View>
         </TouchableOpacity>
       );
     case ListItemType.Results:
       return (
-        <View style={[styles.searchResults, { backgroundColor: Color.card }]}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={[styles.searchResult, { backgroundColor: Color.card }]}>
+          <View style={styles.searchResultInner}>
             <Image
               style={styles.avatar}
               source={{ uri: "https://picsum.photos/id/239/200/300" }}
@@ -73,18 +67,9 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
             style={styles.avatar}
             source={{ uri: "https://picsum.photos/id/239/200/300" }}
           />
-          <View style={{ flex: 1, flexDirection: "row" }}>
-            <Text
-              style={{
-                flex: 1,
-                paddingLeft: 10,
-                fontFamily: FontFamily.Light,
-                color: Color.text,
-              }}
-            >
-              <Text style={{ fontFamily: FontFamily.Bold, color: Color.text }}>
-                {username}
-              </Text>
+          <View style={styles.friendRequestInner}>
+            <Text style={styles.friendRequestLabel}>
+              <Text style={styles.friendRequestUsername}>{username}</Text>
               {` ${label}`}
             </Text>
           </View>
