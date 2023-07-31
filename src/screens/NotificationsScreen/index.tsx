@@ -15,11 +15,26 @@ import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { INotification, NotificationType } from "../../types";
+import { useFriends } from "../../atoms/friends";
 
 const NotificationsScreen: FC = () => {
   const { friendRequests } = useRecoilValue(notificationsState);
 
+  const { friends } = useFriends();
+
   const { user } = useAuth();
+
+  console.log(friends);
+
+  const isFriend = (uid: string) => {
+    let _isFriend = false;
+    friends.forEach((friend) => {
+      if (friend.uid === uid) {
+        _isFriend = true;
+      }
+    });
+    return _isFriend;
+  };
 
   const acceptFriendRequest = async (senderId: string) => {
     db.collection("users")
@@ -54,6 +69,7 @@ const NotificationsScreen: FC = () => {
           key={item.senderId}
           username={item.senderUsername}
           label={"wants to be your friend"}
+          isFriend={isFriend(item.senderId)}
           onPress={() => acceptFriendRequest(item.senderId)}
         />
       );

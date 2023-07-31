@@ -1,9 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { yupResolver } from "@hookform/resolvers/yup";
 import LottieView from "lottie-react-native";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView } from "react-native";
 import {
   Button,
   FormInput,
@@ -17,11 +16,6 @@ import styles from "./styles";
 import { Color } from "../../constants";
 import { auth, db } from "../../api/firebase";
 import { IUser } from "../../types";
-
-const TITLE = "Welcome Back!";
-
-const DESCRIPTION =
-  "Some user instructions may go here and it can wrap multiple times. Here's some more text to fill it up.";
 
 export interface ILoginForm {
   username: string;

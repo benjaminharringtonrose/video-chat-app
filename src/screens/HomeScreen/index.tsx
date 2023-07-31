@@ -7,7 +7,6 @@ import {
   SectionListData,
 } from "react-native";
 import styles from "./styles";
-import { useAuth } from "../../atoms/auth";
 import { ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import { useFriends } from "../../atoms/friends";

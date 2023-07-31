@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
   },
+  searchInput: {
+    marginTop: 10,
+  },
   searchResults: {
     minHeight: 50,
     flexDirection: "row",
@@ -21,6 +24,16 @@ const styles = StyleSheet.create({
     backgroundColor: Color.primary,
     padding: 10,
     borderRadius: 10,
+  },
+  noResultsContainer: {
+    backgroundColor: Color.white,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  noResultsText: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    textAlign: "center",
   },
 });
 

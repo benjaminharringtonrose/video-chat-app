@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import Icon from "@expo/vector-icons/Ionicons";
 import styles from "./styles";
 import { Color } from "../../constants";
+import { useFriends } from "../../atoms/friends";
 
 export enum ListItemType {
   Results = "Results",
@@ -16,12 +17,11 @@ interface IProps {
   type: ListItemType;
   username?: string;
   label: string;
+  isFriend?: boolean;
   onPress: () => void;
 }
 
-const ListItem: FC<IProps> = ({ type, username, label, onPress }) => {
-  const [pressed, setPressed] = useState(false);
-
+const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
   switch (type) {
     case ListItemType.Friends:
       return (
@@ -67,22 +67,21 @@ const ListItem: FC<IProps> = ({ type, username, label, onPress }) => {
           <TouchableOpacity
             style={[
               styles.searchResultButton,
-              pressed && {
+              isFriend && {
                 backgroundColor: Color.white,
                 borderWidth: 1,
                 borderColor: Color.primary,
               },
             ]}
-            disabled={pressed}
+            disabled={isFriend}
             onPress={() => {
               onPress();
-              setPressed(true);
             }}
           >
             <Text
-              style={[styles.addButton, pressed && { color: Color.primary }]}
+              style={[styles.addButton, isFriend && { color: Color.primary }]}
             >
-              {pressed ? "Added" : "Add"}
+              {isFriend ? "Added" : "Add"}
             </Text>
           </TouchableOpacity>
         </View>

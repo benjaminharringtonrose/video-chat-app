@@ -1,14 +1,11 @@
 import React, { FC, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, FlatList, LayoutAnimation } from "react-native";
 import styles from "./styles";
 import SearchInput from "../../components/SeachInput";
 import { db } from "../../api/firebase";
 import { IUser, NotificationType } from "../../types";
 import { useAuth } from "../../atoms/auth";
-import { useRecoilValue } from "recoil";
-import { notificationsState } from "../../atoms/notifications";
 import { ListItem } from "../../components";
-import firebase from "firebase/compat";
 import { ListItemType } from "../../components/ListItem";
 
 const SearchScreen: FC = () => {
@@ -24,12 +21,12 @@ const SearchScreen: FC = () => {
       users.docs.forEach((doc) => {
         if (doc.exists) {
           const user = doc.data() as IUser;
-          if (user.username?.includes(searchText)) {
+          if (searchText && user.username?.includes(searchText)) {
             results.push(user);
           }
         }
       });
-
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setSearchResults(results);
     }
   };
@@ -49,20 +46,26 @@ const SearchScreen: FC = () => {
         value={searchText}
         onChangeText={setSearchText}
         onSearch={onSearch}
-        style={{ marginTop: 10 }}
+        style={styles.searchInput}
       />
-      <ScrollView>
-        {searchResults?.map((searchResult) => {
+      {!searchResults.length && (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResultsText}>{"No search results"}</Text>
+        </View>
+      )}
+      <FlatList
+        data={searchResults}
+        renderItem={({ item }) => {
           return (
             <ListItem
               type={ListItemType.Results}
-              key={searchResult.uid}
-              label={searchResult.username ?? "--"}
-              onPress={() => sendFriendRequest(searchResult.uid)}
+              key={item.uid}
+              label={item.username ?? "--"}
+              onPress={() => sendFriendRequest(item.uid)}
             />
           );
-        })}
-      </ScrollView>
+        }}
+      />
     </View>
   );
 };
