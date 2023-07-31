@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import styles from "./styles";
-import { ListItem } from "../../components";
+import { ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import { useFriends } from "../../atoms/friends";
 import { IUser } from "../../types";
@@ -52,15 +52,35 @@ const HomeScreen: FC = () => {
     },
   ];
 
+  const isEmpty = !friends.length;
+
   return (
     <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
+        renderSectionFooter={() => {
+          if (isEmpty) {
+            return (
+              <View
+                style={[
+                  styles.noResultsContainer,
+                  { backgroundColor: Color.card },
+                ]}
+              >
+                <Text style={[styles.noResultsText, { color: Color.text }]}>
+                  {"No friends"}
+                </Text>
+              </View>
+            );
+          }
+          return null;
+        }}
         keyExtractor={(item) => item.uid}
         contentContainerStyle={{ paddingTop: 20 }}
         refreshing={loadingFriends}
+        ItemSeparatorComponent={ItemSeparator}
       />
     </View>
   );

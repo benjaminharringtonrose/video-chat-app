@@ -5,11 +5,12 @@ import {
   SectionList,
   SectionListRenderItemInfo,
   SectionListData,
+  StyleSheet,
 } from "react-native";
 import styles from "./styles";
 import { useRecoilValue } from "recoil";
 import { notificationsState } from "../../atoms/notifications";
-import { ListItem } from "../../components";
+import { ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
@@ -36,10 +37,18 @@ const NotificationsScreen: FC = () => {
   };
 
   const acceptFriendRequest = async (senderId: string) => {
-    db.collection("users")
+    await db
+      .collection("users")
       .doc(user?.uid)
       .update({
         friends: firebase.firestore.FieldValue.arrayUnion(senderId),
+      });
+
+    await db
+      .collection("users")
+      .doc(senderId)
+      .update({
+        friends: firebase.firestore.FieldValue.arrayUnion(user?.uid),
       });
   };
 
@@ -90,14 +99,34 @@ const NotificationsScreen: FC = () => {
     },
   ];
 
+  const isEmpty = !friendRequests.length;
+
   return (
     <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
+        renderSectionFooter={() => {
+          if (isEmpty) {
+            return (
+              <View
+                style={[
+                  styles.noResultsContainer,
+                  { backgroundColor: Color.card },
+                ]}
+              >
+                <Text style={[styles.noResultsText, { color: Color.text }]}>
+                  {"No notifications"}
+                </Text>
+              </View>
+            );
+          }
+          return null;
+        }}
         keyExtractor={(item) => item.senderId}
         contentContainerStyle={{ paddingTop: 20 }}
+        ItemSeparatorComponent={ItemSeparator}
       />
     </View>
   );

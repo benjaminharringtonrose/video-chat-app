@@ -5,7 +5,7 @@ import { Color, FontFamily } from "../../constants";
 const styles = StyleSheet.create({
   root: {
     minHeight: 50,
-    borderColor: Color.grey,
+    borderColor: Color.medDarkGrey,
     borderWidth: 1,
     borderRadius: 5,
     flexDirection: "column",
@@ -22,8 +22,7 @@ const styles = StyleSheet.create({
     left: 8,
   },
   input: {
-    padding: 5,
-    zIndex: 1,
+    padding: 10,
     fontFamily: FontFamily.Regular,
   },
   errorText: {},

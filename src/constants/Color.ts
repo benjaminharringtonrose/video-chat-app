@@ -18,4 +18,5 @@ export const Color = {
   text: "white",
   input: "white",
   placeholder: "#a9a9a9",
+  border: "#3A3A3C",
 };

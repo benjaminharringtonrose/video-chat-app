@@ -38,7 +38,9 @@ export default function App() {
     prepare();
   }, [fontsLoaded]);
 
-  console.log(fontsLoaded);
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

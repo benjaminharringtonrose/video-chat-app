@@ -5,3 +5,4 @@ export { default as SearchInput } from "./SeachInput";
 export { default as FormSection } from "./FormSection";
 export { default as FormInput } from "./FormInput";
 export { default as FormPasswordInput } from "./FormPasswordInput";
+export { default as ItemSeparator } from "./ItemSeparator";

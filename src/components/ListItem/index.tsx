@@ -62,7 +62,7 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
     case ListItemType.FriendRequest:
     default:
       return (
-        <View style={[styles.friendRequest, { backgroundColor: Color.card }]}>
+        <View style={[styles.friendRequest]}>
           <Image
             style={styles.avatar}
             source={{ uri: "https://picsum.photos/id/239/200/300" }}
@@ -79,7 +79,7 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
               styles.searchResultButton,
               { backgroundColor: Color.primary },
               isFriend && {
-                backgroundColor: Color.card,
+                backgroundColor: Color.background,
                 borderWidth: 1,
                 borderColor: Color.primary,
               },

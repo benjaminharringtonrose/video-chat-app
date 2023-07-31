@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     minHeight: 50,
-    borderColor: Color.lightGrey,
+    borderColor: Color.grey,
     borderWidth: 1,
     borderRadius: 5,
     flexDirection: "column",
@@ -18,11 +18,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     alignSelf: "flex-start",
     fontFamily: FontFamily.Regular,
-    top: -24,
+    top: -20,
     left: 8,
   },
   input: {
-    padding: 5,
+    padding: 10,
     flex: 1,
   },
   errorText: {},
