@@ -12,6 +12,7 @@ import {
   HomeScreen,
   SearchScreen,
   NotificationsScreen,
+  FriendDetailScreen,
 } from "../screens";
 import { useAuth } from "../atoms/auth";
 import { IUser } from "../types";
@@ -19,6 +20,43 @@ import { auth, db } from "../api/firebase";
 import { Color, FontFamily } from "../constants";
 import { AnyParams, Routes } from "./types";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
+const HomeStack = createNativeStackNavigator();
+
+const HomeStackNavigator: FC = () => (
+  <HomeStack.Navigator
+    screenOptions={({ navigation }) => ({
+      headerShown: true,
+      headerTitle: "Chait",
+      headerTitleStyle: {
+        color: Color.white,
+        fontFamily: FontFamily.Header,
+        fontSize: 36,
+      },
+      headerStyle: {
+        backgroundColor: Color.background,
+        shadowColor: "transparent",
+      },
+      headerLeft: () => {
+        if (navigation.canGoBack()) {
+          return (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icon name={"chevron-back"} size={30} color={Color.text} />
+            </TouchableOpacity>
+          );
+        }
+        return null;
+      },
+    })}
+  >
+    <HomeStack.Screen name={Routes.Home} component={HomeScreen} />
+    <HomeStack.Screen
+      name={Routes.FriendDetail}
+      component={FriendDetailScreen}
+    />
+    <HomeStack.Screen name={Routes.VideoChat} component={VideoChatScreen} />
+  </HomeStack.Navigator>
+);
 
 const Tab = createBottomTabNavigator();
 
@@ -42,25 +80,14 @@ const TabNavigator: FC = () => (
     }}
   >
     <Tab.Screen
-      name={Routes.Home}
-      component={HomeScreen}
+      name={Routes.HomeStack}
+      component={HomeStackNavigator}
       options={{
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size }) => (
           <Icon name="home" color={color} size={size} />
         ),
-        headerTitle: "Chait",
-      }}
-    />
-    <Tab.Screen
-      name={Routes.VideoChat}
-      component={VideoChatScreen}
-      options={{
-        tabBarShowLabel: false,
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="ios-videocam" color={color} size={size} />
-        ),
-        headerTitle: "Chait",
+        headerShown: false,
       }}
     />
     <Tab.Screen

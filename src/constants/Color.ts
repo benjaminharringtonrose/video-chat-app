@@ -10,6 +10,7 @@ export const Color = {
   successLight: "#d1e7dd",
   success: "#0f5132",
   primary: "#5851D6",
+  primaryLight: "#6963DA",
   secondary: "#B785F6",
   transparent: "transparent",
   cta: "#5851D6",
@@ -19,4 +20,5 @@ export const Color = {
   input: "white",
   placeholder: "#a9a9a9",
   border: "#3A3A3C",
+  lightGreen: "#A3D92F",
 };

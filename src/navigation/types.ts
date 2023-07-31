@@ -1,9 +1,11 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/native";
 
 export enum Routes {
   Login = "Login",
   SignUp = "SignUp",
   Tabs = "Tabs",
+  HomeStack = "HomeStack",
   Home = "Home",
   VideoChat = "VideoChat",
   Search = "Search",
@@ -17,3 +19,5 @@ export type AnyParams = {
 };
 
 export type NavProp = NativeStackNavigationProp<AnyParams, string>;
+
+export type NavRouteProp = RouteProp<any, any>;

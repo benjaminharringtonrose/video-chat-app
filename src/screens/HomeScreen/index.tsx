@@ -5,17 +5,19 @@ import {
   SectionList,
   SectionListRenderItemInfo,
   SectionListData,
-  StyleSheet,
 } from "react-native";
 import styles from "./styles";
 import { ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import { useFriends } from "../../atoms/friends";
 import { IUser } from "../../types";
-import { Color, FontFamily } from "../../constants";
+import { Color } from "../../constants";
+import { useNavigation } from "@react-navigation/native";
+import { NavProp, Routes } from "../../navigation/types";
 
 const HomeScreen: FC = () => {
   const { friends, getFriends, loadingFriends } = useFriends();
+  const { navigate } = useNavigation<NavProp>();
 
   useEffect(() => {
     getFriends();
@@ -40,9 +42,28 @@ const HomeScreen: FC = () => {
       <ListItem
         type={ListItemType.Friends}
         label={item.username ?? "--"}
-        onPress={() => {}}
+        onPress={() =>
+          navigate(Routes.FriendDetail, {
+            friendId: item.uid,
+          })
+        }
       />
     );
+  };
+
+  const renderSectionFooter = () => {
+    if (isEmpty) {
+      return (
+        <View
+          style={[styles.noResultsContainer, { backgroundColor: Color.card }]}
+        >
+          <Text style={[styles.noResultsText, { color: Color.text }]}>
+            {"No friends"}
+          </Text>
+        </View>
+      );
+    }
+    return null;
   };
 
   const sections = [
@@ -60,23 +81,7 @@ const HomeScreen: FC = () => {
         sections={sections}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
-        renderSectionFooter={() => {
-          if (isEmpty) {
-            return (
-              <View
-                style={[
-                  styles.noResultsContainer,
-                  { backgroundColor: Color.card },
-                ]}
-              >
-                <Text style={[styles.noResultsText, { color: Color.text }]}>
-                  {"No friends"}
-                </Text>
-              </View>
-            );
-          }
-          return null;
-        }}
+        renderSectionFooter={renderSectionFooter}
         keyExtractor={(item) => item.uid}
         contentContainerStyle={{ paddingTop: 20 }}
         refreshing={loadingFriends}
