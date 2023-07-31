@@ -1,11 +1,17 @@
 import React, { FC, useState } from "react";
-import { View, Text, FlatList, LayoutAnimation } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  LayoutAnimation,
+  ListRenderItemInfo,
+} from "react-native";
 import styles from "./styles";
 import SearchInput from "../../components/SearchInput";
 import { db } from "../../api/firebase";
 import { IUser, NotificationType } from "../../types";
 import { useAuth } from "../../atoms/auth";
-import { ListItem } from "../../components";
+import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import { Color } from "../../constants";
 
@@ -41,6 +47,17 @@ const SearchScreen: FC = () => {
     });
   };
 
+  const renderItem = ({ item }: ListRenderItemInfo<IUser>) => {
+    return (
+      <ListItem
+        type={ListItemType.Results}
+        key={item.uid}
+        label={item.username ?? "--"}
+        onPress={() => sendFriendRequest(item.uid)}
+      />
+    );
+  };
+
   return (
     <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SearchInput
@@ -50,27 +67,12 @@ const SearchScreen: FC = () => {
         placeholder={"Search"}
         style={styles.searchInput}
       />
-      {!searchResults.length && (
-        <View
-          style={[styles.noResultsContainer, { backgroundColor: Color.card }]}
-        >
-          <Text style={[styles.noResultsText, { color: Color.text }]}>
-            {"No search results"}
-          </Text>
-        </View>
-      )}
+      {!searchResults.length && <EmptyStateView title={"No search results"} />}
       <FlatList
         data={searchResults}
-        renderItem={({ item }) => {
-          return (
-            <ListItem
-              type={ListItemType.Results}
-              key={item.uid}
-              label={item.username ?? "--"}
-              onPress={() => sendFriendRequest(item.uid)}
-            />
-          );
-        }}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.uid}
+        ItemSeparatorComponent={ItemSeparator}
       />
     </View>
   );

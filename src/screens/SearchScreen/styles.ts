@@ -17,7 +17,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
     textAlign: "center",
-    fontFamily: FontFamily.Light,
+    fontFamily: FontFamily.Bold,
+    fontSize: 24,
+    opacity: 0.8,
   },
 });
 

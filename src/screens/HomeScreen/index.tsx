@@ -9,7 +9,7 @@ import {
 import LottieView from "lottie-react-native";
 
 import styles from "./styles";
-import { ItemSeparator, ListItem } from "../../components";
+import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import { useFriends } from "../../atoms/friends";
 import { IUser } from "../../types";
@@ -64,30 +64,13 @@ const HomeScreen: FC = () => {
 
   if (isEmpty) {
     return (
-      <View style={[styles.noResultsContainer]}>
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <LottieView
-            source={require("../../../assets/lottie/empty.json")}
-            style={{
-              alignSelf: "center",
-              width: 150,
-              height: 150,
-            }}
-            loop={false}
-            autoPlay={true}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={[styles.noResultsTitle, { color: Color.text }]}>
-            {"You don't have any friends yet"}
-          </Text>
-          <Text style={[styles.noResultsDescription, { color: Color.text }]}>
-            {
-              "Search for your friends or send them an invitation to download the app"
-            }
-          </Text>
-        </View>
-      </View>
+      <EmptyStateView
+        title={"You don't have any friends yet"}
+        description={
+          "Search for your friends or send them an invitation to download the app"
+        }
+        lottie={require("../../../assets/lottie/empty.json")}
+      />
     );
   }
 

@@ -10,7 +10,7 @@ import LottieView from "lottie-react-native";
 import styles from "./styles";
 import { useRecoilValue } from "recoil";
 import { notificationsState } from "../../atoms/notifications";
-import { ItemSeparator, ListItem } from "../../components";
+import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
@@ -101,39 +101,21 @@ const NotificationsScreen: FC = () => {
 
   const isEmpty = !friendRequests.length;
 
+  if (isEmpty) {
+    return (
+      <EmptyStateView
+        title={"You dont have any notifications"}
+        lottie={require("../../../assets/lottie/no_notifications.json")}
+      />
+    );
+  }
+
   return (
     <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
-        renderSectionFooter={() => {
-          if (isEmpty) {
-            return (
-              <View
-                style={[
-                  styles.noResultsContainer,
-                  { backgroundColor: Color.card },
-                ]}
-              >
-                <LottieView
-                  source={require("../../../assets/lottie/no_notifications.json")}
-                  style={{
-                    alignSelf: "center",
-                    width: 100,
-                    height: 100,
-                  }}
-                  loop={false}
-                  autoPlay={true}
-                />
-                <Text style={[styles.noResultsText, { color: Color.text }]}>
-                  {"No notifications"}
-                </Text>
-              </View>
-            );
-          }
-          return null;
-        }}
         keyExtractor={(item) => item.senderId}
         contentContainerStyle={{ paddingTop: 20 }}
         ItemSeparatorComponent={ItemSeparator}
