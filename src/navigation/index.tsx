@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Ionicons";
 import firebase from "firebase/compat/app";
@@ -31,7 +31,8 @@ const TabNavigator: FC = () => (
       },
       headerTitleStyle: {
         color: Color.white,
-        fontFamily: FontFamily.Light,
+        fontFamily: FontFamily.Header,
+        fontSize: 36,
       },
       headerStyle: {
         backgroundColor: Color.background,
@@ -47,8 +48,7 @@ const TabNavigator: FC = () => (
         tabBarIcon: ({ color, size }) => (
           <Icon name="home" color={color} size={size} />
         ),
-
-        headerTitle: "Home",
+        headerTitle: "Chait",
       }}
     />
     <Tab.Screen
@@ -59,6 +59,7 @@ const TabNavigator: FC = () => (
         tabBarIcon: ({ color, size }) => (
           <Icon name="ios-videocam" color={color} size={size} />
         ),
+        headerTitle: "Chait",
       }}
     />
     <Tab.Screen
@@ -69,6 +70,7 @@ const TabNavigator: FC = () => (
         tabBarIcon: ({ color, size }) => (
           <Icon name="ios-search" color={color} size={size} />
         ),
+        headerTitle: "Chait",
       }}
     />
     <Tab.Screen
@@ -79,6 +81,7 @@ const TabNavigator: FC = () => (
         tabBarIcon: ({ color, size }) => (
           <Icon name="notifications" color={color} size={size} />
         ),
+        headerTitle: "Chait",
       }}
     />
     <Tab.Screen
@@ -89,12 +92,13 @@ const TabNavigator: FC = () => (
         tabBarIcon: ({ color, size }) => (
           <Icon name="person" color={color} size={size} />
         ),
+        headerTitle: "Chait",
       }}
     />
   </Tab.Navigator>
 );
 
-const RootStack = createNativeStackNavigator<AnyParams>();
+const RootStack = createStackNavigator<AnyParams>();
 
 export const RootNavigator: FC = () => {
   const { user, initializing, setUser, setInitializing, getPersistedUser } =

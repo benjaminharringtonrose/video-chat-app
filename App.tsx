@@ -6,6 +6,7 @@ import {
   Nunito_600SemiBold,
   Nunito_700Bold,
 } from "@expo-google-fonts/nunito";
+import { Caveat_400Regular } from "@expo-google-fonts/caveat";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,6 +24,7 @@ export default function App() {
     Nunito_500Medium,
     Nunito_600SemiBold,
     Nunito_700Bold,
+    Caveat_400Regular,
   });
 
   useEffect(() => {

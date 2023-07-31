@@ -4,4 +4,5 @@ export const FontFamily = Object.freeze({
   Medium: "Nunito_500Medium",
   SemiBold: "Nunito_600SemiBold",
   Bold: "Nunito_700Bold",
+  Header: "Caveat_400Regular",
 });
