@@ -16,6 +16,7 @@ import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { INotification, NotificationType } from "../../types";
 import { useFriends } from "../../atoms/friends";
+import { Color, FontFamily } from "../../constants";
 
 const NotificationsScreen: FC = () => {
   const { friendRequests } = useRecoilValue(notificationsState);
@@ -23,8 +24,6 @@ const NotificationsScreen: FC = () => {
   const { friends } = useFriends();
 
   const { user } = useAuth();
-
-  console.log(friends);
 
   const isFriend = (uid: string) => {
     let _isFriend = false;
@@ -52,7 +51,13 @@ const NotificationsScreen: FC = () => {
     if (section.data?.length) {
       return (
         <View>
-          <Text style={{ paddingLeft: 10, fontWeight: "600" }}>
+          <Text
+            style={{
+              paddingLeft: 10,
+              fontFamily: FontFamily.SemiBold,
+              color: Color.text,
+            }}
+          >
             {section.title}
           </Text>
         </View>
@@ -86,7 +91,7 @@ const NotificationsScreen: FC = () => {
   ];
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}

@@ -7,43 +7,41 @@ import {
   ViewStyle,
 } from "react-native";
 import Icon from "@expo/vector-icons/Ionicons";
-import { Color } from "../../constants";
+import { Color, FontFamily } from "../../constants";
+import styles from "./styles";
 
 interface IProps {
   value: string;
   onChangeText: (text: string) => void;
   onSearch: () => void;
+  placeholder?: string;
   style?: StyleProp<ViewStyle>;
 }
 
-const SearchInput: FC<IProps> = ({ value, onChangeText, style, onSearch }) => {
+const SearchInput: FC<IProps> = ({
+  value,
+  onChangeText,
+  style,
+  onSearch,
+  placeholder,
+}) => {
   return (
-    <View
-      style={[
-        {
-          padding: 10,
-          backgroundColor: Color.white,
-          minHeight: 50,
-          borderRadius: 10,
-          borderWidth: 1,
-          borderColor: Color.lightGrey,
-          alignItems: "center",
-          flexDirection: "row",
-        },
-        style,
-      ]}
-    >
+    <View style={[styles.root, { backgroundColor: Color.card }, style]}>
       <TextInput
         onChangeText={onChangeText}
         value={value}
-        selectionColor={Color.darkGrey}
-        style={{ flex: 1 }}
+        selectionColor={Color.secondary}
+        style={[styles.textInput, { color: Color.input }]}
+        placeholder={placeholder}
+        placeholderTextColor={Color.placeholder}
+        cursorColor={Color.placeholder}
       />
       <TouchableOpacity onPress={onSearch}>
         <Icon
           name={"search"}
           size={20}
           style={{ justifyContent: "flex-end" }}
+          color={Color.primary}
         />
       </TouchableOpacity>
     </View>

@@ -56,7 +56,6 @@ const Button: FC<IButtonProps> = ({
           backgroundColor,
           borderColor,
           borderRadius,
-          ...Styles.cardElevation,
         },
         style,
       ]}

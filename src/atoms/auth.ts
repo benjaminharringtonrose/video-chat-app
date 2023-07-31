@@ -21,6 +21,7 @@ export const useAuth = () => {
   const [state, setState] = useRecoilState(authState);
 
   const getPersistedUser = async () => {
+    setInitializing(true);
     const uid = await deviceStorage.getUser();
     if (uid) {
       const doc = await db.collection("users").doc(uid).get();

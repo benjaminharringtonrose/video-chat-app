@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import Icon from "@expo/vector-icons/Ionicons";
 import styles from "./styles";
-import { Color } from "../../constants";
+import { Color, FontFamily } from "../../constants";
 import { useFriends } from "../../atoms/friends";
 
 export enum ListItemType {
@@ -30,18 +30,34 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
             style={styles.avatar}
             source={{ uri: "https://picsum.photos/id/239/200/300" }}
           />
-          <Text style={{ paddingLeft: 10 }}>{label}</Text>
+          <Text
+            style={{
+              paddingLeft: 10,
+              color: Color.white,
+              fontFamily: FontFamily.Bold,
+            }}
+          >
+            {label}
+          </Text>
         </TouchableOpacity>
       );
     case ListItemType.Results:
       return (
-        <View style={styles.searchResults}>
+        <View style={[styles.searchResults, { backgroundColor: Color.card }]}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image
               style={styles.avatar}
               source={{ uri: "https://picsum.photos/id/239/200/300" }}
             />
-            <Text style={{ paddingLeft: 10 }}>{label}</Text>
+            <Text
+              style={{
+                paddingLeft: 10,
+                color: Color.text,
+                fontFamily: FontFamily.Bold,
+              }}
+            >
+              {label}
+            </Text>
           </View>
 
           <TouchableOpacity style={styles.searchResultButton} onPress={onPress}>
@@ -52,14 +68,23 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
     case ListItemType.FriendRequest:
     default:
       return (
-        <View style={styles.friendRequest}>
+        <View style={[styles.friendRequest, { backgroundColor: Color.card }]}>
           <Image
             style={styles.avatar}
             source={{ uri: "https://picsum.photos/id/239/200/300" }}
           />
           <View style={{ flex: 1, flexDirection: "row" }}>
-            <Text style={{ flex: 1, paddingLeft: 10 }}>
-              <Text style={{ fontWeight: "700" }}>{username}</Text>
+            <Text
+              style={{
+                flex: 1,
+                paddingLeft: 10,
+                fontFamily: FontFamily.Light,
+                color: Color.text,
+              }}
+            >
+              <Text style={{ fontFamily: FontFamily.Bold, color: Color.text }}>
+                {username}
+              </Text>
               {` ${label}`}
             </Text>
           </View>
@@ -67,8 +92,9 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
           <TouchableOpacity
             style={[
               styles.searchResultButton,
+              { backgroundColor: Color.primary },
               isFriend && {
-                backgroundColor: Color.white,
+                backgroundColor: Color.card,
                 borderWidth: 1,
                 borderColor: Color.primary,
               },
@@ -79,7 +105,11 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
             }}
           >
             <Text
-              style={[styles.addButton, isFriend && { color: Color.primary }]}
+              style={[
+                styles.addButton,
+                { color: Color.text },
+                isFriend && { color: Color.primary },
+              ]}
             >
               {isFriend ? "Added" : "Add"}
             </Text>

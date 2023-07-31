@@ -5,12 +5,14 @@ import {
   SectionList,
   SectionListRenderItemInfo,
   SectionListData,
+  StyleSheet,
 } from "react-native";
 import styles from "./styles";
 import { ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import { useFriends } from "../../atoms/friends";
 import { IUser } from "../../types";
+import { Color, FontFamily } from "../../constants";
 
 const HomeScreen: FC = () => {
   const { friends, getFriends, loadingFriends } = useFriends();
@@ -25,8 +27,8 @@ const HomeScreen: FC = () => {
     section: SectionListData<any>;
   }) => {
     return (
-      <View>
-        <Text style={{ paddingLeft: 10, fontWeight: "500" }}>
+      <View style={{ backgroundColor: Color.background }}>
+        <Text style={[styles.sectionHeaderText, { color: Color.text }]}>
           {section.title}
         </Text>
       </View>
@@ -51,7 +53,7 @@ const HomeScreen: FC = () => {
   ];
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}

@@ -7,6 +7,7 @@ import { IUser, NotificationType } from "../../types";
 import { useAuth } from "../../atoms/auth";
 import { ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
+import { Color } from "../../constants";
 
 const SearchScreen: FC = () => {
   const [searchText, setSearchText] = useState("");
@@ -41,16 +42,21 @@ const SearchScreen: FC = () => {
   };
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SearchInput
         value={searchText}
         onChangeText={setSearchText}
         onSearch={onSearch}
+        placeholder={"Search for a friend's username"}
         style={styles.searchInput}
       />
       {!searchResults.length && (
-        <View style={styles.noResultsContainer}>
-          <Text style={styles.noResultsText}>{"No search results"}</Text>
+        <View
+          style={[styles.noResultsContainer, { backgroundColor: Color.card }]}
+        >
+          <Text style={[styles.noResultsText, { color: Color.text }]}>
+            {"No search results"}
+          </Text>
         </View>
       )}
       <FlatList

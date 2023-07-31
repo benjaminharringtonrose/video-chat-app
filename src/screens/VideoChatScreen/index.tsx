@@ -27,7 +27,10 @@ const VideoChatScreen: FC = () => {
   const localHeight = height / 3;
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: Color.background }}
+      behavior="position"
+    >
       {remoteStream && (
         <RTCView
           streamURL={remoteStream.toURL()}
@@ -63,7 +66,7 @@ const VideoChatScreen: FC = () => {
         style={{
           zIndex: 2,
           position: "absolute",
-          top: height - 200,
+          top: height - 300,
           marginLeft: 20,
         }}
       >

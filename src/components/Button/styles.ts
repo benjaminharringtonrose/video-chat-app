@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { FontFamily } from "../../constants";
 
 const styles = StyleSheet.create({
   root: {
@@ -10,7 +11,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: FontFamily.Bold,
   },
 });
 

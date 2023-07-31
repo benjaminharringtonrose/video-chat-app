@@ -1,11 +1,7 @@
 import { FC, useEffect } from "react";
-import {
-  NativeStackNavigationProp,
-  createNativeStackNavigator,
-} from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Ionicons";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import firebase from "firebase/compat/app";
 import * as deviceStorage from "../utils";
 import {
@@ -20,7 +16,7 @@ import {
 import { useAuth } from "../atoms/auth";
 import { IUser } from "../types";
 import { auth, db } from "../api/firebase";
-import { Color } from "../constants";
+import { Color, FontFamily } from "../constants";
 import { AnyParams, Routes } from "./types";
 
 const Tab = createBottomTabNavigator();
@@ -29,6 +25,18 @@ const TabNavigator: FC = () => (
   <Tab.Navigator
     screenOptions={{
       tabBarActiveTintColor: Color.primary,
+      tabBarStyle: {
+        backgroundColor: Color.background,
+        borderTopWidth: 0,
+      },
+      headerTitleStyle: {
+        color: Color.white,
+        fontFamily: FontFamily.Light,
+      },
+      headerStyle: {
+        backgroundColor: Color.background,
+        shadowColor: "transparent",
+      },
     }}
   >
     <Tab.Screen
@@ -39,6 +47,8 @@ const TabNavigator: FC = () => (
         tabBarIcon: ({ color, size }) => (
           <Icon name="home" color={color} size={size} />
         ),
+
+        headerTitle: "Home",
       }}
     />
     <Tab.Screen
@@ -109,6 +119,8 @@ export const RootNavigator: FC = () => {
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
+
+  console.log("initializing", initializing);
 
   if (initializing) return null;
 
