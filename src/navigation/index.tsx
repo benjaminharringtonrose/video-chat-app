@@ -172,27 +172,7 @@ const TabNavigator: FC = () => (
 const RootStack = createNativeStackNavigator<AnyParams>();
 
 export const RootNavigator: FC = () => {
-  const { user, initializing, setUser, getPersistedUser } = useAuth();
-
-  async function onAuthStateChanged(user: firebase.User | null) {
-    if (user) {
-      const doc = await db.collection("users").doc(user.uid).get();
-      if (doc.exists) {
-        const userData = doc.data() as IUser;
-        await deviceStorage.setUser(user.uid);
-        setUser(userData);
-      }
-    }
-  }
-
-  useEffect(() => {
-    getPersistedUser();
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
-
-  if (initializing) return null;
-
+  const { user } = useAuth();
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (

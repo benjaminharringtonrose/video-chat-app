@@ -1,63 +1,20 @@
-import {
-  useFonts,
-  Nunito_300Light,
-  Nunito_400Regular,
-  Nunito_500Medium,
-  Nunito_600SemiBold,
-  Nunito_700Bold,
-} from "@expo-google-fonts/nunito";
-import { Caveat_400Regular } from "@expo-google-fonts/caveat";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
-import { NavigationContainer, DarkTheme } from "@react-navigation/native";
+import React from "react";
 import { RecoilRoot } from "recoil";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { RootNavigator } from "./src/navigation";
 import { Listeners } from "./src/components";
-import { Color } from "./src/constants";
+import WrappedApp from "./src/WrappedApp";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    Nunito_300Light,
-    Nunito_400Regular,
-    Nunito_500Medium,
-    Nunito_600SemiBold,
-    Nunito_700Bold,
-    Caveat_400Regular,
-  });
-
-  const Theme = {
-    ...DarkTheme,
-    colors: {
-      ...DarkTheme.colors,
-      background: Color.background,
-    },
-  };
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (fontsLoaded) {
-        await SplashScreen.hideAsync();
-      }
-    };
-    prepare();
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <RecoilRoot>
         <StatusBar style={"light"} />
-        <NavigationContainer theme={Theme}>
-          <RootNavigator />
-        </NavigationContainer>
+        <WrappedApp />
         <Listeners />
       </RecoilRoot>
     </GestureHandlerRootView>
