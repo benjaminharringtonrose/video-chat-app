@@ -64,6 +64,7 @@ const TabNavigator: FC = () => (
   <Tab.Navigator
     screenOptions={{
       tabBarActiveTintColor: Color.primary,
+      tabBarInactiveTintColor: Color.medDarkGrey,
       tabBarStyle: {
         backgroundColor: Color.background,
         borderTopWidth: 0,
