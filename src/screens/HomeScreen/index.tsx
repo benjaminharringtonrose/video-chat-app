@@ -60,6 +60,7 @@ const HomeScreen: FC = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.uid}
         contentContainerStyle={{ paddingTop: 20 }}
+        refreshing={loadingFriends}
       />
     </View>
   );

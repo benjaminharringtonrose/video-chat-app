@@ -19,3 +19,21 @@ export interface INotification {
   recieverId: string;
   type: NotificationType;
 }
+
+export enum ERequirement {
+  Length = "length",
+  Lowercase = "lowercase",
+  Uppercase = "uppercase",
+  Numbers = "numbers",
+  Symbols = "symbols",
+}
+
+export type TRequirements = Record<ERequirement, boolean | number>;
+
+export type ValidRequirements = Record<
+  | ERequirement.Lowercase
+  | ERequirement.Uppercase
+  | ERequirement.Numbers
+  | ERequirement.Symbols,
+  boolean
+>;

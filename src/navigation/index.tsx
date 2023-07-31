@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Ionicons";
 import firebase from "firebase/compat/app";
@@ -18,6 +18,7 @@ import { IUser } from "../types";
 import { auth, db } from "../api/firebase";
 import { Color, FontFamily } from "../constants";
 import { AnyParams, Routes } from "./types";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
 
@@ -98,7 +99,7 @@ const TabNavigator: FC = () => (
   </Tab.Navigator>
 );
 
-const RootStack = createStackNavigator<AnyParams>();
+const RootStack = createNativeStackNavigator<AnyParams>();
 
 export const RootNavigator: FC = () => {
   const { user, initializing, setUser, setInitializing, getPersistedUser } =
@@ -139,18 +140,35 @@ export const RootNavigator: FC = () => {
           />
         </>
       ) : (
-        <>
-          <RootStack.Screen
-            name={Routes.Login}
-            component={LoginScreen}
-            options={{ title: "Chait App" }}
-          />
+        <RootStack.Group
+          screenOptions={({ navigation }) => ({
+            headerTitle: "Chait",
+            headerTitleStyle: {
+              color: Color.white,
+              fontFamily: FontFamily.Header,
+              fontSize: 36,
+            },
+            headerStyle: {
+              backgroundColor: Color.background,
+              shadowColor: "transparent",
+            },
+          })}
+        >
+          <RootStack.Screen name={Routes.Login} component={LoginScreen} />
           <RootStack.Screen
             name={Routes.SignUp}
             component={SignUpScreen}
-            options={{ title: "Chait App", headerBackTitle: "Login" }}
+            options={({ navigation }) => ({
+              headerLeft: () => {
+                return (
+                  <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon name={"chevron-back"} size={30} color={Color.text} />
+                  </TouchableOpacity>
+                );
+              },
+            })}
           />
-        </>
+        </RootStack.Group>
       )}
     </RootStack.Navigator>
   );

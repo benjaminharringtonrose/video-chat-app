@@ -3,6 +3,7 @@ import { IUser } from "../types";
 import { useAuth } from "./auth";
 import { db } from "../api/firebase";
 import { useState } from "react";
+import { LayoutAnimation } from "react-native";
 
 export const friendsState = atom<IUser[]>({
   key: "friendsState",
@@ -30,8 +31,9 @@ export const useFriends = () => {
       }
     }
 
-    setState(friends);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
+    setState(friends);
     setLoadingFriends(false);
   };
   return {

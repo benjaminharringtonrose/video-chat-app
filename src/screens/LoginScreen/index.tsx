@@ -1,24 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
-import React, { FC, useEffect } from "react";
+import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, Text } from "react-native";
-import {
-  Button,
-  FormInput,
-  FormPasswordInput,
-  FormSection,
-  useMockRequest,
-  usePrevious,
-} from "react-native-benji";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as yup from "yup";
 
 import styles from "./styles";
-import { Color } from "../../constants";
+import { Color, FontFamily } from "../../constants";
 import { NavProp, Routes } from "../../navigation/types";
 import { auth } from "../../api/firebase";
+import { Button, FormInput, FormPasswordInput } from "../../components";
 
 export interface ILoginForm {
   email: string;
@@ -36,8 +29,8 @@ const DEFAULT_VALUES: ILoginForm = {
 };
 
 const LoginScreen: FC = () => {
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation<NavProp>();
-  const { loading, error, onRequest } = useMockRequest();
 
   const { control, handleSubmit, setFocus, formState } = useForm({
     defaultValues: DEFAULT_VALUES,
@@ -47,26 +40,21 @@ const LoginScreen: FC = () => {
 
   const { errors } = formState;
 
-  const prevLoading = usePrevious<boolean>(loading);
-  useEffect(() => {
-    const successfulRequest = prevLoading && !loading && !error;
-    if (successfulRequest) {
-      navigation.goBack();
-    }
-  }, [prevLoading, loading, error]);
-
   const onSubmit = async (data: ILoginForm) => {
     try {
+      setLoading(true);
       await auth.signInWithEmailAndPassword(data.email, data.password);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={[styles.root, { backgroundColor: Color.background }]}>
       <KeyboardAwareScrollView
-        style={{ flex: 1, backgroundColor: Color.white }}
+        style={{ flex: 1, backgroundColor: Color.background }}
         showsVerticalScrollIndicator={false}
         extraScrollHeight={50}
       >
@@ -79,26 +67,27 @@ const LoginScreen: FC = () => {
             height: 200,
           }}
         />
-        <FormSection title={"Login"} description={"Welcome back!"}>
-          <FormInput
-            name="email"
-            label="Email"
-            control={control}
-            error={errors.email}
-            returnKeyType="next"
-            onSubmitEditing={() => setFocus("password")}
-            style={[styles.marginTop]}
-          />
-          <FormPasswordInput
-            name="password"
-            label="Password"
-            control={control}
-            error={errors.password}
-            returnKeyType="done"
-            onSubmitEditing={handleSubmit(onSubmit)}
-            style={styles.marginTop}
-          />
-        </FormSection>
+
+        <FormInput
+          name="email"
+          label="Email"
+          control={control}
+          error={errors.email}
+          returnKeyType="next"
+          onSubmitEditing={() => setFocus("password")}
+          autoCapitalize={"none"}
+          style={[styles.margin]}
+        />
+        <FormPasswordInput
+          name="password"
+          label="Password"
+          control={control}
+          error={errors.password}
+          returnKeyType="done"
+          onSubmitEditing={handleSubmit(onSubmit)}
+          style={styles.margin}
+        />
+
         <Button
           label="Login"
           onPress={handleSubmit(onSubmit)}
@@ -113,7 +102,7 @@ const LoginScreen: FC = () => {
               textAlign: "right",
               paddingRight: 20,
               color: Color.primary,
-              fontWeight: "600",
+              fontFamily: FontFamily.Bold,
             }}
           >
             {"Sign Up"}

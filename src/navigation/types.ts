@@ -9,6 +9,7 @@ export enum Routes {
   Search = "Search",
   Account = "Account",
   Notifications = "Notifications",
+  FriendDetail = "FriendDetail",
 }
 
 export type AnyParams = {

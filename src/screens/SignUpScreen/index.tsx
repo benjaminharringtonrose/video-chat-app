@@ -3,12 +3,6 @@ import LottieView from "lottie-react-native";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { SafeAreaView } from "react-native";
-import {
-  Button,
-  FormInput,
-  FormPasswordInput,
-  FormSection,
-} from "react-native-benji";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as yup from "yup";
 
@@ -16,6 +10,12 @@ import styles from "./styles";
 import { Color } from "../../constants";
 import { auth, db } from "../../api/firebase";
 import { IUser } from "../../types";
+import {
+  Button,
+  FormInput,
+  FormPasswordInput,
+  FormSection,
+} from "../../components";
 
 export interface ILoginForm {
   username: string;
@@ -70,9 +70,9 @@ const SignUpScreen: FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={[styles.root, { backgroundColor: Color.background }]}>
       <KeyboardAwareScrollView
-        style={{ flex: 1, backgroundColor: Color.white }}
+        style={{ flex: 1, backgroundColor: Color.background }}
         showsVerticalScrollIndicator={false}
         extraScrollHeight={50}
       >
@@ -85,39 +85,34 @@ const SignUpScreen: FC = () => {
             height: 200,
           }}
         />
-        <FormSection
-          title={"Sign Up"}
-          description={"We need just a couple things from you to get started"}
-        >
-          <FormInput
-            name="username"
-            label="Username"
-            control={control}
-            error={errors.username}
-            returnKeyType="next"
-            onSubmitEditing={() => setFocus("email")}
-            style={[styles.marginTop]}
-          />
-          <FormInput
-            name="email"
-            label="Email"
-            control={control}
-            error={errors.email}
-            returnKeyType="next"
-            onSubmitEditing={() => setFocus("password")}
-            style={[styles.marginTop]}
-          />
-          <FormPasswordInput
-            name="password"
-            label="Password"
-            control={control}
-            error={errors.password}
-            returnKeyType="done"
-            onSubmitEditing={handleSubmit(onSubmit)}
-            style={styles.marginTop}
-            showPasswordValidator
-          />
-        </FormSection>
+        <FormInput
+          name="username"
+          label="Username"
+          control={control}
+          error={errors.username}
+          returnKeyType="next"
+          onSubmitEditing={() => setFocus("email")}
+          style={styles.margin}
+        />
+        <FormInput
+          name="email"
+          label="Email"
+          control={control}
+          error={errors.email}
+          returnKeyType="next"
+          onSubmitEditing={() => setFocus("password")}
+          style={styles.margin}
+        />
+        <FormPasswordInput
+          name="password"
+          label="Password"
+          control={control}
+          error={errors.password}
+          returnKeyType="done"
+          onSubmitEditing={handleSubmit(onSubmit)}
+          style={styles.margin}
+          showPasswordValidator
+        />
         <Button
           label="Sign Up"
           onPress={handleSubmit(onSubmit)}
