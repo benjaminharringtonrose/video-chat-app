@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import { INotification, NotificationType } from "../../types";
 import { useFriends } from "../../atoms/friends";
 import { Color, FontFamily } from "../../constants";
 import { isFriend } from "../../utils";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
 
 const NotificationsScreen: FC = () => {
@@ -31,23 +31,25 @@ const NotificationsScreen: FC = () => {
 
   const { navigate } = useNavigation<NavProp["navigation"]>();
 
-  useEffect(() => {
-    if (!isEmpty) {
-      setTimeout(async () => {
-        const notifications = await db
-          .collection("notifications")
-          .where("receiverId", "==", user?.uid)
-          .get();
-        notifications.forEach(async (notification) => {
-          await db
+  useFocusEffect(
+    useCallback(() => {
+      if (!isEmpty) {
+        setTimeout(async () => {
+          const notifications = await db
             .collection("notifications")
-            .doc(notification.id)
-            .update({ viewed: true });
-        });
-        setUnreadNotifications(false);
-      }, 5000);
-    }
-  }, [isEmpty]);
+            .where("receiverId", "==", user?.uid)
+            .get();
+          notifications.forEach(async (notification) => {
+            await db
+              .collection("notifications")
+              .doc(notification.id)
+              .update({ viewed: true });
+          });
+          setUnreadNotifications(false);
+        }, 5000);
+      }
+    }, [isEmpty])
+  );
 
   const acceptFriendRequest = async (senderId: string) => {
     await db
