@@ -9,22 +9,27 @@ import {
 import LottieView from "lottie-react-native";
 import styles from "./styles";
 import { useRecoilValue } from "recoil";
-import { notificationsState } from "../../atoms/notifications";
+import {
+  notificationsState,
+  useNotifications,
+} from "../../atoms/notifications";
 import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
-import { INotification, NotificationType } from "../../types";
+import { INotification, IUser, NotificationType } from "../../types";
 import { useFriends } from "../../atoms/friends";
 import { Color, FontFamily } from "../../constants";
+import { isFriend } from "../../utils";
 
 const NotificationsScreen: FC = () => {
   const { friendRequests } = useRecoilValue(notificationsState);
 
+  const { user } = useAuth();
   const { friends } = useFriends();
 
-  const { user } = useAuth();
+  const { setUnreadNotifications } = useNotifications();
 
   const isEmpty = !friendRequests.length;
 
@@ -41,19 +46,10 @@ const NotificationsScreen: FC = () => {
             .doc(notification.id)
             .update({ viewed: true });
         });
+        setUnreadNotifications(false);
       }, 5000);
     }
   }, [isEmpty]);
-
-  const isFriend = (uid: string) => {
-    let _isFriend = false;
-    friends.forEach((friend) => {
-      if (friend.uid === uid) {
-        _isFriend = true;
-      }
-    });
-    return _isFriend;
-  };
 
   const acceptFriendRequest = async (senderId: string) => {
     await db
@@ -102,7 +98,7 @@ const NotificationsScreen: FC = () => {
           key={item.senderId}
           username={item.senderUsername}
           label={"wants to be your friend"}
-          isFriend={isFriend(item.senderId)}
+          isFriend={isFriend(item.senderId, friends)}
           onPress={() => acceptFriendRequest(item.senderId)}
           viewed={item.viewed}
         />

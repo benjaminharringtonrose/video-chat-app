@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import Icon from "@expo/vector-icons/Ionicons";
@@ -29,6 +29,7 @@ const ListItem: FC<IProps> = ({
   onPress,
   viewed,
 }) => {
+  const [pressed, setPressed] = useState(false);
   switch (type) {
     case ListItemType.Friends:
       return (
@@ -44,6 +45,47 @@ const ListItem: FC<IProps> = ({
         </TouchableOpacity>
       );
     case ListItemType.Results:
+      return (
+        <View style={[styles.friendRequest]}>
+          <Image
+            style={styles.avatar}
+            source={{ uri: "https://picsum.photos/id/239/200/300" }}
+          />
+          <View style={styles.friendRequestInner}>
+            <Text style={styles.friendRequestLabel}>
+              <Text style={styles.friendRequestUsername}>{username}</Text>
+              {` ${label}`}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.searchResultButton,
+              { backgroundColor: Color.primary },
+              pressed && {
+                backgroundColor: Color.background,
+                borderWidth: 1,
+                borderColor: Color.primary,
+              },
+            ]}
+            disabled={pressed}
+            onPress={() => {
+              onPress();
+              setPressed(true);
+            }}
+          >
+            <Text
+              style={[
+                styles.addButton,
+                { color: Color.text },
+                pressed && { color: Color.primary },
+              ]}
+            >
+              {pressed ? "added" : "add"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
     case ListItemType.FriendRequest:
     default:
       return (
@@ -86,7 +128,7 @@ const ListItem: FC<IProps> = ({
                 isFriend && { color: Color.primary },
               ]}
             >
-              {isFriend ? "Added" : "Add"}
+              {isFriend ? "added" : "add"}
             </Text>
           </TouchableOpacity>
         </View>

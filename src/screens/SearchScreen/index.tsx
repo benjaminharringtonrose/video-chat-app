@@ -13,11 +13,14 @@ import { useAuth } from "../../atoms/auth";
 import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import { Color } from "../../constants";
+import { isFriend } from "../../utils";
+import { useFriends } from "../../atoms/friends";
 
 const SearchScreen: FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState<IUser[]>([]);
 
+  const { friends } = useFriends();
   const { user } = useAuth();
 
   const onSearch = async () => {
@@ -53,6 +56,7 @@ const SearchScreen: FC = () => {
         type={ListItemType.Results}
         key={item.uid}
         label={item.username ?? "--"}
+        isFriend={isFriend(item.uid, friends)}
         onPress={() => sendFriendRequest(item.uid)}
       />
     );

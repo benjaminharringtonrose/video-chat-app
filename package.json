@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "prebuild": "npx expo prebuild",
     "create-screen": "npx ts-node src/scripts/createScreen.ts",
-    "device": "yarn ios -d Benji"
+    "device": "yarn ios -d babel"
   },
   "dependencies": {
     "@config-plugins/react-native-webrtc": "^7.0.0",

@@ -31,16 +31,19 @@ export const useAuth = () => {
       if (doc.exists) {
         const userData = doc.data() as IUser;
         setUser(userData);
+
+        const notifications = await db
+          .collection("notifications")
+          .where("recieverId", "==", uid)
+          .get();
+
+        notifications.forEach((notification) => {
+          if (notification.exists && !notification.data().viewed) {
+            console.log("should be true");
+            setUnreadNotifications(true);
+          }
+        });
       }
-      const notifications = await db
-        .collection("notifications")
-        .where("recieverId", "==", uid)
-        .get();
-      notifications.forEach((notification) => {
-        if (notification.exists && !notification.data().viewed) {
-          setUnreadNotifications(true);
-        }
-      });
     }
     setInitializing(false);
   };

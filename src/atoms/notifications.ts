@@ -18,7 +18,7 @@ export const useNotifications = () => {
   const [state, setState] = useRecoilState(notificationsState);
 
   const setUnreadNotifications = (value: boolean) => {
-    setState((state) => ({ ...state, hasSeenNotifications: value }));
+    setState((state) => ({ ...state, unreadNotifications: value }));
   };
 
   return {

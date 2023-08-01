@@ -14,7 +14,7 @@ const AccountScreen: FC = () => {
   const [pushEnabled, setPushEnabled] = useState(false);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
-  const { setUser } = useAuth();
+  const { setUser, user } = useAuth();
 
   return (
     <ScrollView style={[styles.root, { backgroundColor: Color.background }]}>
@@ -40,7 +40,7 @@ const AccountScreen: FC = () => {
                 fontFamily: FontFamily.Medium,
               }}
             >
-              {"John Smith"}
+              {user?.username ?? "--"}
             </Text>
             <Text
               style={{
@@ -48,7 +48,7 @@ const AccountScreen: FC = () => {
                 fontFamily: FontFamily.Medium,
               }}
             >
-              {"johnsmith@gmail.com"}
+              {user?.email ?? "--"}
             </Text>
           </View>
           <Icon name={"chevron-forward"} color={Color.grey} size={30} />
