@@ -152,7 +152,7 @@ const NotificationsScreen: FC = () => {
         sections={sections}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
-        keyExtractor={(item, index) => item?.senderId ?? index.toString()}
+        keyExtractor={(item, index) => item?.id ?? index.toString()}
         contentContainerStyle={{ paddingTop: 20 }}
         ItemSeparatorComponent={ItemSeparator}
       />

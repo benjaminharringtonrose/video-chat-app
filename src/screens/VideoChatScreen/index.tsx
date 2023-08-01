@@ -9,8 +9,8 @@ import {
 import { RTCView } from "react-native-webrtc";
 import { useWebRTC } from "../../hooks/useWebRTC";
 import { Color } from "../../constants";
-import { useRoute } from "@react-navigation/native";
-import { NavProp } from "../../navigation/types";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { NavProp, Routes } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { INotification, NotificationType } from "../../types";
@@ -25,9 +25,11 @@ const VideoChatScreen: FC = () => {
     createRoom,
     joinRoom,
     setRoomId,
+    endStream,
   } = useWebRTC();
 
   const { params } = useRoute<NavProp["route"]>();
+  const { navigate } = useNavigation<NavProp["navigation"]>();
   const { user } = useAuth();
 
   const localWidth = width / 3;
@@ -68,6 +70,7 @@ const VideoChatScreen: FC = () => {
       }
     };
     init();
+    return () => endStream();
   }, []);
 
   return (
@@ -103,7 +106,13 @@ const VideoChatScreen: FC = () => {
           </View>
         )}
         <View style={styles.endCallContainer}>
-          <TouchableOpacity style={styles.endCallButton}>
+          <TouchableOpacity
+            style={styles.endCallButton}
+            onPress={async () => {
+              endStream();
+              navigate(Routes.Home);
+            }}
+          >
             <Icon name={"call-end"} color={"white"} size={40} />
           </TouchableOpacity>
         </View>

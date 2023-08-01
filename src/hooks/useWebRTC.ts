@@ -41,17 +41,39 @@ export const useWebRTC = () => {
   useEffect(() => {
     const onTrack = (event: any) => {
       const remote = new MediaStream(undefined);
-
       event.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
         remote.addTrack(track);
       });
-
       setRemoteStream(remote);
     };
 
+    const onConnectionStateChange = () => {
+      switch (peerConnection.connectionState) {
+        case "closed":
+        case "disconnected":
+        case "failed": {
+          console.log("NEED TO DISCONNECT");
+          break;
+        }
+        default:
+          break;
+      }
+    };
+
+    peerConnection.addEventListener(
+      "connectionstatechange",
+      onConnectionStateChange
+    );
+
     peerConnection.addEventListener("track", onTrack);
 
-    return () => peerConnection.removeEventListener("track", onTrack);
+    return () => {
+      peerConnection.removeEventListener("track", onTrack);
+      peerConnection.removeEventListener(
+        "connectionstatechange",
+        onConnectionStateChange
+      );
+    };
   }, []);
 
   useEffect(() => {
@@ -209,6 +231,16 @@ export const useWebRTC = () => {
     }
   };
 
+  const endStream = () => {
+    localStream?.getTracks().forEach((track) => {
+      track.stop();
+    });
+    peerConnection.close();
+    db.collection("rooms").doc(roomId).delete();
+    setLocalStream(undefined);
+    setRemoteStream(undefined);
+  };
+
   return {
     roomId,
     webcamStarted,
@@ -218,5 +250,6 @@ export const useWebRTC = () => {
     createRoom,
     joinRoom,
     setRoomId,
+    endStream,
   };
 };
