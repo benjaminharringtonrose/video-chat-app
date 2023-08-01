@@ -18,6 +18,7 @@ export interface INotification {
   senderUsername: string;
   recieverId: string;
   type: NotificationType;
+  viewed: boolean;
 }
 
 export enum ERequirement {

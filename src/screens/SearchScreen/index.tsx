@@ -43,6 +43,7 @@ const SearchScreen: FC = () => {
       senderUsername: user?.username,
       recieverId: uid,
       type: NotificationType.FriendRequest,
+      viewed: false,
     });
   };
 

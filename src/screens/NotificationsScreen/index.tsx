@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import {
   View,
   Text,
@@ -25,6 +25,25 @@ const NotificationsScreen: FC = () => {
   const { friends } = useFriends();
 
   const { user } = useAuth();
+
+  const isEmpty = !friendRequests.length;
+
+  useEffect(() => {
+    if (!isEmpty) {
+      setTimeout(async () => {
+        const notifications = await db
+          .collection("notifications")
+          .where("recieverId", "==", user?.uid)
+          .get();
+        notifications.forEach(async (notification) => {
+          await db
+            .collection("notifications")
+            .doc(notification.id)
+            .update({ viewed: true });
+        });
+      }, 5000);
+    }
+  }, [isEmpty]);
 
   const isFriend = (uid: string) => {
     let _isFriend = false;
@@ -85,6 +104,7 @@ const NotificationsScreen: FC = () => {
           label={"wants to be your friend"}
           isFriend={isFriend(item.senderId)}
           onPress={() => acceptFriendRequest(item.senderId)}
+          viewed={item.viewed}
         />
       );
     }
@@ -98,8 +118,6 @@ const NotificationsScreen: FC = () => {
       type: NotificationType.FriendRequest,
     },
   ];
-
-  const isEmpty = !friendRequests.length;
 
   if (isEmpty) {
     return (

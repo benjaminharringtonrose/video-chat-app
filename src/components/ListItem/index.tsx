@@ -18,9 +18,17 @@ interface IProps {
   label: string;
   isFriend?: boolean;
   onPress: () => void;
+  viewed?: boolean;
 }
 
-const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
+const ListItem: FC<IProps> = ({
+  type,
+  username,
+  label,
+  isFriend,
+  onPress,
+  viewed,
+}) => {
   switch (type) {
     case ListItemType.Friends:
       return (
@@ -39,7 +47,12 @@ const ListItem: FC<IProps> = ({ type, username, label, isFriend, onPress }) => {
     case ListItemType.FriendRequest:
     default:
       return (
-        <View style={[styles.friendRequest]}>
+        <View
+          style={[
+            styles.friendRequest,
+            !viewed && { backgroundColor: Color.card },
+          ]}
+        >
           <Image
             style={styles.avatar}
             source={{ uri: "https://picsum.photos/id/239/200/300" }}

@@ -3,6 +3,7 @@ import { atom, useRecoilState } from "recoil";
 import { auth, db } from "../api/firebase";
 import * as deviceStorage from "../utils";
 import { IUser } from "../types";
+import { useNotifications } from "./notifications";
 
 interface IAuthState {
   user: IUser | null;
@@ -20,7 +21,9 @@ export const useAuth = () => {
 
   const [state, setState] = useRecoilState(authState);
 
-  const getPersistedUser = async () => {
+  const { setUnreadNotifications } = useNotifications();
+
+  const startup = async () => {
     setInitializing(true);
     const uid = await deviceStorage.getUser();
     if (uid) {
@@ -29,6 +32,15 @@ export const useAuth = () => {
         const userData = doc.data() as IUser;
         setUser(userData);
       }
+      const notifications = await db
+        .collection("notifications")
+        .where("recieverId", "==", uid)
+        .get();
+      notifications.forEach((notification) => {
+        if (notification.exists && !notification.data().viewed) {
+          setUnreadNotifications(true);
+        }
+      });
     }
     setInitializing(false);
   };
@@ -49,6 +61,6 @@ export const useAuth = () => {
     setUser,
     setInitializing,
     signOut,
-    getPersistedUser,
+    startup,
   };
 };

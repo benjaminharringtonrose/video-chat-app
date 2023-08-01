@@ -8,6 +8,7 @@ import {
   Nunito_700Bold,
 } from "@expo-google-fonts/nunito";
 import { Caveat_400Regular } from "@expo-google-fonts/caveat";
+import {} from "expo-font";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { FC, useEffect } from "react";
 import { RootNavigator } from "./navigation";
@@ -19,7 +20,7 @@ import { IUser } from "./types";
 import { auth, db } from "./api/firebase";
 
 const WrappedApp: FC = () => {
-  const { initializing, setUser, getPersistedUser } = useAuth();
+  const { initializing, setUser, startup } = useAuth();
 
   const [fontsLoaded] = useFonts({
     Nunito_300Light,
@@ -50,7 +51,7 @@ const WrappedApp: FC = () => {
   }
 
   useEffect(() => {
-    getPersistedUser();
+    startup();
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);

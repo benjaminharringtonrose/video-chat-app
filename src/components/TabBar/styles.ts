@@ -13,6 +13,14 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     top: -10,
   },
+  badge: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "red",
+    position: "absolute",
+    left: 20,
+  },
 });
 
 export default styles;

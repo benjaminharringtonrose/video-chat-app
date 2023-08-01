@@ -10,10 +10,13 @@ import Reanimated, {
   withTiming,
 } from "react-native-reanimated";
 import styles from "./styles";
+import { useNotifications } from "../../atoms/notifications";
 
 const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const { bottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+
+  const { unreadNotifications } = useNotifications();
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -74,7 +77,12 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             case Routes.SearchStack:
               return <Icon name={"search"} size={30} color={color} />;
             case Routes.NotificationsStack:
-              return <Icon name={"bell"} size={30} color={color} />;
+              return (
+                <View>
+                  {unreadNotifications && <View style={styles.badge} />}
+                  <Icon name={"bell"} size={30} color={color} />
+                </View>
+              );
             case Routes.AccountStack:
               return <Icon name={"user"} size={30} color={color} />;
           }
