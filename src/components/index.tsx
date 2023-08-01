@@ -8,3 +8,4 @@ export { default as FormPasswordInput } from "./FormPasswordInput";
 export { default as ItemSeparator } from "./ItemSeparator";
 export { default as TabBar } from "./TabBar";
 export { default as EmptyStateView } from "./EmptyStateView";
+export { default as SettingRow } from "./SettingRow";

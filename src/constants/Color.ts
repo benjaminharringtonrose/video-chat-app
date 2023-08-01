@@ -19,6 +19,6 @@ export const Color = {
   text: "white",
   input: "white",
   placeholder: "#a9a9a9",
-  border: "#3A3A3C",
+  border: "#15171C",
   lightGreen: "#A3D92F",
 };
