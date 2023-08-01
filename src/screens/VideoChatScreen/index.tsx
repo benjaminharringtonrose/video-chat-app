@@ -9,7 +9,7 @@ import {
 import { RTCView } from "react-native-webrtc";
 import { useWebRTC } from "../../hooks/useWebRTC";
 import { Color } from "../../constants";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
@@ -21,6 +21,7 @@ const VideoChatScreen: FC = () => {
   const {
     localStream,
     remoteStream,
+    roomId,
     startWebcam,
     createRoom,
     joinRoom,
@@ -29,7 +30,6 @@ const VideoChatScreen: FC = () => {
   } = useWebRTC();
 
   const { params } = useRoute<NavProp["route"]>();
-  const { navigate } = useNavigation<NavProp["navigation"]>();
   const { user } = useAuth();
 
   const localWidth = width / 3;
@@ -61,7 +61,6 @@ const VideoChatScreen: FC = () => {
     const init = async () => {
       await startWebcam();
       if (params?.mode === "join") {
-        console.log("yip", params?.roomId);
         setRoomId(params?.roomId as string);
         await joinRoom(params?.roomId);
       } else if (params?.mode === "invite") {
@@ -70,7 +69,6 @@ const VideoChatScreen: FC = () => {
       }
     };
     init();
-    return () => endStream();
   }, []);
 
   return (
@@ -108,10 +106,7 @@ const VideoChatScreen: FC = () => {
         <View style={styles.endCallContainer}>
           <TouchableOpacity
             style={styles.endCallButton}
-            onPress={async () => {
-              endStream();
-              navigate(Routes.Home);
-            }}
+            onPress={() => endStream(roomId)}
           >
             <Icon name={"call-end"} color={"white"} size={40} />
           </TouchableOpacity>

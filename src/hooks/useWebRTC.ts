@@ -9,6 +9,8 @@ import {
 } from "react-native-webrtc";
 
 import { db } from "../api/firebase";
+import { useNavigation } from "@react-navigation/native";
+import { NavProp, Routes } from "../navigation/types";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -38,6 +40,8 @@ export const useWebRTC = () => {
 
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
+  const { navigate } = useNavigation<NavProp["navigation"]>();
+
   useEffect(() => {
     const onTrack = (event: any) => {
       const remote = new MediaStream(undefined);
@@ -52,7 +56,7 @@ export const useWebRTC = () => {
         case "closed":
         case "disconnected":
         case "failed": {
-          console.log("NEED TO DISCONNECT");
+          navigate(Routes.Home);
           break;
         }
         default:
@@ -231,12 +235,15 @@ export const useWebRTC = () => {
     }
   };
 
-  const endStream = () => {
+  const endStream = async (roomId?: string) => {
+    if (!roomId) {
+      console.warn("endStream: No roomId");
+    }
     localStream?.getTracks().forEach((track) => {
       track.stop();
     });
     peerConnection.close();
-    db.collection("rooms").doc(roomId).delete();
+    await db.collection("rooms").doc(roomId).delete();
     setLocalStream(undefined);
     setRemoteStream(undefined);
   };
