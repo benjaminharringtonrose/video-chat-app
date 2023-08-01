@@ -30,7 +30,7 @@ const DEFAULT_VALUES: ILoginForm = {
 
 const LoginScreen: FC = () => {
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation<NavProp>();
+  const navigation = useNavigation<NavProp["navigation"]>();
 
   const { control, handleSubmit, setFocus, formState } = useForm({
     defaultValues: DEFAULT_VALUES,

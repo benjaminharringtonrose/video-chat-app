@@ -1,5 +1,4 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RouteProp } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export enum Routes {
   Login = "Login",
@@ -21,6 +20,4 @@ export type AnyParams = {
   [key: string]: any;
 };
 
-export type NavProp = NativeStackNavigationProp<AnyParams, string>;
-
-export type NavRouteProp = RouteProp<any, any>;
+export type NavProp = NativeStackScreenProps<AnyParams>;

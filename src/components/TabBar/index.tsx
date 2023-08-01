@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Feather";
 import { Color } from "../../constants";
@@ -125,7 +125,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
         };
 
         return (
-          <TouchableOpacity
+          <Pressable
             key={route.key}
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
@@ -136,7 +136,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             style={{ flex: 1, alignItems: "center" }}
           >
             {getIcon(route.name as Routes)}
-          </TouchableOpacity>
+          </Pressable>
         );
       })}
       <Reanimated.View

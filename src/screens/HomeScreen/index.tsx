@@ -19,7 +19,7 @@ import { NavProp, Routes } from "../../navigation/types";
 
 const HomeScreen: FC = () => {
   const { friends, getFriends, loadingFriends } = useFriends();
-  const { navigate } = useNavigation<NavProp>();
+  const { navigate } = useNavigation<NavProp["navigation"]>();
 
   useEffect(() => {
     getFriends();

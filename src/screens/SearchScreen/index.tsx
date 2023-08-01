@@ -55,7 +55,7 @@ const SearchScreen: FC = () => {
       <ListItem
         type={ListItemType.Results}
         key={item.uid}
-        label={item.username ?? "--"}
+        username={item.username ?? "--"}
         isFriend={isFriend(item.uid, friends)}
         onPress={() => sendFriendRequest(item.uid)}
       />

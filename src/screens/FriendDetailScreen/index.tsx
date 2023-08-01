@@ -5,7 +5,7 @@ import styles from "./styles";
 import { Color, FontFamily } from "../../constants";
 import { useFriends } from "../../atoms/friends";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { NavProp, NavRouteProp, Routes } from "../../navigation/types";
+import { NavProp, Routes } from "../../navigation/types";
 import { IUser } from "../../types";
 import Icon from "@expo/vector-icons/Feather";
 
@@ -13,8 +13,8 @@ const FriendDetailScreen: FC = () => {
   const [selectedFriend, setSelectedFriend] = useState<IUser>();
 
   const { friends } = useFriends();
-  const { params } = useRoute<NavRouteProp>();
-  const { navigate } = useNavigation<NavProp>();
+  const { params } = useRoute<NavProp["route"]>();
+  const { navigate } = useNavigation<NavProp["navigation"]>();
 
   const friendId = params?.friendId;
 
@@ -82,7 +82,7 @@ const FriendDetailScreen: FC = () => {
             }}
           >
             <TouchableOpacity
-              onPress={() => navigate(Routes.VideoChat)}
+              onPress={() => navigate(Routes.VideoChat, { friendId })}
               style={{
                 backgroundColor: Color.primaryLight,
                 padding: 10,

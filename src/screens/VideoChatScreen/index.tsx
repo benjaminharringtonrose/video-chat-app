@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -9,6 +9,11 @@ import { RTCView } from "react-native-webrtc";
 import { useWebRTC } from "../../hooks/useWebRTC";
 import Button from "../../components/Button";
 import { Color } from "../../constants";
+import { useRoute } from "@react-navigation/native";
+import { NavProp } from "../../navigation/types";
+import { db } from "../../api/firebase";
+import { useAuth } from "../../atoms/auth";
+import firebase from "firebase/compat";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
@@ -23,8 +28,39 @@ const VideoChatScreen: FC = () => {
     setRoomId,
   } = useWebRTC();
 
+  const { params } = useRoute<NavProp["route"]>();
+  const { user } = useAuth();
+
+  const friendId = params?.friendId;
+
   const localWidth = width / 3;
   const localHeight = height / 3;
+
+  const sendInvitation = async () => {
+    const invitationDoc = db.collection("invitations").doc();
+
+    await db.collection("invitations").doc(invitationDoc.id).set({
+      id: invitationDoc.id,
+      senderId: user?.uid,
+      receiverId: friendId,
+    });
+
+    await db
+      .collection("users")
+      .doc(friendId)
+      .update({
+        invitations: firebase.firestore.FieldValue.arrayUnion(roomId),
+      });
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      await startWebcam();
+      await createRoom();
+      await sendInvitation();
+    };
+    init();
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -62,58 +98,6 @@ const VideoChatScreen: FC = () => {
           zOrder={1}
         />
       )}
-      <View
-        style={{
-          zIndex: 2,
-          position: "absolute",
-          top: height - 300,
-          marginLeft: 20,
-        }}
-      >
-        {!webcamStarted && (
-          <Button
-            label={"Start webcam"}
-            onPress={startWebcam}
-            labelColor={Color.text}
-            backgroundColor={Color.primary}
-            borderRadius={10}
-          />
-        )}
-        {webcamStarted && (
-          <Button
-            label={"Create Room"}
-            onPress={createRoom}
-            labelColor={Color.text}
-            backgroundColor={Color.primary}
-            borderRadius={10}
-            style={{ marginBottom: 20 }}
-          />
-        )}
-        {webcamStarted && (
-          <View style={{ flexDirection: "row" }}>
-            <View>
-              <Button
-                label={"Join Room"}
-                onPress={joinRoom}
-                labelColor={Color.text}
-                backgroundColor={Color.primary}
-                style={{ marginRight: 20 }}
-              />
-            </View>
-            <TextInput
-              value={roomId}
-              placeholder={"roomId"}
-              style={{
-                borderWidth: 1,
-                backgroundColor: "white",
-                minHeight: 40,
-                maxHeight: 50,
-              }}
-              onChangeText={(newText) => setRoomId(newText)}
-            />
-          </View>
-        )}
-      </View>
     </KeyboardAvoidingView>
   );
 };
