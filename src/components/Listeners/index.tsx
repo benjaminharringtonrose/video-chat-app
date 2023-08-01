@@ -21,13 +21,12 @@ const Listeners: FC = () => {
     if (!user?.uid) return;
     db.collection("notifications")
       .where("receiverId", "==", user?.uid)
+      .where("type", "==", NotificationType.FriendRequest)
       .onSnapshot((snapshot) => {
         const friendRequests: INotification[] = [];
         snapshot.forEach((notification) => {
           const data = notification.data() as INotification;
-          if (data.type === NotificationType.FriendRequest) {
-            friendRequests.push(data);
-          }
+          friendRequests.push(data);
           if (!data.viewed && !unreadNotifications) {
             setUnreadNotifications(true);
           }
@@ -44,13 +43,12 @@ const Listeners: FC = () => {
     if (!user?.uid) return;
     db.collection("notifications")
       .where("receiverId", "==", user?.uid)
+      .where("type", "==", NotificationType.Invitation)
       .onSnapshot((snapshot) => {
         const invitations: INotification[] = [];
         snapshot.forEach((invitation) => {
           const data = invitation.data() as INotification;
-          if (data.type === NotificationType.Invitation) {
-            invitations.push(data);
-          }
+          invitations.push(data);
           if (!data.viewed && !unreadNotifications) {
             setUnreadNotifications(true);
           }
