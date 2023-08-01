@@ -3,11 +3,15 @@ import { db } from "../../api/firebase";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { authState } from "../../atoms/auth";
 import { INotification, IUser, NotificationType } from "../../types";
-import { notificationsState } from "../../atoms/notifications";
+import {
+  notificationsState,
+  useNotifications,
+} from "../../atoms/notifications";
 import { friendsState } from "../../atoms/friends";
 
 const Listeners: FC = () => {
   const { user } = useRecoilValue(authState);
+  const { unreadNotifications, setUnreadNotifications } = useNotifications();
   const setNotifications = useSetRecoilState(notificationsState);
   const setAuth = useSetRecoilState(authState);
   const setFriends = useSetRecoilState(friendsState);
@@ -21,12 +25,13 @@ const Listeners: FC = () => {
         const friendRequests: INotification[] = [];
         snapshot.forEach((notification) => {
           const data = notification.data() as INotification;
-
           if (data.type === NotificationType.FriendRequest) {
             friendRequests.push(data);
           }
+          if (!data.viewed && !unreadNotifications) {
+            setUnreadNotifications(true);
+          }
         });
-        console.log(JSON.stringify(friendRequests));
         setNotifications((state) => ({
           ...state,
           friendRequests,
@@ -46,8 +51,10 @@ const Listeners: FC = () => {
           if (data.type === NotificationType.Invitation) {
             invitations.push(data);
           }
+          if (!data.viewed && !unreadNotifications) {
+            setUnreadNotifications(true);
+          }
         });
-        console.log(JSON.stringify(invitations));
         setNotifications((state) => ({
           ...state,
           invitations,

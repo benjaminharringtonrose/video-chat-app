@@ -5,6 +5,7 @@ import {
   SectionList,
   SectionListRenderItemInfo,
   SectionListData,
+  ActivityIndicator,
 } from "react-native";
 import LottieView from "lottie-react-native";
 
@@ -61,6 +62,14 @@ const HomeScreen: FC = () => {
   ];
 
   const isEmpty = !friends.length;
+
+  if (loadingFriends) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   if (isEmpty) {
     return (
