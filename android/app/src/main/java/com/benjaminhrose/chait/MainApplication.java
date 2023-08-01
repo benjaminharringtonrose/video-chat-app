@@ -1,4 +1,4 @@
-package com.benjaminhrose.videochatapp;
+package com.benjaminhrose.chait;
 
 import android.app.Application;
 import android.content.res.Configuration;

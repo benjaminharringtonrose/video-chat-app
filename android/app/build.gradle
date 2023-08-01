@@ -81,9 +81,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace 'com.benjaminhrose.videochatapp'
+    namespace 'com.benjaminhrose.chait'
     defaultConfig {
-        applicationId 'com.benjaminhrose.videochatapp'
+        applicationId 'com.benjaminhrose.chait'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

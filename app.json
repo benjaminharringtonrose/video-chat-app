@@ -14,7 +14,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.benjaminhrose.videochatapp",
+      "bundleIdentifier": "com.benjaminhrose.chait",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
         "NSMicrophoneUsageDescription": "Microphone permission description"
@@ -28,7 +28,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.benjaminhrose.videochatapp",
+      "package": "com.benjaminhrose.chait",
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",
