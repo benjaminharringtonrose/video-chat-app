@@ -1,5 +1,11 @@
 import React, { FC, useEffect } from "react";
-import { View, useWindowDimensions } from "react-native";
+import Icon from "@expo/vector-icons/MaterialIcons";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { RTCView } from "react-native-webrtc";
 import { useWebRTC } from "../../hooks/useWebRTC";
 import { Color } from "../../constants";
@@ -8,10 +14,9 @@ import { NavProp } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { INotification, NotificationType } from "../../types";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import styles from "./styles";
 
 const VideoChatScreen: FC = () => {
-  const { top } = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const {
     localStream,
@@ -65,8 +70,6 @@ const VideoChatScreen: FC = () => {
     init();
   }, []);
 
-  console.log(top);
-
   return (
     <View style={{ flex: 1, backgroundColor: Color.background }}>
       {remoteStream && (
@@ -83,23 +86,28 @@ const VideoChatScreen: FC = () => {
           zOrder={0}
         />
       )}
-
-      {localStream && (
-        <RTCView
-          style={{
-            width: localWidth,
-            height: localHeight,
-            position: "absolute",
-            left: width - localWidth - 40,
-            top: height - localHeight - 240,
-            borderRadius: 10,
-          }}
-          streamURL={localStream.toURL()}
-          objectFit={"cover"}
-          mirror
-          zOrder={1}
-        />
-      )}
+      <View style={styles.overlayContainer}>
+        {localStream && (
+          <View style={[styles.localStreamContainer]}>
+            <RTCView
+              objectFit={"cover"}
+              style={{
+                width: localWidth,
+                height: localHeight,
+                borderRadius: 10,
+              }}
+              streamURL={localStream.toURL()}
+              mirror
+              zOrder={1}
+            />
+          </View>
+        )}
+        <View style={styles.endCallContainer}>
+          <TouchableOpacity style={styles.endCallButton}>
+            <Icon name={"call-end"} color={"white"} size={40} />
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
