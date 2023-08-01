@@ -46,7 +46,7 @@ const NotificationsScreen: FC = () => {
               .update({ viewed: true });
           });
           setUnreadNotifications(false);
-        }, 5000);
+        }, 2000);
       }
     }, [isEmpty])
   );
