@@ -7,18 +7,28 @@ export interface IUser {
   createdAt?: string;
   lastLoginAt?: string;
   friends?: string[];
+  invitations?: string[];
 }
 
 export enum NotificationType {
   FriendRequest = "FriendRequest",
+  Invitation = "Invitation",
 }
 
 export interface INotification {
-  senderId: string;
-  senderUsername: string;
-  recieverId: string;
+  id?: string;
+  senderId?: string;
+  senderUsername?: string;
+  receiverId?: string;
+  roomId?: string;
   type: NotificationType;
   viewed: boolean;
+}
+
+export interface IInvitation {
+  senderId: string;
+  senderUsername: string;
+  receiverId: string;
 }
 
 export enum ERequirement {

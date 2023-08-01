@@ -41,10 +41,12 @@ const SearchScreen: FC = () => {
   };
 
   const sendFriendRequest = async (uid: string) => {
-    await db.collection("notifications").add({
+    const notificationsDoc = db.collection("notifications").doc();
+    await notificationsDoc.set({
+      id: notificationsDoc.id,
       senderId: user?.uid,
       senderUsername: user?.username,
-      recieverId: uid,
+      receiverId: uid,
       type: NotificationType.FriendRequest,
       viewed: false,
     });

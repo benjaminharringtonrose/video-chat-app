@@ -13,15 +13,13 @@ import { useRoute } from "@react-navigation/native";
 import { NavProp } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
-import firebase from "firebase/compat";
+import { INotification, NotificationType } from "../../types";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
   const {
-    roomId,
     localStream,
     remoteStream,
-    webcamStarted,
     startWebcam,
     createRoom,
     joinRoom,
@@ -31,33 +29,42 @@ const VideoChatScreen: FC = () => {
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
 
-  const friendId = params?.friendId;
-
   const localWidth = width / 3;
   const localHeight = height / 3;
 
-  const sendInvitation = async () => {
-    const invitationDoc = db.collection("invitations").doc();
+  const sendInvitation = async (roomId?: string) => {
+    if (!roomId) {
+      return console.warn("No roomId");
+    }
+    const invitationDoc = db.collection("notifications").doc();
 
-    await db.collection("invitations").doc(invitationDoc.id).set({
+    const notification: INotification = {
       id: invitationDoc.id,
+      type: NotificationType.Invitation,
+      senderUsername: user?.username,
       senderId: user?.uid,
-      receiverId: friendId,
-    });
+      receiverId: params?.friendId,
+      roomId,
+      viewed: false,
+    };
 
     await db
-      .collection("users")
-      .doc(friendId)
-      .update({
-        invitations: firebase.firestore.FieldValue.arrayUnion(roomId),
-      });
+      .collection("notifications")
+      .doc(invitationDoc.id)
+      .set(notification);
   };
 
   useEffect(() => {
     const init = async () => {
       await startWebcam();
-      await createRoom();
-      await sendInvitation();
+      if (params?.mode === "join") {
+        console.log("yip", params?.roomId);
+        setRoomId(params?.roomId as string);
+        await joinRoom(params?.roomId);
+      } else if (params?.mode === "invite") {
+        const roomId = await createRoom();
+        await sendInvitation(roomId);
+      }
     };
     init();
   }, []);

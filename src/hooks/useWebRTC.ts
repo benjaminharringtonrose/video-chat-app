@@ -174,12 +174,13 @@ export const useWebRTC = () => {
       };
 
       await channelDoc.set({ offer });
+      return channelDoc.id;
     } catch (e) {
       console.error("startCall Error:", e);
     }
   };
 
-  const joinRoom = async () => {
+  const joinRoom = async (roomId: string) => {
     try {
       const channelDoc = db.collection("rooms").doc(roomId);
       const channelDocument = await channelDoc.get();

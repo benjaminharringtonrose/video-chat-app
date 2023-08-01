@@ -6,39 +6,37 @@ import {
   SectionListRenderItemInfo,
   SectionListData,
 } from "react-native";
-import LottieView from "lottie-react-native";
 import styles from "./styles";
-import { useRecoilValue } from "recoil";
-import {
-  notificationsState,
-  useNotifications,
-} from "../../atoms/notifications";
+import { useNotifications } from "../../atoms/notifications";
 import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
 import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
-import { INotification, IUser, NotificationType } from "../../types";
+import { INotification, NotificationType } from "../../types";
 import { useFriends } from "../../atoms/friends";
 import { Color, FontFamily } from "../../constants";
 import { isFriend } from "../../utils";
+import { useNavigation } from "@react-navigation/native";
+import { NavProp, Routes } from "../../navigation/types";
 
 const NotificationsScreen: FC = () => {
-  const { friendRequests } = useRecoilValue(notificationsState);
-
   const { user } = useAuth();
   const { friends } = useFriends();
 
-  const { setUnreadNotifications } = useNotifications();
+  const { setUnreadNotifications, friendRequests, invitations } =
+    useNotifications();
 
-  const isEmpty = !friendRequests.length;
+  const isEmpty = !friendRequests.length && !invitations.length;
+
+  const { navigate } = useNavigation<NavProp["navigation"]>();
 
   useEffect(() => {
     if (!isEmpty) {
       setTimeout(async () => {
         const notifications = await db
           .collection("notifications")
-          .where("recieverId", "==", user?.uid)
+          .where("receiverId", "==", user?.uid)
           .get();
         notifications.forEach(async (notification) => {
           await db
@@ -91,20 +89,39 @@ const NotificationsScreen: FC = () => {
   };
 
   const renderItem = ({ item }: SectionListRenderItemInfo<INotification>) => {
-    if (item.type === NotificationType.FriendRequest) {
-      return (
-        <ListItem
-          type={ListItemType.FriendRequest}
-          key={item.senderId}
-          username={item.senderUsername}
-          label={"wants to be your friend"}
-          isFriend={isFriend(item.senderId, friends)}
-          onPress={() => acceptFriendRequest(item.senderId)}
-          viewed={item.viewed}
-        />
-      );
+    switch (item.type) {
+      case NotificationType.FriendRequest:
+        return (
+          <ListItem
+            type={ListItemType.FriendRequest}
+            key={item.senderId}
+            username={item.senderUsername}
+            label={"wants to be your friend"}
+            isFriend={isFriend(item?.senderId ?? "", friends)}
+            onPress={() => acceptFriendRequest(item?.senderId ?? "")}
+            viewed={item.viewed}
+          />
+        );
+      case NotificationType.Invitation:
+        return (
+          <ListItem
+            type={ListItemType.Invitation}
+            key={item.senderId}
+            username={item.senderUsername}
+            label={"wants you to join his room"}
+            onPress={() =>
+              navigate(Routes.VideoChat, {
+                mode: "join",
+                friendId: item.senderId,
+                roomId: item.roomId,
+              })
+            }
+            viewed={item.viewed}
+          />
+        );
+      default:
+        return null;
     }
-    return null;
   };
 
   const sections = [
@@ -112,6 +129,11 @@ const NotificationsScreen: FC = () => {
       title: "Friend Requests",
       data: friendRequests,
       type: NotificationType.FriendRequest,
+    },
+    {
+      title: "Room Invitations",
+      data: invitations,
+      type: NotificationType.Invitation,
     },
   ];
 
@@ -130,7 +152,7 @@ const NotificationsScreen: FC = () => {
         sections={sections}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
-        keyExtractor={(item) => item.senderId}
+        keyExtractor={(item, index) => item?.senderId ?? index.toString()}
         contentContainerStyle={{ paddingTop: 20 }}
         ItemSeparatorComponent={ItemSeparator}
       />

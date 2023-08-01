@@ -13,23 +13,44 @@ const Listeners: FC = () => {
   const setFriends = useSetRecoilState(friendsState);
 
   useEffect(() => {
+    // friend requests
     if (!user?.uid) return;
-
     db.collection("notifications")
-      .where("type", "==", NotificationType.FriendRequest)
+      .where("receiverId", "==", user?.uid)
       .onSnapshot((snapshot) => {
         const friendRequests: INotification[] = [];
-        snapshot.forEach((friendRequest) => {
-          if (friendRequest) {
-            const data = friendRequest.data() as INotification;
-            if (data.recieverId === user?.uid) {
-              friendRequests.push(data);
-            }
+        snapshot.forEach((notification) => {
+          const data = notification.data() as INotification;
+
+          if (data.type === NotificationType.FriendRequest) {
+            friendRequests.push(data);
           }
         });
+        console.log(JSON.stringify(friendRequests));
         setNotifications((state) => ({
           ...state,
           friendRequests,
+        }));
+      });
+  }, [user?.uid]);
+
+  useEffect(() => {
+    // room invitations
+    if (!user?.uid) return;
+    db.collection("notifications")
+      .where("receiverId", "==", user?.uid)
+      .onSnapshot((snapshot) => {
+        const invitations: INotification[] = [];
+        snapshot.forEach((invitation) => {
+          const data = invitation.data() as INotification;
+          if (data.type === NotificationType.Invitation) {
+            invitations.push(data);
+          }
+        });
+        console.log(JSON.stringify(invitations));
+        setNotifications((state) => ({
+          ...state,
+          invitations,
         }));
       });
   }, [user?.uid]);
@@ -47,6 +68,7 @@ const Listeners: FC = () => {
 
           setAuth((state) => ({ ...state, user: data }));
 
+          // populate friends
           if (data.friends) {
             for (const friendId of data.friends) {
               const doc = await db.collection("users").doc(friendId).get();
