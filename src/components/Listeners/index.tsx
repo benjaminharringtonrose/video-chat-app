@@ -1,6 +1,7 @@
 import { FC, useEffect } from "react";
 import { db } from "../../api/firebase";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { Audio } from "expo-av";
 import { authState } from "../../atoms/auth";
 import { INotification, IUser, NotificationType } from "../../types";
 import {
@@ -11,10 +12,18 @@ import { friendsState } from "../../atoms/friends";
 
 const Listeners: FC = () => {
   const { user } = useRecoilValue(authState);
-  const { unreadNotifications, setUnreadNotifications } = useNotifications();
+  const { unreadNotifications, incomingCall } = useNotifications();
   const setNotifications = useSetRecoilState(notificationsState);
   const setAuth = useSetRecoilState(authState);
   const setFriends = useSetRecoilState(friendsState);
+
+  async function playSound() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../../assets/sounds/incoming-call.mp3")
+    );
+    await sound.playAsync();
+  }
 
   useEffect(() => {
     // friend requests
@@ -28,7 +37,10 @@ const Listeners: FC = () => {
           const data = notification.data() as INotification;
           friendRequests.push(data);
           if (!data.viewed && !unreadNotifications) {
-            setUnreadNotifications(true);
+            setNotifications((state) => ({
+              ...state,
+              unreadNotifications: true,
+            }));
           }
         });
         setNotifications((state) => ({
@@ -50,7 +62,16 @@ const Listeners: FC = () => {
           const data = invitation.data() as INotification;
           invitations.push(data);
           if (!data.viewed && !unreadNotifications) {
-            setUnreadNotifications(true);
+            setNotifications((state) => ({
+              ...state,
+              unreadNotifications: true,
+            }));
+            if (!incomingCall) {
+              setNotifications((state) => ({
+                ...state,
+                incomingCall: true,
+              }));
+            }
           }
         });
         setNotifications((state) => ({
@@ -89,6 +110,13 @@ const Listeners: FC = () => {
         }
       });
   }, [user?.uid]);
+
+  useEffect(() => {
+    if (incomingCall) {
+      // play sound
+      playSound();
+    }
+  }, [incomingCall]);
 
   return null;
 };
