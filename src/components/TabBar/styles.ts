@@ -21,6 +21,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 20,
   },
+  circle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    position: "absolute",
+    left: 15,
+    bottom: 10,
+    backgroundColor: "#e91e63",
+  },
+  innerCircle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    position: "absolute",
+    left: 25,
+    backgroundColor: "#e91e63",
+  },
 });
 
 export default styles;

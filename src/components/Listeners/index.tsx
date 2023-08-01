@@ -56,6 +56,8 @@ const Listeners: FC = () => {
               }
             }
             setFriends(friends);
+          } else {
+            setFriends([]);
           }
         }
       });

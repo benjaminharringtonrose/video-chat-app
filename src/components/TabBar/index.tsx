@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Feather";
@@ -6,13 +6,20 @@ import { Color } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Routes } from "../../navigation/types";
 import Reanimated, {
+  Easing,
+  Extrapolate,
+  interpolate,
   useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
   withTiming,
 } from "react-native-reanimated";
 import styles from "./styles";
 import { useNotifications } from "../../atoms/notifications";
 
 const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+  const offset = useSharedValue(0);
+
   const { bottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
@@ -28,6 +35,30 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
     }),
     [selectedIndex]
   );
+
+  useEffect(() => {
+    offset.value = withRepeat(
+      withTiming(1, {
+        duration: 2000,
+        easing: Easing.linear,
+      }),
+      -1,
+      false
+    );
+  }, []);
+
+  const pulse = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      offset.value,
+      [0, 1],
+      [0.6, 0],
+      Extrapolate.CLAMP
+    );
+    return {
+      opacity: opacity,
+      transform: [{ scale: offset.value }],
+    };
+  });
 
   return (
     <View
@@ -79,7 +110,12 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             case Routes.NotificationsStack:
               return (
                 <View>
-                  {unreadNotifications && <View style={styles.badge} />}
+                  {unreadNotifications && (
+                    <>
+                      <Reanimated.View style={[styles.circle, pulse]} />
+                      <View style={styles.innerCircle} />
+                    </>
+                  )}
                   <Icon name={"bell"} size={30} color={color} />
                 </View>
               );
