@@ -1,21 +1,17 @@
 import React, { FC, useEffect } from "react";
-import {
-  View,
-  KeyboardAvoidingView,
-  TextInput,
-  useWindowDimensions,
-} from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { RTCView } from "react-native-webrtc";
 import { useWebRTC } from "../../hooks/useWebRTC";
-import Button from "../../components/Button";
 import { Color } from "../../constants";
 import { useRoute } from "@react-navigation/native";
 import { NavProp } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { INotification, NotificationType } from "../../types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const VideoChatScreen: FC = () => {
+  const { top } = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const {
     localStream,
@@ -69,18 +65,17 @@ const VideoChatScreen: FC = () => {
     init();
   }, []);
 
+  console.log(top);
+
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: Color.background }}
-      behavior="position"
-    >
+    <View style={{ flex: 1, backgroundColor: Color.background }}>
       {remoteStream && (
         <RTCView
           streamURL={remoteStream.toURL()}
           style={{
             position: "absolute",
             width,
-            height,
+            height: height + 30,
             zIndex: 0,
           }}
           objectFit={"cover"}
@@ -105,7 +100,7 @@ const VideoChatScreen: FC = () => {
           zOrder={1}
         />
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

@@ -55,11 +55,6 @@ const HomeStackNavigator: FC = () => (
       component={FriendDetailScreen}
       options={{ headerTitle: "" }}
     />
-    <HomeStack.Screen
-      name={Routes.VideoChat}
-      component={VideoChatScreen}
-      options={{ headerTitle: "" }}
-    />
   </HomeStack.Navigator>
 );
 
@@ -174,6 +169,25 @@ export const RootNavigator: FC = () => {
       {user ? (
         <>
           <RootStack.Screen name={Routes.Tabs} component={TabNavigator} />
+          <RootStack.Screen
+            name={Routes.VideoChat}
+            component={VideoChatScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTransparent: true,
+              headerTitle: "",
+              headerLeft: () => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={{ zIndex: 999 }}
+                  >
+                    <Icon name={"chevron-back"} size={30} color={Color.text} />
+                  </TouchableOpacity>
+                );
+              },
+            })}
+          />
         </>
       ) : (
         <RootStack.Group
