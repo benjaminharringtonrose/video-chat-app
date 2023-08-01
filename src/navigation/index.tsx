@@ -1,9 +1,7 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Ionicons";
-import firebase from "firebase/compat/app";
-import * as deviceStorage from "../utils";
 import {
   LoginScreen,
   SignUpScreen,
@@ -15,8 +13,6 @@ import {
   FriendDetailScreen,
 } from "../screens";
 import { useAuth } from "../atoms/auth";
-import { IUser } from "../types";
-import { auth, db } from "../api/firebase";
 import { Color, FontFamily } from "../constants";
 import { AnyParams, Routes } from "./types";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -34,7 +30,7 @@ const HomeStackNavigator: FC = () => (
       headerTitle: "Chait",
       headerTitleStyle: {
         color: Color.text,
-        fontFamily: FontFamily.Header,
+        fontFamily: FontFamily.Bold,
         fontSize: 36,
       },
       headerShadowVisible: false,
@@ -77,7 +73,7 @@ const SearchStackNavigator: FC = () => (
       },
       headerTitleStyle: {
         color: Color.white,
-        fontFamily: FontFamily.Header,
+        fontFamily: FontFamily.Bold,
         fontSize: 36,
       },
       headerShadowVisible: false,
@@ -97,7 +93,7 @@ const NotificationsStackNavigator: FC = () => (
       },
       headerTitleStyle: {
         color: Color.white,
-        fontFamily: FontFamily.Header,
+        fontFamily: FontFamily.Bold,
         fontSize: 36,
       },
       headerShadowVisible: false,
@@ -120,7 +116,7 @@ const AccountStackNavigator: FC = () => (
       },
       headerTitleStyle: {
         color: Color.white,
-        fontFamily: FontFamily.Header,
+        fontFamily: FontFamily.Bold,
         fontSize: 36,
       },
       headerShadowVisible: false,
@@ -141,7 +137,7 @@ const TabNavigator: FC = () => (
       },
       headerTitleStyle: {
         color: Color.white,
-        fontFamily: FontFamily.Header,
+        fontFamily: FontFamily.Bold,
         fontSize: 36,
       },
     }}
@@ -185,7 +181,7 @@ export const RootNavigator: FC = () => {
             headerTitle: "Chait",
             headerTitleStyle: {
               color: Color.white,
-              fontFamily: FontFamily.Header,
+              fontFamily: FontFamily.Bold,
               fontSize: 36,
             },
             headerStyle: {
