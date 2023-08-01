@@ -72,7 +72,7 @@ const VideoChatScreen: FC = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: Color.background }}>
+    <View style={{ flex: 1, backgroundColor: Color.black }}>
       {remoteStream && (
         <RTCView
           streamURL={remoteStream.toURL()}

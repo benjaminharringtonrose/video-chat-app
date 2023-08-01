@@ -348,7 +348,7 @@
 				CODE_SIGN_ENTITLEMENTS = videochatapp/videochatapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 8N9LXDQ33D;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -387,7 +387,7 @@
 				CODE_SIGN_ENTITLEMENTS = videochatapp/videochatapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 8N9LXDQ33D;
 				INFOPLIST_FILE = videochatapp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

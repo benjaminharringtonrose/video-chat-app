@@ -19,6 +19,7 @@ import { useNotifications } from "../../atoms/notifications";
 
 const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const offset = useSharedValue(0);
+  const indicatorOffset = useSharedValue(0);
 
   const { bottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
@@ -29,12 +30,9 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
 
   const tabWidth = (width - 20) / state.routes.length;
 
-  const tabIndicatorStyle = useAnimatedStyle(
-    () => ({
-      transform: [{ translateX: withTiming(tabWidth * selectedIndex) }],
-    }),
-    [selectedIndex]
-  );
+  useEffect(() => {
+    indicatorOffset.value = state.index * tabWidth;
+  }, [state.index]);
 
   useEffect(() => {
     offset.value = withRepeat(
@@ -59,6 +57,13 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
       transform: [{ scale: offset.value }],
     };
   });
+
+  const tabIndicatorStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ translateX: withTiming(indicatorOffset.value) }],
+    }),
+    [state.index]
+  );
 
   return (
     <View
@@ -89,7 +94,6 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
               merge: true,
             });
           }
-          setSelectedIndex(index);
         };
 
         const onLongPress = () => {
@@ -97,7 +101,6 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             type: "tabLongPress",
             target: route.key,
           });
-          setSelectedIndex(index);
         };
 
         const getIcon = (routeName: Routes) => {
