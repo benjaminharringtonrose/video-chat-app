@@ -1,5 +1,10 @@
 import { FC, useEffect, useState } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import {
+  InteractionManager,
+  Pressable,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Icon from "@expo/vector-icons/Feather";
 import { Color } from "../../constants";
@@ -26,12 +31,12 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
 
   const { unreadNotifications } = useNotifications();
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
   const tabWidth = (width - 20) / state.routes.length;
 
   useEffect(() => {
-    indicatorOffset.value = state.index * tabWidth;
+    InteractionManager.runAfterInteractions(() => {
+      indicatorOffset.value = state.index * tabWidth;
+    });
   }, [state.index]);
 
   useEffect(() => {
