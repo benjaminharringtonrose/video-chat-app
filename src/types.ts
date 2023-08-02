@@ -48,3 +48,15 @@ export type ValidRequirements = Record<
   | ERequirement.Symbols,
   boolean
 >;
+
+export enum QueryKey {
+  ReceiverId = "receiverId",
+  Type = "type",
+  Uid = "uid",
+}
+
+export enum Collection {
+  Notifications = "notifications",
+  Users = "users",
+  Rooms = "rooms",
+}

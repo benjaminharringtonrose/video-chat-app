@@ -16,7 +16,7 @@ import { Color } from "./constants";
 import { useAuth } from "./atoms/auth";
 import firebase from "firebase/compat/app";
 import * as deviceStorage from "./utils";
-import { IUser } from "./types";
+import { Collection, IUser } from "./types";
 import { auth, db } from "./api/firebase";
 
 const WrappedApp: FC = () => {
@@ -41,7 +41,7 @@ const WrappedApp: FC = () => {
 
   async function onAuthStateChanged(user: firebase.User | null) {
     if (user) {
-      const doc = await db.collection("users").doc(user.uid).get();
+      const doc = await db.collection(Collection.Users).doc(user.uid).get();
       if (doc.exists) {
         const userData = doc.data() as IUser;
         await deviceStorage.setUser(user.uid);

@@ -6,9 +6,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { RecoilRoot } from "recoil";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { Listeners } from "./src/components";
 import WrappedApp from "./src/WrappedApp";
 import { Platform } from "react-native";
+import { NotificationListener, UserListener } from "./src/listeners";
 
 // Notifications.setNotificationHandler({
 //   handleNotification: async () => ({
@@ -56,7 +56,8 @@ export default function App() {
       <RecoilRoot>
         <StatusBar style={"light"} />
         <WrappedApp />
-        <Listeners />
+        <NotificationListener />
+        <UserListener />
       </RecoilRoot>
     </GestureHandlerRootView>
   );

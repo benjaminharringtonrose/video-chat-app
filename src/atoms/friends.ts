@@ -1,5 +1,5 @@
 import { atom, useRecoilState } from "recoil";
-import { IUser } from "../types";
+import { Collection, IUser } from "../types";
 import { useAuth } from "./auth";
 import { db } from "../api/firebase";
 import { useState } from "react";
@@ -24,7 +24,7 @@ export const useFriends = () => {
     const friends: IUser[] = [];
 
     for (const friendId of user.friends) {
-      const doc = await db.collection("users").doc(friendId).get();
+      const doc = await db.collection(Collection.Users).doc(friendId).get();
       if (doc.exists) {
         const friend = doc.data() as IUser;
         friends.push(friend);

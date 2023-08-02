@@ -2,7 +2,7 @@ import { useState } from "react";
 import { atom, useRecoilState } from "recoil";
 import { auth, db } from "../api/firebase";
 import * as deviceStorage from "../utils";
-import { IUser } from "../types";
+import { Collection, IUser, QueryKey } from "../types";
 import { useNotifications } from "./notifications";
 
 interface IAuthState {
@@ -27,19 +27,18 @@ export const useAuth = () => {
     setInitializing(true);
     const uid = await deviceStorage.getUser();
     if (uid) {
-      const doc = await db.collection("users").doc(uid).get();
+      const doc = await db.collection(Collection.Users).doc(uid).get();
       if (doc.exists) {
         const userData = doc.data() as IUser;
         setUser(userData);
 
         const notifications = await db
-          .collection("notifications")
-          .where("recieverId", "==", uid)
+          .collection(Collection.Notifications)
+          .where(QueryKey.ReceiverId, "==", uid)
           .get();
 
         notifications.forEach((notification) => {
           if (notification.exists && !notification.data().viewed) {
-            console.log("should be true");
             setUnreadNotifications(true);
           }
         });

@@ -13,7 +13,12 @@ import { ListItemType } from "../../components/ListItem";
 import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
-import { INotification, NotificationType } from "../../types";
+import {
+  Collection,
+  INotification,
+  NotificationType,
+  QueryKey,
+} from "../../types";
 import { useFriends } from "../../atoms/friends";
 import { Color, FontFamily } from "../../constants";
 import { isFriend } from "../../utils";
@@ -27,7 +32,6 @@ import { NavProp, Routes } from "../../navigation/types";
 const NotificationsScreen: FC = () => {
   const { user } = useAuth();
   const { friends } = useFriends();
-
   const isFocused = useIsFocused();
 
   const {
@@ -37,21 +41,21 @@ const NotificationsScreen: FC = () => {
     setIncomingCall,
   } = useNotifications();
 
-  const isEmpty = !friendRequests.length && !invitations.length;
-
   const { navigate } = useNavigation<NavProp["navigation"]>();
+
+  const isEmpty = !friendRequests.length && !invitations.length;
 
   useFocusEffect(
     useCallback(() => {
       if (!isEmpty) {
         setTimeout(async () => {
           const notifications = await db
-            .collection("notifications")
-            .where("receiverId", "==", user?.uid)
+            .collection(Collection.Notifications)
+            .where(QueryKey.ReceiverId, "==", user?.uid)
             .get();
           notifications.forEach(async (notification) => {
             await db
-              .collection("notifications")
+              .collection(Collection.Notifications)
               .doc(notification.id)
               .update({ viewed: true });
           });
@@ -65,12 +69,12 @@ const NotificationsScreen: FC = () => {
     if (isFocused) {
       setTimeout(async () => {
         const notifications = await db
-          .collection("notifications")
-          .where("receiverId", "==", user?.uid)
+          .collection(Collection.Notifications)
+          .where(QueryKey.ReceiverId, "==", user?.uid)
           .get();
         notifications.forEach(async (notification) => {
           await db
-            .collection("notifications")
+            .collection(Collection.Notifications)
             .doc(notification.id)
             .update({ viewed: true });
         });
@@ -81,14 +85,14 @@ const NotificationsScreen: FC = () => {
 
   const acceptFriendRequest = async (senderId: string) => {
     await db
-      .collection("users")
+      .collection(Collection.Users)
       .doc(user?.uid)
       .update({
         friends: firebase.firestore.FieldValue.arrayUnion(senderId),
       });
 
     await db
-      .collection("users")
+      .collection(Collection.Users)
       .doc(senderId)
       .update({
         friends: firebase.firestore.FieldValue.arrayUnion(user?.uid),

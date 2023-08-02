@@ -254,14 +254,11 @@ export const useWebRTC = () => {
     if (!roomId) return;
     db.collection("rooms")
       .doc(roomId)
-      .onSnapshot((snapshot) => {
-        console.log("stuff changed");
+      .onSnapshot(async (snapshot) => {
         const room = snapshot.data();
-        console.log("room data", room);
         if (room?.callEnded) {
-          console.log("SHOULD NAVIGATE");
+          await db.collection("rooms").doc(roomId).delete();
           navigate(Routes.Home);
-          db.collection("rooms").doc(roomId).delete();
         }
       });
   }, [roomId]);
