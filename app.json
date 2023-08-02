@@ -17,7 +17,8 @@
       "bundleIdentifier": "com.benjaminhrose.chait",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
-        "NSMicrophoneUsageDescription": "Microphone permission description"
+        "NSMicrophoneUsageDescription": "Microphone permission description",
+        "UIBackgroundModes": ["audio"]
       },
       "config": {
         "usesNonExemptEncryption": false

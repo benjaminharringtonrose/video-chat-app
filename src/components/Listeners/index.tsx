@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { db } from "../../api/firebase";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Audio } from "expo-av";
@@ -9,6 +9,7 @@ import {
   useNotifications,
 } from "../../atoms/notifications";
 import { friendsState } from "../../atoms/friends";
+import { Sound } from "expo-av/build/Audio";
 
 const Listeners: FC = () => {
   const { user } = useRecoilValue(authState);
@@ -17,13 +18,21 @@ const Listeners: FC = () => {
   const setAuth = useSetRecoilState(authState);
   const setFriends = useSetRecoilState(friendsState);
 
-  async function playSound() {
+  const [sound, setSound] = useState<Sound>();
+
+  const playSound = async () => {
     console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
       require("../../../assets/sounds/incoming-call.mp3")
     );
     await sound.playAsync();
-  }
+    await sound.setIsLoopingAsync(true);
+    setSound(sound);
+  };
+
+  const stopSound = async () => {
+    await sound?.stopAsync();
+  };
 
   useEffect(() => {
     // friend requests
@@ -115,6 +124,8 @@ const Listeners: FC = () => {
     if (incomingCall) {
       // play sound
       playSound();
+    } else {
+      stopSound();
     }
   }, [incomingCall]);
 

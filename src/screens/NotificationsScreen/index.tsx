@@ -30,8 +30,12 @@ const NotificationsScreen: FC = () => {
 
   const isFocused = useIsFocused();
 
-  const { setUnreadNotifications, friendRequests, invitations } =
-    useNotifications();
+  const {
+    friendRequests,
+    invitations,
+    setUnreadNotifications,
+    setIncomingCall,
+  } = useNotifications();
 
   const isEmpty = !friendRequests.length && !invitations.length;
 
@@ -135,13 +139,14 @@ const NotificationsScreen: FC = () => {
             key={item.senderId}
             username={item.senderUsername}
             label={"wants you to join his room"}
-            onPress={() =>
+            onPress={() => {
               navigate(Routes.VideoChat, {
                 mode: "join",
                 friendId: item.senderId,
                 roomId: item.roomId,
-              })
-            }
+              });
+              setIncomingCall(false);
+            }}
             viewed={item.viewed}
           />
         );
