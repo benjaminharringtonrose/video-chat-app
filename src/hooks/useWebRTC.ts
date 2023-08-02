@@ -242,11 +242,29 @@ export const useWebRTC = () => {
     localStream?.getTracks().forEach((track) => {
       track.stop();
     });
+
     peerConnection.close();
-    await db.collection("rooms").doc(roomId).delete();
+
+    await db.collection("rooms").doc(roomId).update({ callEnded: true });
     setLocalStream(undefined);
     setRemoteStream(undefined);
   };
+
+  useEffect(() => {
+    if (!roomId) return;
+    db.collection("rooms")
+      .doc(roomId)
+      .onSnapshot((snapshot) => {
+        console.log("stuff changed");
+        const room = snapshot.data();
+        console.log("room data", room);
+        if (room?.callEnded) {
+          console.log("SHOULD NAVIGATE");
+          navigate(Routes.Home);
+          db.collection("rooms").doc(roomId).delete();
+        }
+      });
+  }, [roomId]);
 
   return {
     roomId,

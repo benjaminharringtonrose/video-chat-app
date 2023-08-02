@@ -54,6 +54,10 @@
     <string>This app uses the camera to scan barcodes on event tickets.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Microphone permission description</string>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>audio</string>
+    </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

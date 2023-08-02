@@ -140,12 +140,12 @@ const NotificationsScreen: FC = () => {
             username={item.senderUsername}
             label={"wants you to join his room"}
             onPress={() => {
+              setIncomingCall(false);
               navigate(Routes.VideoChat, {
                 mode: "join",
                 friendId: item.senderId,
                 roomId: item.roomId,
               });
-              setIncomingCall(false);
             }}
             viewed={item.viewed}
           />
