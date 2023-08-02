@@ -1,16 +1,11 @@
 import React, { FC, useEffect } from "react";
 import Icon from "@expo/vector-icons/MaterialIcons";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { RTCView } from "react-native-webrtc";
 import { useWebRTC } from "../../hooks/useWebRTC";
 import { Color } from "../../constants";
 import { useRoute } from "@react-navigation/native";
-import { NavProp, Routes } from "../../navigation/types";
+import { NavProp } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { INotification, NotificationType } from "../../types";
