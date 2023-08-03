@@ -19,6 +19,7 @@ const VideoChatScreen: FC = () => {
     localStream,
     remoteStream,
     roomId,
+    playSound,
     startWebcam,
     createRoom,
     joinRoom,
@@ -38,6 +39,8 @@ const VideoChatScreen: FC = () => {
       return console.warn("No roomId");
     }
     const invitationDoc = db.collection(Collection.Notifications).doc();
+
+    await playSound();
 
     const notification: INotification = {
       id: invitationDoc.id,
@@ -69,7 +72,7 @@ const VideoChatScreen: FC = () => {
         await db
           .collection(Collection.Notifications)
           .doc(notificationId)
-          .update({ callAnswered: true });
+          .update({ callAnswered: true, calling: false });
 
         await joinRoom(params?.roomId);
       } else if (params?.mode === "invite") {

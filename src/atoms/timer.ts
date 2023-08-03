@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { atom, useRecoilState } from "recoil";
 
 interface ITimerState {
+  isRunning: boolean;
   minutes: number;
   seconds: number;
 }
@@ -9,6 +10,7 @@ interface ITimerState {
 export const timerState = atom<ITimerState>({
   key: "timerState",
   default: {
+    isRunning: false,
     minutes: 0,
     seconds: 0,
   },
@@ -17,20 +19,26 @@ export const timerState = atom<ITimerState>({
 export const useTimer = () => {
   const [state, setState] = useRecoilState(timerState);
 
-  const { minutes, seconds } = state;
+  const { isRunning, minutes, seconds } = state;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (seconds === 59) {
-        setSeconds(0);
-        setMinutes(minutes + 1);
-      } else {
-        setSeconds(seconds + 1);
-      }
-    }, 1000);
+    let interval: NodeJS.Timer | undefined;
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        if (seconds === 59) {
+          setSeconds(0);
+          setMinutes(minutes + 1);
+        } else {
+          setSeconds(seconds + 1);
+        }
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
 
     return () => clearInterval(interval);
-  }, [state.seconds, state.minutes]);
+  }, [isRunning, seconds, minutes]);
 
   const setMinutes = (minutes: number) => {
     setState((state) => ({ ...state, minutes }));
@@ -40,15 +48,21 @@ export const useTimer = () => {
     setState((state) => ({ ...state, seconds }));
   };
 
+  const setIsRunning = (isRunning: boolean) => {
+    setState((state) => ({ ...state, isRunning }));
+  };
+
   const formattedTime = `${minutes.toString().padStart(2, "0")}:${seconds
     .toString()
     .padStart(2, "0")}`;
 
   return {
+    isRunning: state.isRunning,
     formattedTime,
     minutes,
     seconds,
     setMinutes,
     setSeconds,
+    setIsRunning,
   };
 };

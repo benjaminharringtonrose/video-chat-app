@@ -11,10 +11,11 @@ import {
 import { db } from "../api/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../navigation/types";
-import { Collection, QueryKey } from "../types";
+import { Collection, INotification } from "../types";
 import { useRoom } from "../atoms/room";
-import { useAuth } from "../atoms/auth";
 import { useTimer } from "../atoms/timer";
+import { Sound } from "expo-av/build/Audio";
+import { Audio } from "expo-av";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -42,11 +43,43 @@ export const useWebRTC = () => {
 
   const { roomId, notificationId, setRoomId, setNotificationId } = useRoom();
 
-  const { setMinutes, setSeconds } = useTimer();
+  const { setMinutes, setSeconds, setIsRunning } = useTimer();
 
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
   const { navigate } = useNavigation<NavProp["navigation"]>();
+
+  const soundRef = useRef<Sound | null>(null);
+
+  const bootstrap = async () => {
+    if (webcamStarted) {
+      await loadSound();
+      await playSound();
+    }
+  };
+
+  const loadSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/sounds/rotary-phone.mp3")
+    );
+    soundRef.current = sound;
+  };
+
+  const playSound = async () => {
+    await soundRef.current?.playAsync();
+    await soundRef.current?.setIsLoopingAsync(true);
+  };
+
+  const stopSound = async () => {
+    await soundRef.current?.setIsLoopingAsync(false);
+    await soundRef.current?.stopAsync();
+  };
+
+  useEffect(() => {
+    if (webcamStarted) {
+      bootstrap();
+    }
+  }, [webcamStarted]);
 
   useEffect(() => {
     const onTrack = (event: any) => {
@@ -269,15 +302,31 @@ export const useWebRTC = () => {
 
   useEffect(() => {
     if (!roomId || !notificationId) return;
+    console.log("listening to current notification");
     const unsubscribe = db
       .collection(Collection.Notifications)
       .doc(notificationId)
       .onSnapshot(async (snapshot) => {
-        const notification = snapshot.data();
+        const notification = snapshot.data() as INotification;
         if (notification?.callEnded) {
           await db.collection(Collection.Rooms).doc(roomId).delete();
           setNotificationId("");
           navigate(Routes.Home);
+        }
+        if (notification?.calling) {
+          console.log("calling");
+          playSound();
+        }
+        if (notification?.callAnswered) {
+          console.log("call answered");
+          setIsRunning(true);
+          stopSound();
+        }
+        if (notification?.callEnded) {
+          console.log("call ended");
+          setMinutes(0);
+          setSeconds(0);
+          stopSound();
         }
       });
     return () => unsubscribe();
@@ -293,5 +342,6 @@ export const useWebRTC = () => {
     joinRoom,
     setRoomId,
     endStream,
+    playSound,
   };
 };
