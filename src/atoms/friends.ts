@@ -16,14 +16,12 @@ export const useFriends = () => {
 
   const { user } = useAuth();
 
-  const getFriends = async () => {
-    if (!user?.friends) return;
-
+  const getFriends = async (friendIds: string[]) => {
     setLoadingFriends(true);
 
     const friends: IUser[] = [];
 
-    for (const friendId of user.friends) {
+    for (const friendId of friendIds) {
       const doc = await db.collection(Collection.Users).doc(friendId).get();
       if (doc.exists) {
         const friend = doc.data() as IUser;

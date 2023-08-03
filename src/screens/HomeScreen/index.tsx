@@ -7,7 +7,6 @@ import {
   SectionListData,
   ActivityIndicator,
 } from "react-native";
-import LottieView from "lottie-react-native";
 
 import styles from "./styles";
 import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
@@ -17,14 +16,18 @@ import { IUser } from "../../types";
 import { Color } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
+import { useAuth } from "../../atoms/auth";
 
 const HomeScreen: FC = () => {
+  const { user } = useAuth();
   const { friends, getFriends, loadingFriends } = useFriends();
   const { navigate } = useNavigation<NavProp["navigation"]>();
 
   useEffect(() => {
-    getFriends();
-  }, []);
+    if (user?.friends) {
+      getFriends(user?.friends);
+    }
+  }, [user?.friends]);
 
   const renderSectionHeader = ({
     section,

@@ -8,7 +8,12 @@ import {
 import styles from "./styles";
 import SearchInput from "../../components/SearchInput";
 import { db } from "../../api/firebase";
-import { IUser, NotificationType } from "../../types";
+import {
+  Collection,
+  INotification,
+  IUser,
+  NotificationType,
+} from "../../types";
 import { useAuth } from "../../atoms/auth";
 import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
@@ -41,15 +46,18 @@ const SearchScreen: FC = () => {
   };
 
   const sendFriendRequest = async (uid: string) => {
-    const notificationsDoc = db.collection("notifications").doc();
-    await notificationsDoc.set({
+    const notificationsDoc = db.collection(Collection.Notifications).doc();
+
+    const notification: INotification = {
       id: notificationsDoc.id,
       senderId: user?.uid,
       senderUsername: user?.username,
       receiverId: uid,
       type: NotificationType.FriendRequest,
       viewed: false,
-    });
+    };
+
+    await notificationsDoc.set(notification);
   };
 
   const renderItem = ({ item }: ListRenderItemInfo<IUser>) => {

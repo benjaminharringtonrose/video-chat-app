@@ -8,10 +8,16 @@ import { useRoute } from "@react-navigation/native";
 import { NavProp } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
-import { Collection, INotification, NotificationType } from "../../types";
+import {
+  CallMode,
+  Collection,
+  INotification,
+  NotificationType,
+} from "../../types";
 import styles from "./styles";
 import { useRoom } from "../../atoms/room";
 import { Timer } from "../../components";
+import { useTimer } from "../../atoms/timer";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
@@ -30,6 +36,8 @@ const VideoChatScreen: FC = () => {
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
   const { setNotificationId, notificationId } = useRoom();
+
+  const { isRunning } = useTimer();
 
   const localWidth = width / 3;
   const localHeight = height / 3;
@@ -55,49 +63,68 @@ const VideoChatScreen: FC = () => {
       callEnded: false,
     };
 
-    await db
-      .collection(Collection.Notifications)
-      .doc(invitationDoc.id)
-      .set(notification);
+    try {
+      await db
+        .collection(Collection.Notifications)
+        .doc(invitationDoc.id)
+        .set(notification);
+    } catch (e) {
+      console.log("sendCallInvite Error:", e);
+    }
 
     setNotificationId(invitationDoc.id);
   };
 
+  const acceptCall = async () => {
+    try {
+      await db
+        .collection(Collection.Notifications)
+        .doc(notificationId)
+        .update({ callAnswered: true, calling: false });
+    } catch (e) {
+      console.log("acceptCall Error:", e);
+    }
+  };
+
   useEffect(() => {
-    const init = async () => {
+    const bootstrap = async () => {
       await startWebcam();
-      if (params?.mode === "join") {
-        setRoomId(params?.roomId as string);
-
-        await db
-          .collection(Collection.Notifications)
-          .doc(notificationId)
-          .update({ callAnswered: true, calling: false });
-
-        await joinRoom(params?.roomId);
-      } else if (params?.mode === "invite") {
-        const roomId = await createRoom();
-
-        await sendCallInvite(roomId);
-
-        setTimeout(async () => {
-          const snapshot = await db
-            .collection(Collection.Notifications)
-            .doc(notificationId)
-            .get();
-          const callInvite = snapshot.data() as INotification;
-          if (!callInvite.callAnswered) {
-            endStream({ roomId });
-          }
-        }, 20000);
+      if (params?.mode === CallMode.Join) {
+        try {
+          setRoomId(params?.roomId as string);
+          await acceptCall();
+          await joinRoom(params?.roomId);
+        } catch (e) {
+          console.log("bootstrap join Error:", e);
+        }
+      } else if (params?.mode === CallMode.Host) {
+        try {
+          const roomId = await createRoom();
+          await sendCallInvite(roomId);
+          // setTimeout(async () => {
+          //   const snapshot = await db
+          //     .collection(Collection.Notifications)
+          //     .doc(notificationId)
+          //     .get();
+          //   const callInvite = snapshot.data() as INotification;
+          //   if (callInvite.callEnded && !callInvite.callAnswered) {
+          //     console.log("oh crap");
+          //     endStream({ roomId });
+          //   }
+          // }, 20000);
+        } catch (e) {
+          console.log("bootstrap host Error:", e);
+        }
       }
     };
-    init();
+    bootstrap();
   }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: Color.black }}>
-      <Timer style={{ zIndex: 3, alignItems: "center", marginTop: 50 }} />
+      {isRunning && (
+        <Timer style={{ zIndex: 3, alignItems: "center", marginTop: 50 }} />
+      )}
       {remoteStream && (
         <RTCView
           streamURL={remoteStream.toURL()}

@@ -24,7 +24,7 @@ export interface INotification {
   type: NotificationType;
   viewed: boolean;
   calling?: boolean;
-  callAnswered: boolean;
+  callAnswered?: boolean;
   callEnded?: boolean;
 }
 
@@ -59,4 +59,9 @@ export enum Collection {
   Rooms = "rooms",
   OfferCandidates = "offerCandidates",
   AnswerCandidates = "answerCandidates",
+}
+
+export enum CallMode {
+  Host = "host",
+  Join = "join",
 }

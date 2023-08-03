@@ -6,7 +6,7 @@ import { Color, FontFamily } from "../../constants";
 import { useFriends } from "../../atoms/friends";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
-import { IUser } from "../../types";
+import { CallMode, IUser } from "../../types";
 import Icon from "@expo/vector-icons/Feather";
 
 const FriendDetailScreen: FC = () => {
@@ -83,7 +83,10 @@ const FriendDetailScreen: FC = () => {
           >
             <TouchableOpacity
               onPress={() =>
-                navigate(Routes.VideoChat, { friendId, mode: "invite" })
+                navigate(Routes.VideoChat, {
+                  friendId,
+                  mode: CallMode.Host,
+                })
               }
               style={{
                 backgroundColor: Color.primaryLight,

@@ -71,6 +71,7 @@ export const useWebRTC = () => {
   };
 
   const stopSound = async () => {
+    console.log("rotary phone should stop");
     await soundRef.current?.setIsLoopingAsync(false);
     await soundRef.current?.stopAsync();
   };
@@ -280,24 +281,23 @@ export const useWebRTC = () => {
     if (!roomId) {
       console.warn("endStream: No roomId");
     }
-
-    const notificationDoc = db
-      .collection(Collection.Notifications)
-      .doc(notificationId);
-
-    localStream?.getTracks().forEach((track) => {
-      track.stop();
-    });
-
-    peerConnection.close();
-
-    await notificationDoc.update({
-      calling: false,
-      callEnded: true,
-    });
-
-    setLocalStream(undefined);
-    setRemoteStream(undefined);
+    try {
+      const notificationDoc = db
+        .collection(Collection.Notifications)
+        .doc(notificationId);
+      localStream?.getTracks().forEach((track) => {
+        track.stop();
+      });
+      peerConnection.close();
+      await notificationDoc.update({
+        calling: false,
+        callEnded: true,
+      });
+      setLocalStream(undefined);
+      setRemoteStream(undefined);
+    } catch (e) {
+      console.log("endStream Error:", e);
+    }
   };
 
   useEffect(() => {
@@ -309,24 +309,21 @@ export const useWebRTC = () => {
       .onSnapshot(async (snapshot) => {
         const notification = snapshot.data() as INotification;
         if (notification?.callEnded) {
+          console.log("call ended");
+          setMinutes(0);
+          setSeconds(0);
+          await stopSound();
           await db.collection(Collection.Rooms).doc(roomId).delete();
-          setNotificationId("");
           navigate(Routes.Home);
         }
         if (notification?.calling) {
           console.log("calling");
-          playSound();
+          await playSound();
         }
         if (notification?.callAnswered) {
           console.log("call answered");
           setIsRunning(true);
-          stopSound();
-        }
-        if (notification?.callEnded) {
-          console.log("call ended");
-          setMinutes(0);
-          setSeconds(0);
-          stopSound();
+          await stopSound();
         }
       });
     return () => unsubscribe();

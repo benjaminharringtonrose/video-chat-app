@@ -14,6 +14,7 @@ import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import {
+  CallMode,
   Collection,
   INotification,
   NotificationType,
@@ -79,7 +80,7 @@ const NotificationsScreen: FC = () => {
             .update({ viewed: true });
         });
         setUnreadNotifications(false);
-      }, 2000);
+      }, 1000);
     }
   }, [isFocused, friendRequests, invitations]);
 
@@ -146,7 +147,7 @@ const NotificationsScreen: FC = () => {
             onPress={() => {
               setNotificationId(item?.id ?? "");
               navigate(Routes.VideoChat, {
-                mode: "join",
+                mode: CallMode.Join,
                 friendId: item.senderId,
                 roomId: item.roomId,
               });
