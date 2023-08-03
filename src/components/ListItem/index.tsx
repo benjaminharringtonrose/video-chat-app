@@ -19,6 +19,9 @@ interface IProps {
   isFriend?: boolean;
   onPress: () => void;
   viewed?: boolean;
+  calling?: boolean;
+  callEnded?: boolean;
+  callAnswered?: boolean;
 }
 
 const ListItem: FC<IProps> = ({
@@ -28,6 +31,9 @@ const ListItem: FC<IProps> = ({
   isFriend,
   onPress,
   viewed,
+  calling,
+  callEnded,
+  callAnswered,
 }) => {
   switch (type) {
     case ListItemType.Friends:
@@ -50,8 +56,11 @@ const ListItem: FC<IProps> = ({
         <InvitationCard
           username={username}
           label={label}
-          viewed={!!viewed}
           onPress={onPress}
+          viewed={!!viewed}
+          calling={!!calling}
+          callEnded={!!callEnded}
+          callAnswered={!!callAnswered}
         />
       );
   }

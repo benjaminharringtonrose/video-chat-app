@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { Color, FontFamily } from "../../constants";
 
 const styles = StyleSheet.create({
-  friendRequest: {
+  root: {
     minHeight: 50,
     flexDirection: "row",
     alignItems: "center",
@@ -14,15 +14,15 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
-  friendRequestLabel: {
-    flex: 1,
+  label: {
     paddingLeft: 10,
     fontFamily: FontFamily.Light,
     color: Color.text,
   },
-  friendRequestInner: {
+  rowContainer: {
     flex: 1,
     flexDirection: "row",
+    alignItems: "center",
   },
   friendRequestUsername: {
     fontFamily: FontFamily.Bold,

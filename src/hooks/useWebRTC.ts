@@ -39,15 +39,7 @@ export const useWebRTC = () => {
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [remoteStream, setRemoteStream] = useState<MediaStream>();
 
-  const {
-    roomId,
-    notificationId,
-    setRoomId,
-    setNotificationId,
-    setRemoteCallEnded,
-  } = useRoom();
-
-  const { user } = useAuth();
+  const { roomId, notificationId, setRoomId, setNotificationId } = useRoom();
 
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
@@ -246,22 +238,25 @@ export const useWebRTC = () => {
     }
   };
 
-  const endStream = async (roomId?: string) => {
+  const endStream = async ({ roomId }: { roomId?: string }) => {
     if (!roomId) {
       console.warn("endStream: No roomId");
     }
+
+    const notificationDoc = db
+      .collection(Collection.Notifications)
+      .doc(notificationId);
+
     localStream?.getTracks().forEach((track) => {
       track.stop();
     });
 
     peerConnection.close();
 
-    console.log(notificationId);
-
-    await db
-      .collection(Collection.Notifications)
-      .doc(notificationId)
-      .update({ calling: false, callEnded: true });
+    await notificationDoc.update({
+      calling: false,
+      callEnded: true,
+    });
 
     setLocalStream(undefined);
     setRemoteStream(undefined);

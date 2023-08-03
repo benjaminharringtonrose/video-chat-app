@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { db } from "../../api/firebase";
 import { authState } from "../../atoms/auth";
@@ -94,10 +94,8 @@ const NotificationLister: FC = () => {
         });
 
         if (incomingCall) {
-          console.log("playing sound");
           playSound();
         } else {
-          console.log("stopping sound");
           stopSound();
         }
 

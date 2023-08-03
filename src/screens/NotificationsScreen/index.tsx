@@ -152,6 +152,9 @@ const NotificationsScreen: FC = () => {
               });
             }}
             viewed={item.viewed}
+            calling={item.calling}
+            callEnded={item.callEnded}
+            callAnswered={item.callAnswered}
           />
         );
       default:

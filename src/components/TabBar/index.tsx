@@ -11,19 +11,15 @@ import { Color } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Routes } from "../../navigation/types";
 import Reanimated, {
-  Easing,
-  Extrapolate,
-  interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withRepeat,
   withTiming,
 } from "react-native-reanimated";
 import styles from "./styles";
 import { useNotifications } from "../../atoms/notifications";
+import Badge from "../Badge";
 
 const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
-  const offset = useSharedValue(0);
   const indicatorOffset = useSharedValue(0);
 
   const { bottom } = useSafeAreaInsets();
@@ -38,30 +34,6 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
       indicatorOffset.value = state.index * tabWidth;
     });
   }, [state.index]);
-
-  useEffect(() => {
-    offset.value = withRepeat(
-      withTiming(1, {
-        duration: 2000,
-        easing: Easing.linear,
-      }),
-      -1,
-      false
-    );
-  }, []);
-
-  const pulse = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      offset.value,
-      [0, 1],
-      [0.6, 0],
-      Extrapolate.CLAMP
-    );
-    return {
-      opacity: opacity,
-      transform: [{ scale: offset.value }],
-    };
-  });
 
   const tabIndicatorStyle = useAnimatedStyle(
     () => ({
@@ -119,10 +91,9 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
               return (
                 <View>
                   {unreadNotifications && (
-                    <>
-                      <Reanimated.View style={[styles.circle, pulse]} />
-                      <View style={styles.innerCircle} />
-                    </>
+                    <View style={{ position: "absolute", left: 20, bottom: 5 }}>
+                      <Badge />
+                    </View>
                   )}
                   <Icon name={"bell"} size={30} color={color} />
                 </View>

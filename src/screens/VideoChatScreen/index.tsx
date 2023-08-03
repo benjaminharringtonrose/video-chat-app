@@ -8,7 +8,7 @@ import { useRoute } from "@react-navigation/native";
 import { NavProp } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
-import { INotification, NotificationType } from "../../types";
+import { Collection, INotification, NotificationType } from "../../types";
 import styles from "./styles";
 import { useRoom } from "../../atoms/room";
 
@@ -27,16 +27,16 @@ const VideoChatScreen: FC = () => {
 
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
-  const { setNotificationId } = useRoom();
+  const { setNotificationId, notificationId } = useRoom();
 
   const localWidth = width / 3;
   const localHeight = height / 3;
 
-  const sendInvitation = async (roomId?: string) => {
+  const sendCallInvite = async (roomId?: string) => {
     if (!roomId) {
       return console.warn("No roomId");
     }
-    const invitationDoc = db.collection("notifications").doc();
+    const invitationDoc = db.collection(Collection.Notifications).doc();
 
     const notification: INotification = {
       id: invitationDoc.id,
@@ -47,10 +47,12 @@ const VideoChatScreen: FC = () => {
       roomId,
       viewed: false,
       calling: true,
+      callAnswered: false,
+      callEnded: false,
     };
 
     await db
-      .collection("notifications")
+      .collection(Collection.Notifications)
       .doc(invitationDoc.id)
       .set(notification);
 
@@ -62,11 +64,36 @@ const VideoChatScreen: FC = () => {
       await startWebcam();
       if (params?.mode === "join") {
         setRoomId(params?.roomId as string);
+
+        await db
+          .collection(Collection.Notifications)
+          .doc(notificationId)
+          .update({
+            callAnswered: true,
+          });
+
         await joinRoom(params?.roomId);
       } else if (params?.mode === "invite") {
         const roomId = await createRoom();
 
-        await sendInvitation(roomId);
+        await sendCallInvite(roomId);
+
+        setTimeout(async () => {
+          const snapshot = await db
+            .collection(Collection.Notifications)
+            .doc(notificationId)
+            .get();
+          const callInvite = snapshot.data() as INotification;
+
+          if (!callInvite.callAnswered) {
+            await db
+              .collection(Collection.Notifications)
+              .doc(notificationId)
+              .update({ missedCall: true });
+
+            endStream({ roomId });
+          }
+        }, 5000);
       }
     };
     init();
@@ -107,7 +134,7 @@ const VideoChatScreen: FC = () => {
         <View style={styles.endCallContainer}>
           <TouchableOpacity
             style={styles.endCallButton}
-            onPress={() => endStream(roomId)}
+            onPress={() => endStream({ roomId })}
           >
             <Icon name={"call-end"} color={"white"} size={40} />
           </TouchableOpacity>

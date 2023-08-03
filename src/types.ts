@@ -24,12 +24,8 @@ export interface INotification {
   type: NotificationType;
   viewed: boolean;
   calling?: boolean;
-}
-
-export interface IInvitation {
-  senderId: string;
-  senderUsername: string;
-  receiverId: string;
+  callAnswered: boolean;
+  callEnded?: boolean;
 }
 
 export enum ERequirement {
