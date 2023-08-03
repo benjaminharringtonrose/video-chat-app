@@ -22,19 +22,26 @@ const NotificationLister: FC = () => {
 
   const soundRef = useRef<Sound | null>(null);
 
-  const playSound = async () => {
+  const loadSound = async () => {
     const { sound } = await Audio.Sound.createAsync(
       require("../../../assets/sounds/incoming-call.mp3")
     );
-    await sound.playAsync();
-    await sound.setIsLoopingAsync(true);
     soundRef.current = sound;
+  };
+
+  const playSound = async () => {
+    await soundRef.current?.playAsync();
+    await soundRef.current?.setIsLoopingAsync(true);
   };
 
   const stopSound = async () => {
     await soundRef.current?.setIsLoopingAsync(false);
     await soundRef.current?.stopAsync();
   };
+
+  useEffect(() => {
+    loadSound();
+  }, []);
 
   useEffect(() => {
     if (!user?.uid) return;
