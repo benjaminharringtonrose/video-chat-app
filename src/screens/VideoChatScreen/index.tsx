@@ -77,22 +77,16 @@ const VideoChatScreen: FC = () => {
 
         await sendCallInvite(roomId);
 
-        // setTimeout(async () => {
-        //   const snapshot = await db
-        //     .collection(Collection.Notifications)
-        //     .doc(notificationId)
-        //     .get();
-        //   const callInvite = snapshot.data() as INotification;
-
-        //   if (!callInvite.callAnswered) {
-        //     await db
-        //       .collection(Collection.Notifications)
-        //       .doc(notificationId)
-        //       .update({ missedCall: true });
-
-        //     endStream({ roomId });
-        //   }
-        // }, 5000);
+        setTimeout(async () => {
+          const snapshot = await db
+            .collection(Collection.Notifications)
+            .doc(notificationId)
+            .get();
+          const callInvite = snapshot.data() as INotification;
+          if (!callInvite.callAnswered) {
+            endStream({ roomId });
+          }
+        }, 20000);
       }
     };
     init();
