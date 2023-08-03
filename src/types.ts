@@ -23,6 +23,7 @@ export interface INotification {
   roomId?: string;
   type: NotificationType;
   viewed: boolean;
+  calling?: boolean;
 }
 
 export interface IInvitation {
@@ -53,10 +54,13 @@ export enum QueryKey {
   ReceiverId = "receiverId",
   Type = "type",
   Uid = "uid",
+  RoomId = "roomId",
 }
 
 export enum Collection {
   Notifications = "notifications",
   Users = "users",
   Rooms = "rooms",
+  OfferCandidates = "offerCandidates",
+  AnswerCandidates = "answerCandidates",
 }

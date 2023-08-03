@@ -28,18 +28,17 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
+import { useRoom } from "../../atoms/room";
 
 const NotificationsScreen: FC = () => {
   const { user } = useAuth();
   const { friends } = useFriends();
   const isFocused = useIsFocused();
 
-  const {
-    friendRequests,
-    invitations,
-    setUnreadNotifications,
-    setIncomingCall,
-  } = useNotifications();
+  const { friendRequests, invitations, setUnreadNotifications } =
+    useNotifications();
+
+  const { setNotificationId } = useRoom();
 
   const { navigate } = useNavigation<NavProp["navigation"]>();
 
@@ -47,6 +46,7 @@ const NotificationsScreen: FC = () => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log("yip");
       if (!isEmpty) {
         setTimeout(async () => {
           const notifications = await db
@@ -144,7 +144,7 @@ const NotificationsScreen: FC = () => {
             username={item.senderUsername}
             label={"wants you to join his room"}
             onPress={() => {
-              setIncomingCall(false);
+              setNotificationId(item?.id ?? "");
               navigate(Routes.VideoChat, {
                 mode: "join",
                 friendId: item.senderId,

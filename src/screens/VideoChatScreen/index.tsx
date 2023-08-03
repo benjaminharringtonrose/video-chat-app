@@ -10,6 +10,7 @@ import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { INotification, NotificationType } from "../../types";
 import styles from "./styles";
+import { useRoom } from "../../atoms/room";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
@@ -26,6 +27,7 @@ const VideoChatScreen: FC = () => {
 
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
+  const { setNotificationId } = useRoom();
 
   const localWidth = width / 3;
   const localHeight = height / 3;
@@ -44,12 +46,15 @@ const VideoChatScreen: FC = () => {
       receiverId: params?.friendId,
       roomId,
       viewed: false,
+      calling: true,
     };
 
     await db
       .collection("notifications")
       .doc(invitationDoc.id)
       .set(notification);
+
+    setNotificationId(invitationDoc.id);
   };
 
   useEffect(() => {
@@ -60,6 +65,7 @@ const VideoChatScreen: FC = () => {
         await joinRoom(params?.roomId);
       } else if (params?.mode === "invite") {
         const roomId = await createRoom();
+
         await sendInvitation(roomId);
       }
     };

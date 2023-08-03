@@ -11,6 +11,9 @@ import {
 import { db } from "../api/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../navigation/types";
+import { Collection, QueryKey } from "../types";
+import { useRoom } from "../atoms/room";
+import { useAuth } from "../atoms/auth";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -36,7 +39,15 @@ export const useWebRTC = () => {
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [remoteStream, setRemoteStream] = useState<MediaStream>();
 
-  const [roomId, setRoomId] = useState("");
+  const {
+    roomId,
+    notificationId,
+    setRoomId,
+    setNotificationId,
+    setRemoteCallEnded,
+  } = useRoom();
+
+  const { user } = useAuth();
 
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
@@ -83,9 +94,9 @@ export const useWebRTC = () => {
   useEffect(() => {
     if (!roomId) return;
 
-    const room = db.collection("rooms").doc(roomId);
-    const offerCandidates = room.collection("offerCandidates");
-    const answerCandidates = room.collection("answerCandidates");
+    const room = db.collection(Collection.Rooms).doc(roomId);
+    const offerCandidates = room.collection(Collection.OfferCandidates);
+    const answerCandidates = room.collection(Collection.AnswerCandidates);
 
     const onIceCandidateAdded = async (event: any) => {
       if (event.candidate) {
@@ -128,9 +139,9 @@ export const useWebRTC = () => {
   useEffect(() => {
     if (!roomId || !roomJoined) return;
 
-    const room = db.collection("rooms").doc(roomId);
-    const offerCandidates = room.collection("offerCandidates");
-    const answerCandidates = room.collection("answerCandidates");
+    const room = db.collection(Collection.Rooms).doc(roomId);
+    const offerCandidates = room.collection(Collection.OfferCandidates);
+    const answerCandidates = room.collection(Collection.AnswerCandidates);
 
     const onIceCandidateAdded = async (event: any) => {
       if (event.candidate) {
@@ -185,7 +196,7 @@ export const useWebRTC = () => {
 
   const createRoom = async () => {
     try {
-      const channelDoc = db.collection("rooms").doc();
+      const channelDoc = db.collection(Collection.Rooms).doc();
 
       setRoomId(channelDoc.id);
 
@@ -208,7 +219,7 @@ export const useWebRTC = () => {
 
   const joinRoom = async (roomId: string) => {
     try {
-      const channelDoc = db.collection("rooms").doc(roomId);
+      const channelDoc = db.collection(Collection.Rooms).doc(roomId);
       const channelDocument = await channelDoc.get();
       const channelData = channelDocument.data();
 
@@ -245,23 +256,32 @@ export const useWebRTC = () => {
 
     peerConnection.close();
 
-    await db.collection("rooms").doc(roomId).update({ callEnded: true });
+    console.log(notificationId);
+
+    await db
+      .collection(Collection.Notifications)
+      .doc(notificationId)
+      .update({ calling: false, callEnded: true });
+
     setLocalStream(undefined);
     setRemoteStream(undefined);
   };
 
   useEffect(() => {
-    if (!roomId) return;
-    db.collection("rooms")
-      .doc(roomId)
+    if (!roomId || !notificationId) return;
+    const unsubscribe = db
+      .collection(Collection.Notifications)
+      .doc(notificationId)
       .onSnapshot(async (snapshot) => {
-        const room = snapshot.data();
-        if (room?.callEnded) {
-          await db.collection("rooms").doc(roomId).delete();
+        const notification = snapshot.data();
+        if (notification?.callEnded) {
+          await db.collection(Collection.Rooms).doc(roomId).delete();
+          setNotificationId("");
           navigate(Routes.Home);
         }
       });
-  }, [roomId]);
+    return () => unsubscribe();
+  }, [roomId, notificationId]);
 
   return {
     roomId,

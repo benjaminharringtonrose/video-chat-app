@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { db } from "../../api/firebase";
 import { authState } from "../../atoms/auth";
@@ -17,10 +17,10 @@ import { Audio } from "expo-av";
 
 const NotificationLister: FC = () => {
   const { user } = useRecoilValue(authState);
-  const { unreadNotifications, incomingCall } = useNotifications();
+  const { unreadNotifications } = useNotifications();
   const setNotifications = useSetRecoilState(notificationsState);
 
-  const [sound, setSound] = useState<Sound>();
+  const soundRef = useRef<Sound | null>(null);
 
   const playSound = async () => {
     const { sound } = await Audio.Sound.createAsync(
@@ -28,20 +28,13 @@ const NotificationLister: FC = () => {
     );
     await sound.playAsync();
     await sound.setIsLoopingAsync(true);
-    setSound(sound);
+    soundRef.current = sound;
   };
 
   const stopSound = async () => {
-    await sound?.stopAsync();
+    await soundRef.current?.setIsLoopingAsync(false);
+    await soundRef.current?.stopAsync();
   };
-
-  useEffect(() => {
-    if (incomingCall) {
-      playSound();
-    } else {
-      stopSound();
-    }
-  }, [incomingCall]);
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -74,40 +67,47 @@ const NotificationLister: FC = () => {
 
   useEffect(() => {
     if (!user?.uid) return;
+    console.log("listening to invitations");
     const unsubscribe = db
       .collection(Collection.Notifications)
       .where(QueryKey.ReceiverId, "==", user?.uid)
       .where(QueryKey.Type, "==", NotificationType.Invitation)
       .onSnapshot((snapshot) => {
-        const invitations: INotification[] = [];
+        let incomingCall = false;
+        const notifications: INotification[] = [];
 
-        snapshot.forEach((invitation) => {
-          const data = invitation.data() as INotification;
-          invitations.push(data);
+        snapshot.forEach((notification) => {
+          const data = notification.data() as INotification;
+          notifications.push(data);
 
-          if (!data.viewed) {
-            if (!unreadNotifications) {
-              setNotifications((state) => ({
-                ...state,
-                unreadNotifications: true,
-              }));
-            }
+          if (data.calling) {
+            incomingCall = true;
+          }
 
-            if (!incomingCall) {
-              setNotifications((state) => ({
-                ...state,
-                incomingCall: true,
-              }));
-            }
+          // logic for the notification badge on bottom tab
+          if (!data.viewed && !unreadNotifications) {
+            setNotifications((state) => ({
+              ...state,
+              unreadNotifications: true,
+            }));
           }
         });
 
+        if (incomingCall) {
+          console.log("playing sound");
+          playSound();
+        } else {
+          console.log("stopping sound");
+          stopSound();
+        }
+
         setNotifications((state) => ({
           ...state,
-          invitations,
+          invitations: notifications,
         }));
       });
-    () => unsubscribe();
+
+    return () => unsubscribe();
   }, [user?.uid]);
 
   return null;
