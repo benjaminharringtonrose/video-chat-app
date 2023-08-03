@@ -14,6 +14,7 @@ import { NavProp, Routes } from "../navigation/types";
 import { Collection, QueryKey } from "../types";
 import { useRoom } from "../atoms/room";
 import { useAuth } from "../atoms/auth";
+import { useTimer } from "../atoms/timer";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -41,6 +42,8 @@ export const useWebRTC = () => {
 
   const { roomId, notificationId, setRoomId, setNotificationId } = useRoom();
 
+  const { setMinutes, setSeconds } = useTimer();
+
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
 
   const { navigate } = useNavigation<NavProp["navigation"]>();
@@ -59,6 +62,8 @@ export const useWebRTC = () => {
         case "closed":
         case "disconnected":
         case "failed": {
+          setMinutes(0);
+          setSeconds(0);
           navigate(Routes.Home);
           break;
         }

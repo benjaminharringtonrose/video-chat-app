@@ -11,6 +11,7 @@ import { useAuth } from "../../atoms/auth";
 import { Collection, INotification, NotificationType } from "../../types";
 import styles from "./styles";
 import { useRoom } from "../../atoms/room";
+import { Timer } from "../../components";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
@@ -68,9 +69,7 @@ const VideoChatScreen: FC = () => {
         await db
           .collection(Collection.Notifications)
           .doc(notificationId)
-          .update({
-            callAnswered: true,
-          });
+          .update({ callAnswered: true });
 
         await joinRoom(params?.roomId);
       } else if (params?.mode === "invite") {
@@ -78,22 +77,22 @@ const VideoChatScreen: FC = () => {
 
         await sendCallInvite(roomId);
 
-        setTimeout(async () => {
-          const snapshot = await db
-            .collection(Collection.Notifications)
-            .doc(notificationId)
-            .get();
-          const callInvite = snapshot.data() as INotification;
+        // setTimeout(async () => {
+        //   const snapshot = await db
+        //     .collection(Collection.Notifications)
+        //     .doc(notificationId)
+        //     .get();
+        //   const callInvite = snapshot.data() as INotification;
 
-          if (!callInvite.callAnswered) {
-            await db
-              .collection(Collection.Notifications)
-              .doc(notificationId)
-              .update({ missedCall: true });
+        //   if (!callInvite.callAnswered) {
+        //     await db
+        //       .collection(Collection.Notifications)
+        //       .doc(notificationId)
+        //       .update({ missedCall: true });
 
-            endStream({ roomId });
-          }
-        }, 5000);
+        //     endStream({ roomId });
+        //   }
+        // }, 5000);
       }
     };
     init();
@@ -101,6 +100,7 @@ const VideoChatScreen: FC = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: Color.black }}>
+      <Timer style={{ zIndex: 3, alignItems: "center", marginTop: 50 }} />
       {remoteStream && (
         <RTCView
           streamURL={remoteStream.toURL()}
