@@ -7,8 +7,15 @@ import { RecoilRoot } from "recoil";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import WrappedApp from "./src/WrappedApp";
-import { Platform } from "react-native";
-import { NotificationListener, UserListener } from "./src/listeners";
+import { LogBox, Platform } from "react-native";
+import {
+  CallListener,
+  NotificationListener,
+  UserListener,
+} from "./src/listeners";
+import RoomListener from "./src/listeners/RoomListener";
+
+LogBox.ignoreLogs(["Error: No native splash screen"]);
 
 // Notifications.setNotificationHandler({
 //   handleNotification: async () => ({
@@ -58,6 +65,8 @@ export default function App() {
         <WrappedApp />
         <NotificationListener />
         <UserListener />
+        <RoomListener />
+        <CallListener />
       </RecoilRoot>
     </GestureHandlerRootView>
   );

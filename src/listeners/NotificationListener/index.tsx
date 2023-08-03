@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { db } from "../../api/firebase";
 import { authState } from "../../atoms/auth";
@@ -12,36 +12,15 @@ import {
   NotificationType,
   QueryKey,
 } from "../../types";
-import { Sound } from "expo-av/build/Audio";
-import { Audio } from "expo-av";
+import { roomState, useRoom } from "../../atoms/room";
 
 const NotificationLister: FC = () => {
   const { user } = useRecoilValue(authState);
   const { unreadNotifications } = useNotifications();
   const setNotifications = useSetRecoilState(notificationsState);
+  const setRoom = useSetRecoilState(roomState);
 
-  const soundRef = useRef<Sound | null>(null);
-
-  const loadSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../../../assets/sounds/incoming-call.mp3")
-    );
-    soundRef.current = sound;
-  };
-
-  const playSound = async () => {
-    await soundRef.current?.playAsync();
-    await soundRef.current?.setIsLoopingAsync(true);
-  };
-
-  const stopSound = async () => {
-    await soundRef.current?.setIsLoopingAsync(false);
-    await soundRef.current?.stopAsync();
-  };
-
-  useEffect(() => {
-    loadSound();
-  }, []);
+  const { notificationId } = useRoom();
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -73,7 +52,10 @@ const NotificationLister: FC = () => {
   }, [user?.uid]);
 
   useEffect(() => {
-    if (!user?.uid) return;
+    if (!user?.uid || notificationId) {
+      console.log("not listening to call invites");
+      return;
+    }
     console.log("listening to invitations");
     const unsubscribe = db
       .collection(Collection.Notifications)
@@ -101,9 +83,15 @@ const NotificationLister: FC = () => {
         });
 
         if (incomingCall) {
-          playSound();
+          setRoom((state) => ({
+            ...state,
+            incomingCall: true,
+          }));
         } else {
-          stopSound();
+          setRoom((state) => ({
+            ...state,
+            incomingCall: false,
+          }));
         }
 
         setNotifications((state) => ({
@@ -113,7 +101,7 @@ const NotificationLister: FC = () => {
       });
 
     return () => unsubscribe();
-  }, [user?.uid]);
+  }, [user?.uid, notificationId]);
 
   return null;
 };

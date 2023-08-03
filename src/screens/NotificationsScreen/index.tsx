@@ -39,7 +39,7 @@ const NotificationsScreen: FC = () => {
   const { friendRequests, invitations, setUnreadNotifications } =
     useNotifications();
 
-  const { setNotificationId } = useRoom();
+  const { setNotificationId, setRoomId } = useRoom();
 
   const { navigate } = useNavigation<NavProp["navigation"]>();
 
@@ -145,12 +145,16 @@ const NotificationsScreen: FC = () => {
             username={item.senderUsername}
             label={"wants you to join his room"}
             onPress={() => {
-              setNotificationId(item?.id ?? "");
-              navigate(Routes.VideoChat, {
-                mode: CallMode.Join,
-                friendId: item.senderId,
-                roomId: item.roomId,
-              });
+              if (item?.id && item?.roomId) {
+                setNotificationId(item.id);
+                setRoomId(item.roomId);
+                navigate(Routes.VideoChat, {
+                  mode: CallMode.Join,
+                  friendId: item.senderId,
+                });
+              } else {
+                console.log("ISSUE ON NOTIFICATIONS SCREEN");
+              }
             }}
             viewed={item.viewed}
             calling={item.calling}

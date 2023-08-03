@@ -82,12 +82,12 @@ const FriendDetailScreen: FC = () => {
             }}
           >
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => {
                 navigate(Routes.VideoChat, {
                   friendId,
                   mode: CallMode.Host,
-                })
-              }
+                });
+              }}
               style={{
                 backgroundColor: Color.primaryLight,
                 padding: 10,

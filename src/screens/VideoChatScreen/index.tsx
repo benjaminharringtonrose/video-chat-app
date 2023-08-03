@@ -24,18 +24,15 @@ const VideoChatScreen: FC = () => {
   const {
     localStream,
     remoteStream,
-    roomId,
-    playSound,
     startWebcam,
     createRoom,
     joinRoom,
-    setRoomId,
     endStream,
   } = useWebRTC();
 
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
-  const { setNotificationId, notificationId } = useRoom();
+  const { setRoomId, setNotificationId, roomId } = useRoom();
 
   const { isRunning } = useTimer();
 
@@ -47,8 +44,6 @@ const VideoChatScreen: FC = () => {
       return console.warn("No roomId");
     }
     const invitationDoc = db.collection(Collection.Notifications).doc();
-
-    await playSound();
 
     const notification: INotification = {
       id: invitationDoc.id,
@@ -68,21 +63,9 @@ const VideoChatScreen: FC = () => {
         .collection(Collection.Notifications)
         .doc(invitationDoc.id)
         .set(notification);
+      setNotificationId(invitationDoc.id);
     } catch (e) {
       console.log("sendCallInvite Error:", e);
-    }
-
-    setNotificationId(invitationDoc.id);
-  };
-
-  const acceptCall = async () => {
-    try {
-      await db
-        .collection(Collection.Notifications)
-        .doc(notificationId)
-        .update({ callAnswered: true, calling: false });
-    } catch (e) {
-      console.log("acceptCall Error:", e);
     }
   };
 
@@ -91,16 +74,16 @@ const VideoChatScreen: FC = () => {
       await startWebcam();
       if (params?.mode === CallMode.Join) {
         try {
-          setRoomId(params?.roomId as string);
-          await acceptCall();
-          await joinRoom(params?.roomId);
+          await joinRoom(roomId);
         } catch (e) {
           console.log("bootstrap join Error:", e);
         }
       } else if (params?.mode === CallMode.Host) {
         try {
-          const roomId = await createRoom();
-          await sendCallInvite(roomId);
+          const roomDoc = db.collection(Collection.Rooms).doc();
+          setRoomId(roomDoc.id);
+          await createRoom(roomDoc.id);
+          await sendCallInvite(roomDoc.id);
           // setTimeout(async () => {
           //   const snapshot = await db
           //     .collection(Collection.Notifications)

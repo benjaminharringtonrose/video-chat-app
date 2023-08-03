@@ -11,9 +11,8 @@ import {
 import { db } from "../api/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../navigation/types";
-import { Collection, INotification } from "../types";
+import { Collection } from "../types";
 import { useRoom } from "../atoms/room";
-import { useTimer } from "../atoms/timer";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
 
@@ -35,52 +34,21 @@ let sessionConstraints = {
 };
 
 export const useWebRTC = () => {
-  const [webcamStarted, setWebcamStarted] = useState(false);
   const [roomJoined, setRoomJoined] = useState(false);
 
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [remoteStream, setRemoteStream] = useState<MediaStream>();
 
-  const { roomId, notificationId, setRoomId, setNotificationId } = useRoom();
-
-  const { setMinutes, setSeconds, setIsRunning } = useTimer();
+  const {
+    roomId,
+    notificationId,
+    webcamStarted,
+    setRoomId,
+    setWebcamStarted,
+    setIncomingCall,
+  } = useRoom();
 
   const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
-
-  const { navigate } = useNavigation<NavProp["navigation"]>();
-
-  const soundRef = useRef<Sound | null>(null);
-
-  const bootstrap = async () => {
-    if (webcamStarted) {
-      await loadSound();
-      await playSound();
-    }
-  };
-
-  const loadSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../../assets/sounds/rotary-phone.mp3")
-    );
-    soundRef.current = sound;
-  };
-
-  const playSound = async () => {
-    await soundRef.current?.playAsync();
-    await soundRef.current?.setIsLoopingAsync(true);
-  };
-
-  const stopSound = async () => {
-    console.log("rotary phone should stop");
-    await soundRef.current?.setIsLoopingAsync(false);
-    await soundRef.current?.stopAsync();
-  };
-
-  useEffect(() => {
-    if (webcamStarted) {
-      bootstrap();
-    }
-  }, [webcamStarted]);
 
   useEffect(() => {
     const onTrack = (event: any) => {
@@ -91,34 +59,34 @@ export const useWebRTC = () => {
       setRemoteStream(remote);
     };
 
-    const onConnectionStateChange = () => {
-      switch (peerConnection.connectionState) {
-        case "closed":
-        case "disconnected":
-        case "failed": {
-          setMinutes(0);
-          setSeconds(0);
-          navigate(Routes.Home);
-          break;
-        }
-        default:
-          break;
-      }
-    };
+    // const onConnectionStateChange = () => {
+    //   switch (peerConnection.connectionState) {
+    //     case "closed":
+    //     case "disconnected":
+    //     case "failed": {
+    //       setMinutes(0);
+    //       setSeconds(0);
+    //       navigate(Routes.Home);
+    //       break;
+    //     }
+    //     default:
+    //       break;
+    //   }
+    // };
 
-    peerConnection.addEventListener(
-      "connectionstatechange",
-      onConnectionStateChange
-    );
+    // peerConnection.addEventListener(
+    //   "connectionstatechange",
+    //   onConnectionStateChange
+    // );
 
     peerConnection.addEventListener("track", onTrack);
 
     return () => {
       peerConnection.removeEventListener("track", onTrack);
-      peerConnection.removeEventListener(
-        "connectionstatechange",
-        onConnectionStateChange
-      );
+      // peerConnection.removeEventListener(
+      //   "connectionstatechange",
+      //   onConnectionStateChange
+      // );
     };
   }, []);
 
@@ -225,24 +193,23 @@ export const useWebRTC = () => {
     }
   };
 
-  const createRoom = async () => {
+  const createRoom = async (roomId: string) => {
     try {
-      const channelDoc = db.collection(Collection.Rooms).doc();
-
-      setRoomId(channelDoc.id);
-
+      const roomDoc = db.collection(Collection.Rooms).doc(roomId);
       const offerDescription = await peerConnection.createOffer(
         sessionConstraints
       );
       await peerConnection.setLocalDescription(offerDescription);
-
       const offer = {
         sdp: offerDescription.sdp,
         type: offerDescription.type,
       };
-
-      await channelDoc.set({ offer });
-      return channelDoc.id;
+      await roomDoc.set({
+        offer,
+        calling: true,
+        callAnswered: false,
+        callEnded: false,
+      });
     } catch (e) {
       console.error("startCall Error:", e);
     }
@@ -250,11 +217,25 @@ export const useWebRTC = () => {
 
   const joinRoom = async (roomId: string) => {
     try {
-      const channelDoc = db.collection(Collection.Rooms).doc(roomId);
-      const channelDocument = await channelDoc.get();
-      const channelData = channelDocument.data();
+      const roomDoc = db.collection(Collection.Rooms).doc(roomId);
+      const notificationDoc = db
+        .collection(Collection.Notifications)
+        .doc(notificationId);
 
-      const offerDescription = channelData?.offer;
+      await notificationDoc.update({
+        calling: false,
+        callAnswered: true,
+      });
+
+      await roomDoc.update({
+        calling: false,
+        callAnswered: true,
+      });
+
+      const snapshot = await roomDoc.get();
+      const room = snapshot.data();
+
+      const offerDescription = room?.offer;
 
       await peerConnection.setRemoteDescription(
         new RTCSessionDescription(offerDescription)
@@ -269,7 +250,7 @@ export const useWebRTC = () => {
         sdp: answerDescription.sdp,
       };
 
-      await channelDoc.update({ answer });
+      await roomDoc.update({ answer });
 
       setRoomJoined(true);
     } catch (e) {
@@ -282,14 +263,20 @@ export const useWebRTC = () => {
       console.warn("endStream: No roomId");
     }
     try {
+      const roomDoc = db.collection(Collection.Rooms).doc(roomId);
       const notificationDoc = db
         .collection(Collection.Notifications)
         .doc(notificationId);
+
       localStream?.getTracks().forEach((track) => {
         track.stop();
       });
       peerConnection.close();
       await notificationDoc.update({
+        calling: false,
+        callEnded: true,
+      });
+      await roomDoc.update({
         calling: false,
         callEnded: true,
       });
@@ -300,35 +287,6 @@ export const useWebRTC = () => {
     }
   };
 
-  useEffect(() => {
-    if (!roomId || !notificationId) return;
-    console.log("listening to current notification");
-    const unsubscribe = db
-      .collection(Collection.Notifications)
-      .doc(notificationId)
-      .onSnapshot(async (snapshot) => {
-        const notification = snapshot.data() as INotification;
-        if (notification?.callEnded) {
-          console.log("call ended");
-          setMinutes(0);
-          setSeconds(0);
-          await stopSound();
-          await db.collection(Collection.Rooms).doc(roomId).delete();
-          navigate(Routes.Home);
-        }
-        if (notification?.calling) {
-          console.log("calling");
-          await playSound();
-        }
-        if (notification?.callAnswered) {
-          console.log("call answered");
-          setIsRunning(true);
-          await stopSound();
-        }
-      });
-    return () => unsubscribe();
-  }, [roomId, notificationId]);
-
   return {
     roomId,
     webcamStarted,
@@ -337,8 +295,6 @@ export const useWebRTC = () => {
     startWebcam,
     createRoom,
     joinRoom,
-    setRoomId,
     endStream,
-    playSound,
   };
 };

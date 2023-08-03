@@ -28,6 +28,16 @@ export interface INotification {
   callEnded?: boolean;
 }
 
+export interface IRoom {
+  offer?: any;
+  answer?: any;
+  offerCandidates?: any;
+  answerCandidates?: any;
+  calling?: boolean;
+  callAnswered?: boolean;
+  callEnded?: boolean;
+}
+
 export enum ERequirement {
   Length = "length",
   Lowercase = "lowercase",

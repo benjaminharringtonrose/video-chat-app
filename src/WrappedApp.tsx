@@ -18,6 +18,7 @@ import firebase from "firebase/compat/app";
 import * as deviceStorage from "./utils";
 import { Collection, IUser } from "./types";
 import { auth, db } from "./api/firebase";
+import { navigationRef } from "./navigation/RootNavigation";
 
 const WrappedApp: FC = () => {
   const { initializing, setUser, startup } = useAuth();
@@ -70,7 +71,7 @@ const WrappedApp: FC = () => {
   }
 
   return (
-    <NavigationContainer theme={Theme}>
+    <NavigationContainer ref={navigationRef} theme={Theme}>
       <RootNavigator />
     </NavigationContainer>
   );
