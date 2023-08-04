@@ -13,9 +13,6 @@ import { useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../navigation/types";
 import { Collection } from "../types";
 import { useRoom } from "../atoms/room";
-import { Sound } from "expo-av/build/Audio";
-import { Audio } from "expo-av";
-import { useTimer } from "../atoms/timer";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -23,7 +20,7 @@ const configuration: RTCConfiguration = {
       urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
     },
   ],
-  iceCandidatePoolSize: 10,
+  iceCandidatePoolSize: 2,
 };
 
 let sessionConstraints = {
@@ -95,10 +92,10 @@ export const useWebRTC = () => {
 
     return () => {
       peerConnection.removeEventListener("track", onTrack);
-      // peerConnection.removeEventListener(
-      //   "connectionstatechange",
-      //   onConnectionStateChange
-      // );
+      peerConnection.removeEventListener(
+        "connectionstatechange",
+        onConnectionStateChange
+      );
     };
   }, []);
 
