@@ -44,9 +44,9 @@ export const useWebRTC = () => {
     roomId,
     notificationId,
     webcamStarted,
-    setRoomId,
-    setNotificationId,
     setWebcamStarted,
+    setIncomingCall,
+    setOutgoingCall,
   } = useRoom();
 
   const peerConnection = useRef<RTCPeerConnection>(
@@ -71,19 +71,14 @@ export const useWebRTC = () => {
             track.stop();
           });
           peerConnection.close();
+          setLocalStream(undefined);
+          setRemoteStream(undefined);
           navigate(Routes.Home);
           console.log("DISCONNECTED");
-          // setNotificationId("");
-          // setRoomId("");
-          // setRemoteStream(undefined);
           break;
         }
         case "failed": {
           console.log("FAILED");
-          db.collection(Collection.Rooms).doc(roomId).update({
-            calling: false,
-            callEnded: false,
-          });
           break;
         }
         default:
@@ -213,6 +208,9 @@ export const useWebRTC = () => {
   const createRoom = async (roomId: string) => {
     try {
       const roomDoc = db.collection(Collection.Rooms).doc(roomId);
+
+      setOutgoingCall(true);
+
       const offerDescription = await peerConnection.createOffer(
         sessionConstraints
       );
@@ -238,6 +236,8 @@ export const useWebRTC = () => {
       const notificationDoc = db
         .collection(Collection.Notifications)
         .doc(notificationId);
+
+      setIncomingCall(false);
 
       await notificationDoc.update({
         calling: false,
@@ -280,6 +280,7 @@ export const useWebRTC = () => {
       console.warn("endStream: No roomId");
     }
     try {
+      setOutgoingCall(false);
       const roomDoc = db.collection(Collection.Rooms).doc(roomId);
       const notificationDoc = db
         .collection(Collection.Notifications)

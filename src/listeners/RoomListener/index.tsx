@@ -36,27 +36,24 @@ const RoomListener: FC = () => {
       .doc(roomId)
       .onSnapshot(async (snapshot) => {
         const room = snapshot.data() as IRoom;
-        if (room?.calling) {
-          setOutgoingCall(true);
-        }
         if (room?.callAnswered) {
-          setTimer((state) => ({ ...state, isRunning: true }));
+          setTimer((state) => ({
+            ...state,
+            isRunning: true,
+          }));
           setOutgoingCall(false);
-          setIncomingCall(false);
         }
         if (room?.callEnded) {
           console.log("IN ROOM CALL ENDED", user?.username);
-          navigate(Routes.Home);
           setTimer((state) => ({
             ...state,
             minutes: 0,
             seconds: 0,
             isRunning: false,
           }));
-          setOutgoingCall(false);
-          setIncomingCall(false);
           setNotificationId("");
           setRoomId("");
+          navigate(Routes.Home);
         }
       });
     return () => unsubscribe();

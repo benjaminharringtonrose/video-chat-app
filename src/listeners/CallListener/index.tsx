@@ -44,20 +44,20 @@ const CallListener: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (incomingCall && !outgoingCall) {
+    if (incomingCall) {
       playIncomingCall();
     } else {
       stopIncomingCall();
     }
-  }, [incomingCall, outgoingCall]);
+  }, [incomingCall]);
 
   useEffect(() => {
-    if (outgoingCall && !incomingCall) {
+    if (outgoingCall) {
       playOutgoingCall();
     } else {
       stopOutgoingCall();
     }
-  }, [outgoingCall, outgoingCall]);
+  }, [outgoingCall]);
 
   return null;
 };
