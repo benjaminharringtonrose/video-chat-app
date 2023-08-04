@@ -44,6 +44,7 @@ export const useWebRTC = () => {
     setWebcamStarted,
     setIncomingCall,
     setOutgoingCall,
+    setShowRemoteStream,
   } = useRoom();
 
   const peerConnection = useRef<RTCPeerConnection>(
@@ -59,6 +60,7 @@ export const useWebRTC = () => {
         remote.addTrack(track);
       });
       setRemoteStream(remote);
+      setShowRemoteStream(true);
     };
 
     const onConnectionStateChange = async () => {
@@ -70,6 +72,7 @@ export const useWebRTC = () => {
           peerConnection.close();
           setLocalStream(undefined);
           setRemoteStream(undefined);
+          setShowRemoteStream(false);
           navigate(Routes.Home);
           console.log("DISCONNECTED");
           break;
@@ -297,6 +300,7 @@ export const useWebRTC = () => {
       });
       setLocalStream(undefined);
       setRemoteStream(undefined);
+      setShowRemoteStream(false);
     } catch (e) {
       console.log("endStream Error:", e);
     }

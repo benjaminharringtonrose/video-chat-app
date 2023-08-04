@@ -32,7 +32,7 @@ const VideoChatScreen: FC = () => {
 
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
-  const { setRoomId, setNotificationId, roomId } = useRoom();
+  const { setRoomId, setNotificationId, roomId, showRemoteStream } = useRoom();
 
   const { isRunning } = useTimer();
 
@@ -104,11 +104,11 @@ const VideoChatScreen: FC = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: Color.black }}>
+    <View style={{ flex: 1, backgroundColor: Color.background }}>
       {isRunning && (
         <Timer style={{ zIndex: 3, alignItems: "center", marginTop: 50 }} />
       )}
-      {remoteStream && (
+      {showRemoteStream && remoteStream && (
         <RTCView
           streamURL={remoteStream.toURL()}
           style={{
