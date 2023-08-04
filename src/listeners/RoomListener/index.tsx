@@ -1,11 +1,8 @@
-import { FC, useEffect, useRef } from "react";
-import { Collection, INotification, IRoom } from "../../types";
-import { NavProp, Routes } from "../../navigation/types";
+import { FC, useEffect } from "react";
+import { Collection, IRoom } from "../../types";
+import { Routes } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useRoom } from "../../atoms/room";
-import { useNavigation } from "@react-navigation/native";
-import { Sound } from "expo-av/build/Audio";
-import { Audio } from "expo-av";
 import { useSetRecoilState } from "recoil";
 import { timerState } from "../../atoms/timer";
 import { navigate } from "../../navigation/RootNavigation";
@@ -27,10 +24,13 @@ const RoomListener: FC = () => {
 
   useEffect(() => {
     if (!roomId) {
-      console.log("not listening to rooms");
+      console.log("ROOMS: NOT LISTENING", user?.username);
       return;
     }
-    console.log("listening to room");
+
+    console.log("ROOMS: LISTENING", user?.username);
+    console.log(`${user?.username} ROOM ID:`, roomId);
+
     const unsubscribe = db
       .collection(Collection.Rooms)
       .doc(roomId)
@@ -46,6 +46,7 @@ const RoomListener: FC = () => {
         }
         if (room?.callEnded) {
           console.log("IN ROOM CALL ENDED", user?.username);
+          navigate(Routes.Home);
           setTimer((state) => ({
             ...state,
             minutes: 0,
@@ -56,7 +57,6 @@ const RoomListener: FC = () => {
           setIncomingCall(false);
           setNotificationId("");
           setRoomId("");
-          navigate(Routes.Home);
         }
       });
     return () => unsubscribe();

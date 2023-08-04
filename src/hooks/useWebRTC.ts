@@ -15,6 +15,7 @@ import { Collection } from "../types";
 import { useRoom } from "../atoms/room";
 import { Sound } from "expo-av/build/Audio";
 import { Audio } from "expo-av";
+import { useTimer } from "../atoms/timer";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -44,11 +45,15 @@ export const useWebRTC = () => {
     notificationId,
     webcamStarted,
     setRoomId,
+    setNotificationId,
     setWebcamStarted,
-    setIncomingCall,
   } = useRoom();
 
-  const peerConnection = useRef(new RTCPeerConnection(configuration)).current;
+  const peerConnection = useRef<RTCPeerConnection>(
+    new RTCPeerConnection(configuration)
+  ).current;
+
+  const { navigate } = useNavigation<NavProp["navigation"]>();
 
   useEffect(() => {
     const onTrack = (event: any) => {
@@ -59,25 +64,37 @@ export const useWebRTC = () => {
       setRemoteStream(remote);
     };
 
-    // const onConnectionStateChange = () => {
-    //   switch (peerConnection.connectionState) {
-    //     case "closed":
-    //     case "disconnected":
-    //     case "failed": {
-    //       setMinutes(0);
-    //       setSeconds(0);
-    //       navigate(Routes.Home);
-    //       break;
-    //     }
-    //     default:
-    //       break;
-    //   }
-    // };
+    const onConnectionStateChange = async () => {
+      switch (peerConnection?.connectionState) {
+        case "disconnected": {
+          localStream?.getTracks().forEach((track) => {
+            track.stop();
+          });
+          peerConnection.close();
+          navigate(Routes.Home);
+          console.log("DISCONNECTED");
+          // setNotificationId("");
+          // setRoomId("");
+          // setRemoteStream(undefined);
+          break;
+        }
+        case "failed": {
+          console.log("FAILED");
+          db.collection(Collection.Rooms).doc(roomId).update({
+            calling: false,
+            callEnded: false,
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    };
 
-    // peerConnection.addEventListener(
-    //   "connectionstatechange",
-    //   onConnectionStateChange
-    // );
+    peerConnection.addEventListener(
+      "connectionstatechange",
+      onConnectionStateChange
+    );
 
     peerConnection.addEventListener("track", onTrack);
 

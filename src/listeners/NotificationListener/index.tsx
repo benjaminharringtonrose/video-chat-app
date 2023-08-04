@@ -53,10 +53,10 @@ const NotificationLister: FC = () => {
 
   useEffect(() => {
     if (!user?.uid || notificationId) {
-      console.log("not listening to call invites");
+      console.log("NOTIFICATIONS: NOT LISTENING", user?.username);
       return;
     }
-    console.log("listening to invitations");
+    console.log("NOTIFICATIONS: LISTENING", user?.username);
     const unsubscribe = db
       .collection(Collection.Notifications)
       .where(QueryKey.ReceiverId, "==", user?.uid)
