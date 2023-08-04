@@ -19,6 +19,7 @@ import * as deviceStorage from "./utils";
 import { Collection, IUser } from "./types";
 import { auth, db } from "./api/firebase";
 import { navigationRef } from "./navigation/RootNavigation";
+import { IncomingCall } from "./components";
 
 const WrappedApp: FC = () => {
   const { initializing, setUser, startup } = useAuth();
@@ -73,6 +74,7 @@ const WrappedApp: FC = () => {
   return (
     <NavigationContainer ref={navigationRef} theme={Theme}>
       <RootNavigator />
+      <IncomingCall />
     </NavigationContainer>
   );
 };

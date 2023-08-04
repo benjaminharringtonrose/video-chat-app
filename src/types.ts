@@ -70,6 +70,7 @@ export enum Collection {
   Rooms = "rooms",
   OfferCandidates = "offerCandidates",
   AnswerCandidates = "answerCandidates",
+  Calls = "calls",
 }
 
 export enum CallMode {

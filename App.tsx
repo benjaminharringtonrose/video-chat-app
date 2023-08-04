@@ -14,6 +14,7 @@ import {
   UserListener,
 } from "./src/listeners";
 import RoomListener from "./src/listeners/RoomListener";
+import { Host } from "react-native-portalize";
 
 LogBox.ignoreLogs(["Error: No native splash screen", "No video stream"]);
 
@@ -60,14 +61,16 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <RecoilRoot>
-        <StatusBar style={"light"} />
-        <WrappedApp />
-        <NotificationListener />
-        <UserListener />
-        <RoomListener />
-        <CallListener />
-      </RecoilRoot>
+      <Host>
+        <RecoilRoot>
+          <StatusBar style={"light"} />
+          <WrappedApp />
+          <NotificationListener />
+          <UserListener />
+          <RoomListener />
+          <CallListener />
+        </RecoilRoot>
+      </Host>
     </GestureHandlerRootView>
   );
 }

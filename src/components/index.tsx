@@ -15,3 +15,4 @@ export { default as SearchResultCard } from "./SearchResultCard";
 export { default as InvitationCard } from "./InvitationCard";
 export { default as Badge } from "./Badge";
 export { default as Timer } from "./Timer";
+export { default as IncomingCall } from "./IncomingCall";

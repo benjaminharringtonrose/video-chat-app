@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Chait",
+    "name": "VideoChait",
     "slug": "video-chat-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,7 +26,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#1F232B"
       },
       "package": "com.benjaminhrose.chait",

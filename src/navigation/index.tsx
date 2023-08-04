@@ -25,8 +25,13 @@ const HomeStack = createNativeStackNavigator();
 const HomeStackNavigator: FC = () => (
   <HomeStack.Navigator
     screenOptions={({ navigation, route }) => ({
+      cardStyle: {
+        backgroundColor: Color.background,
+      },
       headerShown: true,
-      headerStyle: { backgroundColor: Color.background },
+      headerStyle: {
+        backgroundColor: Color.background,
+      },
       headerTitle: "VideoChait",
       headerTitleStyle: {
         color: Color.text,
@@ -160,12 +165,19 @@ const TabNavigator: FC = () => (
   </Tab.Navigator>
 );
 
-const RootStack = createNativeStackNavigator<AnyParams>();
+const RootStack = createNativeStackNavigator();
 
 export const RootNavigator: FC = () => {
   const { user } = useAuth();
   return (
-    <RootStack.Navigator screenOptions={{ headerShown: false }}>
+    <RootStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: Color.background,
+        },
+      }}
+    >
       {user ? (
         <>
           <RootStack.Screen name={Routes.Tabs} component={TabNavigator} />
@@ -176,13 +188,18 @@ export const RootNavigator: FC = () => {
               headerShown: true,
               headerTransparent: true,
               headerTitle: "",
+              presentation: "fullScreenModal",
+              animation: "slide_from_bottom",
+              contentStyle: {
+                backgroundColor: Color.background,
+              },
               headerLeft: () => {
                 return (
                   <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={{ zIndex: 999 }}
                   >
-                    <Icon name={"chevron-back"} size={30} color={Color.text} />
+                    <Icon name={"close"} size={30} color={Color.text} />
                   </TouchableOpacity>
                 );
               },
