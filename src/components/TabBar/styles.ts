@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   root: {
     flexDirection: "row",
-    paddingVertical: 20,
+    paddingVertical: 15,
     marginHorizontal: 10,
     borderRadius: 20,
   },

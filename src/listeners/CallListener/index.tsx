@@ -13,7 +13,7 @@ const CallListener: FC = () => {
       require("../../../assets/sounds/incoming-call.mp3")
     );
     const { sound: outgoingCall } = await Audio.Sound.createAsync(
-      require("../../../assets/sounds/rotary-phone.mp3")
+      require("../../../assets/sounds/outgoing-call-2.mp3")
     );
     incomingCallRef.current = incomingCall;
     outgoingCallRef.current = outgoingCall;

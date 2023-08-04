@@ -15,7 +15,7 @@ import {
 } from "./src/listeners";
 import RoomListener from "./src/listeners/RoomListener";
 
-LogBox.ignoreLogs(["Error: No native splash screen"]);
+LogBox.ignoreLogs(["Error: No native splash screen", "No video stream"]);
 
 // Notifications.setNotificationHandler({
 //   handleNotification: async () => ({

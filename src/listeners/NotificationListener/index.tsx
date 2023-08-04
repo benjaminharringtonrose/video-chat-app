@@ -13,6 +13,7 @@ import {
   QueryKey,
 } from "../../types";
 import { roomState, useRoom } from "../../atoms/room";
+import { orderBy } from "lodash";
 
 const NotificationLister: FC = () => {
   const { user } = useRecoilValue(authState);
@@ -45,7 +46,7 @@ const NotificationLister: FC = () => {
 
         setNotifications((state) => ({
           ...state,
-          friendRequests,
+          friendRequests: orderBy(friendRequests, ["createdAt"], ["desc"]),
         }));
       });
     () => unsubscribe();
@@ -96,7 +97,7 @@ const NotificationLister: FC = () => {
 
         setNotifications((state) => ({
           ...state,
-          invitations: notifications,
+          invitations: orderBy(notifications, ["createdAt"], ["desc"]),
         }));
       });
 

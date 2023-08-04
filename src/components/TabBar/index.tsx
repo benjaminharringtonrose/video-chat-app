@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import {
   InteractionManager,
+  Platform,
   Pressable,
   View,
   useWindowDimensions,
@@ -47,7 +48,10 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
       style={[
         styles.root,
         {
-          marginBottom: bottom,
+          marginBottom: Platform.select({
+            ios: bottom,
+            android: bottom + 10,
+          }),
           backgroundColor: Color.card,
         },
       ]}
@@ -84,9 +88,9 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
           const color = isFocused ? Color.primary : Color.grey;
           switch (routeName) {
             case Routes.HomeStack:
-              return <Icon name={"home"} size={30} color={color} />;
+              return <Icon name={"home"} size={24} color={color} />;
             case Routes.SearchStack:
-              return <Icon name={"search"} size={30} color={color} />;
+              return <Icon name={"search"} size={24} color={color} />;
             case Routes.NotificationsStack:
               return (
                 <View>
@@ -95,11 +99,11 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
                       <Badge />
                     </View>
                   )}
-                  <Icon name={"bell"} size={30} color={color} />
+                  <Icon name={"bell"} size={24} color={color} />
                 </View>
               );
             case Routes.AccountStack:
-              return <Icon name={"user"} size={30} color={color} />;
+              return <Icon name={"user"} size={24} color={color} />;
           }
         };
 

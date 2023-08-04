@@ -18,6 +18,8 @@ import styles from "./styles";
 import { useRoom } from "../../atoms/room";
 import { Timer } from "../../components";
 import { useTimer } from "../../atoms/timer";
+import LottieView from "lottie-react-native";
+import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
@@ -28,6 +30,7 @@ const VideoChatScreen: FC = () => {
     createRoom,
     joinRoom,
     endStream,
+    webcamStarted,
   } = useWebRTC();
 
   const { params } = useRoute<NavProp["route"]>();
@@ -56,6 +59,7 @@ const VideoChatScreen: FC = () => {
       calling: true,
       callAnswered: false,
       callEnded: false,
+      createdAt: new Date().toISOString(),
     };
 
     try {
@@ -108,23 +112,48 @@ const VideoChatScreen: FC = () => {
       {isRunning && (
         <Timer style={{ zIndex: 3, alignItems: "center", marginTop: 50 }} />
       )}
-      {showRemoteStream && remoteStream && (
-        <RTCView
-          streamURL={remoteStream.toURL()}
-          style={{
-            position: "absolute",
-            width,
-            height: height + 30,
-            zIndex: 0,
-          }}
-          objectFit={"cover"}
-          mirror
-          zOrder={0}
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          paddingTop: 60,
+        }}
+      >
+        <LottieView
+          source={require("../../../assets/lottie/calling2.json")}
+          style={{ width: 150, height: 150 }}
+          loop={true}
+          autoPlay={true}
         />
+      </View>
+      {showRemoteStream && remoteStream && (
+        <Reanimated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          style={{ position: "absolute" }}
+        >
+          <RTCView
+            streamURL={remoteStream.toURL()}
+            style={{
+              position: "absolute",
+              width,
+              height: height + 30,
+              zIndex: 0,
+            }}
+            objectFit={"cover"}
+            mirror
+            zOrder={0}
+          />
+        </Reanimated.View>
       )}
       <View style={styles.overlayContainer}>
-        {localStream && (
-          <View style={[styles.localStreamContainer]}>
+        {webcamStarted && localStream && (
+          <Reanimated.View
+            entering={FadeIn}
+            exiting={FadeOut}
+            style={styles.localStreamContainer}
+          >
             <RTCView
               objectFit={"cover"}
               style={{
@@ -136,7 +165,7 @@ const VideoChatScreen: FC = () => {
               mirror
               zOrder={1}
             />
-          </View>
+          </Reanimated.View>
         )}
         <View style={styles.endCallContainer}>
           <TouchableOpacity

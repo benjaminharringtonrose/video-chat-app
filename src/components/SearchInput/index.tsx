@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import {
+  Keyboard,
   StyleProp,
   TextInput,
   TouchableOpacity,
@@ -44,6 +45,7 @@ const SearchInput: FC<IProps> = ({
         placeholderTextColor={Color.placeholder}
         cursorColor={Color.placeholder}
         onSubmitEditing={onSearch}
+        returnKeyType={"search"}
       />
     </View>
   );

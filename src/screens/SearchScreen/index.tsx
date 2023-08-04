@@ -81,12 +81,17 @@ const SearchScreen: FC = () => {
         placeholder={"Search"}
         style={styles.searchInput}
       />
-      {!searchResults.length && <EmptyStateView title={"No search results"} />}
       <FlatList
         data={searchResults}
         renderItem={renderItem}
         keyExtractor={(item) => item.uid}
         ItemSeparatorComponent={ItemSeparator}
+        ListHeaderComponent={() => {
+          if (!searchResults.length) {
+            return <EmptyStateView title={"No search results"} />;
+          }
+          return null;
+        }}
       />
     </View>
   );

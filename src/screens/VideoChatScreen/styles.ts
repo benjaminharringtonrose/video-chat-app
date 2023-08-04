@@ -6,11 +6,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   localStreamContainer: {
-    alignItems: "flex-end",
-    marginRight: 20,
-    marginBottom: 20,
+    position: "absolute",
     borderRadius: 10,
     overflow: "hidden",
+    left: "60%",
+    bottom: "30%",
   },
   endCallContainer: {
     zIndex: 3,

@@ -26,6 +26,7 @@ export interface INotification {
   calling?: boolean;
   callAnswered?: boolean;
   callEnded?: boolean;
+  createdAt?: string;
 }
 
 export interface IRoom {

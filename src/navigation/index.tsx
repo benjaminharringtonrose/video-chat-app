@@ -27,11 +27,11 @@ const HomeStackNavigator: FC = () => (
     screenOptions={({ navigation, route }) => ({
       headerShown: true,
       headerStyle: { backgroundColor: Color.background },
-      headerTitle: "Chait",
+      headerTitle: "VideoChait",
       headerTitleStyle: {
         color: Color.text,
         fontFamily: FontFamily.Bold,
-        fontSize: 36,
+        fontSize: 28,
       },
       headerShadowVisible: false,
       headerLeft: () => {
@@ -69,7 +69,7 @@ const SearchStackNavigator: FC = () => (
       headerTitleStyle: {
         color: Color.white,
         fontFamily: FontFamily.Bold,
-        fontSize: 36,
+        fontSize: 28,
       },
       headerShadowVisible: false,
     })}
@@ -89,7 +89,7 @@ const NotificationsStackNavigator: FC = () => (
       headerTitleStyle: {
         color: Color.white,
         fontFamily: FontFamily.Bold,
-        fontSize: 36,
+        fontSize: 28,
       },
       headerShadowVisible: false,
     })}
@@ -112,7 +112,7 @@ const AccountStackNavigator: FC = () => (
       headerTitleStyle: {
         color: Color.white,
         fontFamily: FontFamily.Bold,
-        fontSize: 36,
+        fontSize: 28,
       },
       headerShadowVisible: false,
     })}
@@ -133,7 +133,7 @@ const TabNavigator: FC = () => (
       headerTitleStyle: {
         color: Color.white,
         fontFamily: FontFamily.Bold,
-        fontSize: 36,
+        fontSize: 28,
       },
     }}
   >
@@ -192,11 +192,11 @@ export const RootNavigator: FC = () => {
       ) : (
         <RootStack.Group
           screenOptions={{
-            headerTitle: "Chait",
+            headerTitle: "VideoChait",
             headerTitleStyle: {
               color: Color.white,
               fontFamily: FontFamily.Bold,
-              fontSize: 36,
+              fontSize: 28,
             },
             headerStyle: {
               backgroundColor: Color.background,
