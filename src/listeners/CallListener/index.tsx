@@ -87,8 +87,9 @@ const CallListener: FC = () => {
           calls.push(snapshot.data() as ICall);
         });
         const incomingCall = orderBy(calls, "createdAt", "desc")[0];
+        console.log(incomingCall);
         if (incomingCall) {
-          console.log("INCOMING CALL");
+          console.log("INCOMING CALL", user?.username);
           setIncomingCall(true);
           setCurrentCall(incomingCall);
         } else {

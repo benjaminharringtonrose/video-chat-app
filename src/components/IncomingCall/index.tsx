@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import Icon from "@expo/vector-icons/MaterialIcons";
+import FeatherIcon from "@expo/vector-icons/Feather";
 import { Portal } from "react-native-portalize";
 import { Image } from "expo-image";
 import { BlurView } from "expo-blur";
@@ -94,7 +95,7 @@ const IncomingCall: FC = () => {
               style={styles.acceptCallButton}
               onPress={acceptCall}
             >
-              <Icon name={"call-end"} color={"white"} size={40} />
+              <Icon name={"videocam"} color={"white"} size={40} />
             </TouchableOpacity>
           </View>
         </BlurView>

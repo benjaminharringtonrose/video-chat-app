@@ -272,14 +272,11 @@ export const useWebRTC = () => {
       console.warn("endStream: No roomId");
     }
     try {
+      console.log("currentCall?.id", currentCall?.id ?? "none");
       setOutgoingCall(false);
       const roomDoc = db.collection(Collection.Rooms).doc(roomId);
       const callDoc = db.collection(Collection.Calls).doc(currentCall?.id);
 
-      localStream?.getTracks().forEach((track) => {
-        track.stop();
-      });
-      peerConnection.close();
       await callDoc.delete();
       await roomDoc.update({
         calling: false,
@@ -288,6 +285,11 @@ export const useWebRTC = () => {
       setLocalStream(undefined);
       setRemoteStream(undefined);
       setShowRemoteStream(false);
+
+      localStream?.getTracks().forEach((track) => {
+        track.stop();
+      });
+      peerConnection.close();
     } catch (e) {
       console.log("endStream Error:", e);
     }

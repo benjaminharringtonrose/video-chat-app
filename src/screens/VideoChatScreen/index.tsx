@@ -36,7 +36,7 @@ const VideoChatScreen: FC = () => {
 
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
-  const { setRoomId, roomId, showRemoteStream } = useRoom();
+  const { setRoomId, roomId, showRemoteStream, setCurrentCall } = useRoom();
 
   const { isRunning } = useTimer();
 
@@ -57,6 +57,7 @@ const VideoChatScreen: FC = () => {
       createdAt: new Date().toISOString(),
     };
     await callDoc.set(call);
+    setCurrentCall(call);
   };
 
   useEffect(() => {
