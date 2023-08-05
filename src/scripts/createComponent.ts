@@ -1,10 +1,10 @@
 import fs from "fs-extra";
 
-const createScreen = async () => {
-  const screenName = process.argv[2];
+const createComponent = async () => {
+  const componentName = process.argv[2];
 
   await fs.outputFile(
-    `${process.cwd()}/src/screens/${screenName}/styles.ts`,
+    `${process.cwd()}/src/components/${componentName}/styles.ts`,
     `import { StyleSheet } from 'react-native';
   
   const styles = StyleSheet.create({
@@ -20,23 +20,23 @@ const createScreen = async () => {
   );
 
   await fs.outputFile(
-    `${process.cwd()}/src/screens/${screenName}/index.tsx`,
+    `${process.cwd()}/src/components/${componentName}/index.tsx`,
     `import React, { FC } from 'react';
   import { View, Text } from 'react-native';
   import styles from './styles';
   
-  const ${screenName}: FC = () => {
+  const ${componentName}: FC = () => {
   
     return (
       <View style={styles.root}>
-        <Text>{"${screenName}"}</Text>
+        <Text>{"${componentName}"}</Text>
       </View>
     )
   };
 
-  export default ${screenName}
+  export default ${componentName}
   `
   );
 };
 
-createScreen();
+createComponent();

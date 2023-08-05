@@ -7,7 +7,7 @@ import Icon from "@expo/vector-icons/Ionicons";
 import { auth } from "../../api/firebase";
 import * as deviceStorage from "../../utils";
 import { Color, FontFamily } from "../../constants";
-import { Button, SettingRow } from "../../components";
+import { Avatar, Button, SettingRow } from "../../components";
 import styles from "./styles";
 
 const AccountScreen: FC = () => {
@@ -30,9 +30,9 @@ const AccountScreen: FC = () => {
               marginBottom: 10,
             }}
           >
-            <Image
-              style={styles.avatarPlaceholder}
-              source={{ uri: "https://picsum.photos/100/100" }}
+            <Avatar
+              source={{ uri: "https://picsum.photos/id/239/200/300" }}
+              imageStyle={styles.avatarPlaceholder}
             />
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text

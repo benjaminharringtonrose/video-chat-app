@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import styles from "./styles";
 import { Color } from "../../constants";
+import Avatar from "../Avatar";
 
 interface IProps {
   username?: string;
@@ -23,10 +24,7 @@ const FriendRequestCard: FC<IProps> = ({
     <View
       style={[styles.friendRequest, !viewed && { backgroundColor: Color.card }]}
     >
-      <Image
-        style={styles.avatar}
-        source={{ uri: "https://picsum.photos/id/239/200/300" }}
-      />
+      <Avatar source={{ uri: "https://picsum.photos/id/239/200/300" }} />
       <View style={styles.friendRequestInner}>
         <Text style={styles.friendRequestLabel}>
           <Text style={styles.friendRequestUsername}>{username}</Text>

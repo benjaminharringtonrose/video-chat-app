@@ -8,7 +8,7 @@
     "ios": "yarn prebuild && expo run:ios",
     "web": "expo start --web",
     "prebuild": "npx expo prebuild",
-    "create-screen": "npx ts-node src/scripts/createScreen.ts",
+    "create-component": "npx ts-node src/scripts/createComponent.ts",
     "device": "yarn ios -d babel"
   },
   "dependencies": {

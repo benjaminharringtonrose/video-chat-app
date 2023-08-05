@@ -15,6 +15,7 @@ import { db } from "../../api/firebase";
 import { CallMode, Collection } from "../../types";
 import { navigate } from "../../navigation/RootNavigation";
 import { Routes } from "../../navigation/types";
+import Avatar from "../Avatar";
 
 const IncomingCall: FC = () => {
   const {
@@ -74,9 +75,9 @@ const IncomingCall: FC = () => {
         >
           <View style={styles.outerRow}>
             <View style={styles.leftContainer}>
-              <Image
-                style={styles.avatar}
+              <Avatar
                 source={{ uri: "https://picsum.photos/id/239/200/300" }}
+                imageStyle={{ width: 60, height: 60, borderRadius: 30 }}
               />
               <Text style={styles.usernameText}>
                 {currentCall?.senderUsername}

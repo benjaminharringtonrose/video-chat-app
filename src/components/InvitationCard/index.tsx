@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import styles from "./styles";
 import { Color } from "../../constants";
 import Badge from "../Badge";
+import Avatar from "../Avatar";
 
 interface IProps {
   label?: string;
@@ -38,11 +39,7 @@ const InvitationCard: FC<IProps> = ({
       style={[styles.root, !viewed && { backgroundColor: Color.card }]}
       disabled={disabled}
     >
-      <Image
-        style={styles.avatar}
-        source={{ uri: "https://picsum.photos/id/239/200/300" }}
-      />
-
+      <Avatar source={{ uri: "https://picsum.photos/id/239/200/300" }} />
       <View style={styles.rowContainer}>
         <Text style={styles.label}>{getLabel()}</Text>
       </View>
