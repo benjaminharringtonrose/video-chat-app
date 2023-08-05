@@ -22,6 +22,7 @@ interface IProps {
   calling?: boolean;
   callEnded?: boolean;
   callAnswered?: boolean;
+  isOnline?: boolean;
 }
 
 const ListItem: FC<IProps> = ({
@@ -34,10 +35,11 @@ const ListItem: FC<IProps> = ({
   calling,
   callEnded,
   callAnswered,
+  isOnline,
 }) => {
   switch (type) {
     case ListItemType.Friends:
-      return <FriendCard label={label} onPress={onPress} />;
+      return <FriendCard label={label} onPress={onPress} isOnline={isOnline} />;
     case ListItemType.Results:
       return <SearchResultCard username={username} onPress={onPress} />;
     case ListItemType.FriendRequest:

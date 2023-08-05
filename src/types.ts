@@ -8,6 +8,7 @@ export interface IUser {
   lastLoginAt?: string;
   friends?: string[];
   invitations?: string[];
+  isOnline?: boolean;
 }
 
 export enum NotificationType {

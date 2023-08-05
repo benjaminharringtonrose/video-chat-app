@@ -6,6 +6,12 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
+  onlineBubble: {
+    position: "absolute",
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
 });
 
 export default styles;

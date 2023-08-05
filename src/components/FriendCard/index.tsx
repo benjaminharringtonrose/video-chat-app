@@ -10,13 +10,17 @@ import Avatar from "../Avatar";
 interface IProps {
   label?: string;
   onPress: () => void;
+  isOnline?: boolean;
 }
 
-const FriendCard: FC<IProps> = ({ label = "--", onPress }) => {
+const FriendCard: FC<IProps> = ({ label = "--", onPress, isOnline }) => {
   return (
     <Reanimated.View entering={FadeIn} exiting={FadeOut}>
       <TouchableOpacity style={styles.friends} onPress={onPress}>
-        <Avatar source={{ uri: "https://picsum.photos/id/239/200/300" }} />
+        <Avatar
+          source={{ uri: "https://picsum.photos/id/239/200/300" }}
+          isOnline={!!isOnline}
+        />
         <View style={styles.spaceBetween}>
           <Text style={styles.friendLabel}>{label}</Text>
           <Icon name={"chevron-forward"} size={20} color={Color.text} />

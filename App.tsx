@@ -11,6 +11,7 @@ import { LogBox, Platform } from "react-native";
 import {
   CallListener,
   NotificationListener,
+  OnlineStatusListener,
   UserListener,
 } from "./src/listeners";
 import RoomListener from "./src/listeners/RoomListener";
@@ -71,6 +72,7 @@ export default function App() {
           <UserListener />
           <RoomListener />
           <CallListener />
+          <OnlineStatusListener />
         </RecoilRoot>
       </Host>
     </GestureHandlerRootView>

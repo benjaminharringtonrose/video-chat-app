@@ -54,6 +54,7 @@ const HomeScreen: FC = () => {
             friendId: item.uid,
           })
         }
+        isOnline={item.isOnline}
       />
     );
   };
