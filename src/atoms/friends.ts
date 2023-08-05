@@ -14,8 +14,6 @@ export const useFriends = () => {
   const [loadingFriends, setLoadingFriends] = useState(false);
   const [state, setState] = useRecoilState(friendsState);
 
-  const { user } = useAuth();
-
   const getFriends = async (friendIds: string[]) => {
     setLoadingFriends(true);
 
@@ -28,9 +26,6 @@ export const useFriends = () => {
         friends.push(friend);
       }
     }
-
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-
     setState(friends);
     setLoadingFriends(false);
   };

@@ -32,7 +32,7 @@ const SearchInput: FC<IProps> = ({
         <Icon
           name={"search"}
           size={20}
-          style={{ justifyContent: "flex-end" }}
+          style={{ justifyContent: "flex-end", width: 20, height: 20 }}
           color={Color.text}
         />
       </TouchableOpacity>

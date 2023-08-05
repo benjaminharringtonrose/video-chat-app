@@ -118,7 +118,9 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             onLongPress={onLongPress}
             style={{ flex: 1, alignItems: "center" }}
           >
-            {getIcon(route.name as Routes)}
+            <View style={{ width: 24, height: 24 }}>
+              {getIcon(route.name as Routes)}
+            </View>
           </Pressable>
         );
       })}

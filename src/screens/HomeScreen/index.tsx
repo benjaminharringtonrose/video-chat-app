@@ -66,10 +66,10 @@ const HomeScreen: FC = () => {
 
   const isEmpty = !friends.length;
 
-  if (loadingFriends) {
+  if (loadingFriends || (user?.friends && !friends.length)) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator />
+        <ActivityIndicator size={"large"} />
       </View>
     );
   }
