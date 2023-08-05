@@ -45,7 +45,7 @@ const UserListener: FC = () => {
           }
         }
       });
-    () => unsubscribe();
+    return () => unsubscribe();
   }, [user?.uid]);
 
   return null;

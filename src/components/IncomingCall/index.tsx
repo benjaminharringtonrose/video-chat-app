@@ -78,7 +78,9 @@ const IncomingCall: FC = () => {
                 style={styles.avatar}
                 source={{ uri: "https://picsum.photos/id/239/200/300" }}
               />
-              <Text style={styles.usernameText}>{"JohnDeere555"}</Text>
+              <Text style={styles.usernameText}>
+                {currentCall?.senderUsername}
+              </Text>
             </View>
 
             <TouchableOpacity

@@ -112,9 +112,9 @@ const WrappedApp: FC = () => {
       }
     };
     prepare();
-  }, [fontsLoaded, initializing]);
+  }, [fontsLoaded, initializing, appIsReady]);
 
-  if (!fontsLoaded || initializing) {
+  if (!fontsLoaded || initializing || !appIsReady) {
     return null;
   }
 
