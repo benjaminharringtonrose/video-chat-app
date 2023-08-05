@@ -18,7 +18,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
         "NSMicrophoneUsageDescription": "Microphone permission description",
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": ["audio"],
+        "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your speech to text."
       },
       "config": {
         "usesNonExemptEncryption": false
@@ -48,5 +49,8 @@
       }
     }
   },
-  "plugins": ["@config-plugins/react-native-webrtc"]
+  "plugins": [
+    "@config-plugins/react-native-webrtc",
+    "@react-native-voice/voice"
+  ]
 }

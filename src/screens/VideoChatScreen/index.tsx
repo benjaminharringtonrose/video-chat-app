@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { RTCView } from "react-native-webrtc";
@@ -8,19 +8,14 @@ import { useRoute } from "@react-navigation/native";
 import { NavProp } from "../../navigation/types";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
-import {
-  CallMode,
-  Collection,
-  ICall,
-  INotification,
-  NotificationType,
-} from "../../types";
+import { CallMode, Collection, ICall } from "../../types";
 import styles from "./styles";
 import { useRoom } from "../../atoms/room";
 import { Timer } from "../../components";
 import { useTimer } from "../../atoms/timer";
 import LottieView from "lottie-react-native";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Voice from "@react-native-voice/voice";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
@@ -37,6 +32,8 @@ const VideoChatScreen: FC = () => {
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
   const { setRoomId, roomId, showRemoteStream, setCurrentCall } = useRoom();
+
+  const [speecResult, setSpeechResult] = useState<string | undefined>("");
 
   const { isRunning } = useTimer();
 
@@ -82,6 +79,29 @@ const VideoChatScreen: FC = () => {
     };
     bootstrap();
   }, []);
+
+  useEffect(() => {
+    if (!webcamStarted) return;
+    const setup = async () => {
+      await Voice.start("en-US");
+
+      Voice.onSpeechStart = (e) => {
+        console.log("speechStart successful", e);
+      };
+      Voice.onSpeechEnd = (e) => {
+        console.log("stop handler");
+      };
+      Voice.onSpeechResults = (e) => {
+        console.log(e);
+        const text = e.value?.[0];
+        setSpeechResult(text);
+      };
+    };
+    setup();
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, [webcamStarted]);
 
   return (
     <View style={{ flex: 1, backgroundColor: Color.background }}>
