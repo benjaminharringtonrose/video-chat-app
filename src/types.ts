@@ -77,3 +77,12 @@ export enum CallMode {
   Host = "host",
   Join = "join",
 }
+
+export interface ICall {
+  id: string;
+  senderUsername?: string;
+  senderId?: string;
+  receiverId?: string;
+  roomId: string;
+  createdAt: string;
+}

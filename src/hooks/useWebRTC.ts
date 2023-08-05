@@ -39,8 +39,8 @@ export const useWebRTC = () => {
 
   const {
     roomId,
-    notificationId,
     webcamStarted,
+    currentCall,
     setWebcamStarted,
     setIncomingCall,
     setOutgoingCall,
@@ -233,16 +233,8 @@ export const useWebRTC = () => {
   const joinRoom = async (roomId: string) => {
     try {
       const roomDoc = db.collection(Collection.Rooms).doc(roomId);
-      const notificationDoc = db
-        .collection(Collection.Notifications)
-        .doc(notificationId);
 
       setIncomingCall(false);
-
-      await notificationDoc.update({
-        calling: false,
-        callAnswered: true,
-      });
 
       await roomDoc.update({
         calling: false,
@@ -282,18 +274,13 @@ export const useWebRTC = () => {
     try {
       setOutgoingCall(false);
       const roomDoc = db.collection(Collection.Rooms).doc(roomId);
-      const notificationDoc = db
-        .collection(Collection.Notifications)
-        .doc(notificationId);
+      const callDoc = db.collection(Collection.Calls).doc(currentCall?.id);
 
       localStream?.getTracks().forEach((track) => {
         track.stop();
       });
       peerConnection.close();
-      await notificationDoc.update({
-        calling: false,
-        callEnded: true,
-      });
+      await callDoc.delete();
       await roomDoc.update({
         calling: false,
         callEnded: true,

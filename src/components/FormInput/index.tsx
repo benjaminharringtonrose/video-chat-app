@@ -72,7 +72,6 @@ const FormInput: FC<IFormInputProps> = ({
               keyboardType={keyboardType}
               returnKeyType={returnKeyType}
               onSubmitEditing={onSubmitEditing}
-              autoCapitalize={autoCapitalize}
             />
           )}
         />

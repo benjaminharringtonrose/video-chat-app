@@ -46,6 +46,7 @@ const SearchInput: FC<IProps> = ({
         cursorColor={Color.placeholder}
         onSubmitEditing={onSearch}
         returnKeyType={"search"}
+        autoCapitalize={"none"}
       />
     </View>
   );

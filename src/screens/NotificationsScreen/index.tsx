@@ -39,8 +39,6 @@ const NotificationsScreen: FC = () => {
   const { friendRequests, invitations, setUnreadNotifications } =
     useNotifications();
 
-  const { setNotificationId, setRoomId } = useRoom();
-
   const { navigate } = useNavigation<NavProp["navigation"]>();
 
   const isEmpty = !friendRequests.length && !invitations.length;
@@ -135,31 +133,6 @@ const NotificationsScreen: FC = () => {
             isFriend={isFriend(item?.senderId ?? "", friends)}
             onPress={() => acceptFriendRequest(item?.senderId ?? "")}
             viewed={item.viewed}
-          />
-        );
-      case NotificationType.Invitation:
-        return (
-          <ListItem
-            type={ListItemType.Invitation}
-            key={item.senderId}
-            username={item.senderUsername}
-            label={"wants you to join his room"}
-            onPress={() => {
-              if (item?.id && item?.roomId) {
-                setNotificationId(item.id);
-                setRoomId(item.roomId);
-                navigate(Routes.VideoChat, {
-                  mode: CallMode.Join,
-                  friendId: item.senderId,
-                });
-              } else {
-                console.log("ISSUE ON NOTIFICATIONS SCREEN");
-              }
-            }}
-            viewed={item.viewed}
-            calling={item.calling}
-            callEnded={item.callEnded}
-            callAnswered={item.callAnswered}
           />
         );
       default:

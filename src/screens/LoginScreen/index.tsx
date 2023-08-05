@@ -76,6 +76,7 @@ const LoginScreen: FC = () => {
           returnKeyType="next"
           onSubmitEditing={() => setFocus("password")}
           autoCapitalize={"none"}
+          keyboardType={"email-address"}
           style={[styles.margin]}
         />
         <FormPasswordInput

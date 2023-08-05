@@ -9,14 +9,8 @@ import { navigate } from "../../navigation/RootNavigation";
 import { useAuth } from "../../atoms/auth";
 
 const RoomListener: FC = () => {
-  const {
-    roomId,
-    notificationId,
-    setOutgoingCall,
-    setIncomingCall,
-    setNotificationId,
-    setRoomId,
-  } = useRoom();
+  const { roomId, currentCall, setOutgoingCall, setRoomId, setCurrentCall } =
+    useRoom();
 
   const { user } = useAuth();
 
@@ -51,8 +45,9 @@ const RoomListener: FC = () => {
             seconds: 0,
             isRunning: false,
           }));
-          setNotificationId("");
+          setOutgoingCall(false);
           setRoomId("");
+          await db.collection(Collection.Calls).doc(currentCall?.id).delete();
           navigate(Routes.Home);
         }
       });

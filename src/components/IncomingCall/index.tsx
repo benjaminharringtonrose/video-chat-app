@@ -11,9 +11,19 @@ import Reanimated, {
 } from "react-native-reanimated";
 import styles from "./styles";
 import { useRoom } from "../../atoms/room";
+import { db } from "../../api/firebase";
+import { CallMode, Collection } from "../../types";
+import { navigate } from "../../navigation/RootNavigation";
+import { Routes } from "../../navigation/types";
 
 const IncomingCall: FC = () => {
-  const { incomingCall } = useRoom();
+  const {
+    incomingCall,
+    setIncomingCall,
+    setCurrentCall,
+    currentCall,
+    setRoomId,
+  } = useRoom();
 
   const y = useSharedValue(-100);
 
@@ -33,8 +43,26 @@ const IncomingCall: FC = () => {
     ],
   }));
 
-  const declineCall = () => {
-    // decline the call
+  const declineCall = async () => {
+    await db.collection(Collection.Rooms).doc(currentCall?.roomId).set({
+      calling: false,
+      callAnswered: false,
+      callEnded: true,
+    });
+    await db.collection(Collection.Calls).doc(currentCall?.id).delete();
+    setCurrentCall(undefined);
+    setIncomingCall(false);
+  };
+
+  const acceptCall = () => {
+    if (!currentCall) {
+      return console.log("acceptCall Error: no currentCall");
+    }
+    setRoomId(currentCall?.roomId);
+    navigate(Routes.VideoChat, {
+      mode: CallMode.Join,
+      friendId: currentCall?.senderId,
+    });
   };
   return (
     <Portal>
@@ -61,7 +89,7 @@ const IncomingCall: FC = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.acceptCallButton}
-              onPress={declineCall}
+              onPress={acceptCall}
             >
               <Icon name={"call-end"} color={"white"} size={40} />
             </TouchableOpacity>

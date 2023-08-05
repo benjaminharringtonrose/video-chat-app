@@ -11,6 +11,7 @@ import { useAuth } from "../../atoms/auth";
 import {
   CallMode,
   Collection,
+  ICall,
   INotification,
   NotificationType,
 } from "../../types";
@@ -35,7 +36,7 @@ const VideoChatScreen: FC = () => {
 
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
-  const { setRoomId, setNotificationId, roomId, showRemoteStream } = useRoom();
+  const { setRoomId, roomId, showRemoteStream } = useRoom();
 
   const { isRunning } = useTimer();
 
@@ -46,31 +47,16 @@ const VideoChatScreen: FC = () => {
     if (!roomId) {
       return console.warn("No roomId");
     }
-    const invitationDoc = db.collection(Collection.Notifications).doc();
-
-    const notification: INotification = {
-      id: invitationDoc.id,
-      type: NotificationType.Invitation,
+    const callDoc = db.collection(Collection.Calls).doc();
+    const call: ICall = {
+      id: callDoc.id,
       senderUsername: user?.username,
       senderId: user?.uid,
       receiverId: params?.friendId,
       roomId,
-      viewed: false,
-      calling: true,
-      callAnswered: false,
-      callEnded: false,
       createdAt: new Date().toISOString(),
     };
-
-    try {
-      await db
-        .collection(Collection.Notifications)
-        .doc(invitationDoc.id)
-        .set(notification);
-      setNotificationId(invitationDoc.id);
-    } catch (e) {
-      console.log("sendCallInvite Error:", e);
-    }
+    await callDoc.set(call);
   };
 
   useEffect(() => {
@@ -88,17 +74,6 @@ const VideoChatScreen: FC = () => {
           setRoomId(roomDoc.id);
           await createRoom(roomDoc.id);
           await sendCallInvite(roomDoc.id);
-          // setTimeout(async () => {
-          //   const snapshot = await db
-          //     .collection(Collection.Notifications)
-          //     .doc(notificationId)
-          //     .get();
-          //   const callInvite = snapshot.data() as INotification;
-          //   if (callInvite.callEnded && !callInvite.callAnswered) {
-          //     console.log("oh crap");
-          //     endStream({ roomId });
-          //   }
-          // }, 20000);
         } catch (e) {
           console.log("bootstrap host Error:", e);
         }

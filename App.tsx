@@ -16,7 +16,11 @@ import {
 import RoomListener from "./src/listeners/RoomListener";
 import { Host } from "react-native-portalize";
 
-LogBox.ignoreLogs(["Error: No native splash screen", "No video stream"]);
+LogBox.ignoreLogs([
+  "Error: No native splash screen",
+  "No video stream",
+  "Warning: Overriding previous",
+]);
 
 // Notifications.setNotificationHandler({
 //   handleNotification: async () => ({

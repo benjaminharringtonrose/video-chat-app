@@ -1,23 +1,26 @@
 import { atom, useRecoilState } from "recoil";
+import { ICall } from "../types";
 
 interface IRoomState {
   roomId: string;
-  notificationId: string;
+  callId: string;
   webcamStarted: boolean;
   incomingCall: boolean;
   outgoingCall: boolean;
   showRemoteStream: boolean;
+  currentCall?: ICall;
 }
 
 export const roomState = atom<IRoomState>({
   key: "roomState",
   default: {
     roomId: "",
-    notificationId: "",
+    callId: "",
     webcamStarted: false,
     incomingCall: false,
     outgoingCall: false,
     showRemoteStream: false,
+    currentCall: undefined,
   },
 });
 
@@ -28,8 +31,8 @@ export const useRoom = () => {
     setState((state) => ({ ...state, roomId }));
   };
 
-  const setNotificationId = (notificationId: string) => {
-    setState((state) => ({ ...state, notificationId }));
+  const setCallId = (callId: string) => {
+    setState((state) => ({ ...state, callId }));
   };
 
   const setWebcamStarted = (webcamStarted: boolean) => {
@@ -48,18 +51,24 @@ export const useRoom = () => {
     setState((state) => ({ ...state, showRemoteStream }));
   };
 
+  const setCurrentCall = (currentCall?: ICall) => {
+    setState((state) => ({ ...state, currentCall }));
+  };
+
   return {
     roomId: state.roomId,
-    notificationId: state.notificationId,
+    callId: state.callId,
     webcamStarted: state.webcamStarted,
     incomingCall: state.incomingCall,
     outgoingCall: state.outgoingCall,
     showRemoteStream: state.showRemoteStream,
+    currentCall: state.currentCall,
     setRoomId,
-    setNotificationId,
+    setCallId,
     setWebcamStarted,
     setIncomingCall,
     setOutgoingCall,
     setShowRemoteStream,
+    setCurrentCall,
   };
 };

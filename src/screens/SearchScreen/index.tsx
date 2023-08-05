@@ -35,7 +35,12 @@ const SearchScreen: FC = () => {
       users.docs.forEach((doc) => {
         if (doc.exists) {
           const user = doc.data() as IUser;
-          if (searchText && user.username?.includes(searchText)) {
+          if (
+            searchText &&
+            user.username
+              ?.toLocaleLowerCase()
+              .includes(searchText.toLocaleLowerCase())
+          ) {
             results.push(user);
           }
         }

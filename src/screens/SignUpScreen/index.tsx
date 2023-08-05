@@ -90,7 +90,8 @@ const SignUpScreen: FC = () => {
           label="Username"
           control={control}
           error={errors.username}
-          returnKeyType="next"
+          returnKeyType={"next"}
+          autoCapitalize={"none"}
           onSubmitEditing={() => setFocus("email")}
           style={styles.margin}
         />
@@ -99,7 +100,8 @@ const SignUpScreen: FC = () => {
           label="Email"
           control={control}
           error={errors.email}
-          returnKeyType="next"
+          returnKeyType={"next"}
+          autoCapitalize={"none"}
           onSubmitEditing={() => setFocus("password")}
           style={styles.margin}
         />
@@ -108,7 +110,7 @@ const SignUpScreen: FC = () => {
           label="Password"
           control={control}
           error={errors.password}
-          returnKeyType="done"
+          returnKeyType={"done"}
           onSubmitEditing={handleSubmit(onSubmit)}
           style={styles.margin}
           showPasswordValidator
