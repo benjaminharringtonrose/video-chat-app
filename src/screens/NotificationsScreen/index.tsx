@@ -30,6 +30,7 @@ import {
 } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
 import { useRoom } from "../../atoms/room";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const NotificationsScreen: FC = () => {
   const { user } = useAuth();
@@ -153,15 +154,6 @@ const NotificationsScreen: FC = () => {
     },
   ];
 
-  if (isEmpty) {
-    return (
-      <EmptyStateView
-        title={"You dont have any notifications"}
-        lottie={require("../../../assets/lottie/no_notifications.json")}
-      />
-    );
-  }
-
   return (
     <View style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
@@ -171,6 +163,19 @@ const NotificationsScreen: FC = () => {
         keyExtractor={(item, index) => item?.id ?? index.toString()}
         contentContainerStyle={{ paddingTop: 20 }}
         ItemSeparatorComponent={ItemSeparator}
+        ListHeaderComponent={() => {
+          if (isEmpty) {
+            return (
+              <View style={{ flex: 1 }}>
+                <EmptyStateView
+                  title={"You dont have any notifications"}
+                  lottie={require("../../../assets/lottie/no_notifications.json")}
+                />
+              </View>
+            );
+          }
+          return null;
+        }}
       />
     </View>
   );

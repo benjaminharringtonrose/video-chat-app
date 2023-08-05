@@ -30,8 +30,6 @@ LogBox.ignoreLogs([
 //   }),
 // });
 
-SplashScreen.preventAutoHideAsync();
-
 export default function App() {
   // const [expoPushToken, setExpoPushToken] = useState<string | undefined>();
   // const [notification, setNotification] = useState(false);

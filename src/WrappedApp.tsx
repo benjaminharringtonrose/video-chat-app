@@ -10,7 +10,7 @@ import {
 import { Caveat_400Regular } from "@expo-google-fonts/caveat";
 import {} from "expo-font";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { RootNavigator } from "./navigation";
 import { Color } from "./constants";
 import { useAuth } from "./atoms/auth";
@@ -20,9 +20,19 @@ import { Collection, IUser } from "./types";
 import { auth, db } from "./api/firebase";
 import { navigationRef } from "./navigation/RootNavigation";
 import { IncomingCall } from "./components";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Feather from "@expo/vector-icons/Feather";
+import * as Font from "expo-font";
+import { Image } from "expo-image";
+import { Asset } from "expo-asset";
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+} from "react-native-safe-area-context";
 
 const WrappedApp: FC = () => {
   const { initializing, setUser, startup } = useAuth();
+  const [appIsReady, setAppIsReady] = useState(false);
 
   const [fontsLoaded] = useFonts({
     Nunito_300Light,
@@ -52,6 +62,43 @@ const WrappedApp: FC = () => {
     }
   }
 
+  function cacheImages(images: string[]) {
+    return images.map((image) => {
+      if (typeof image === "string") {
+        return Image.prefetch(image);
+      } else {
+        return Asset.fromModule(image).downloadAsync();
+      }
+    });
+  }
+
+  const cacheFonts = (fonts: any[]) => {
+    return fonts.map((font) => Font.loadAsync(font));
+  };
+
+  useEffect(() => {
+    async function loadResourcesAndDataAsync() {
+      try {
+        SplashScreen.preventAutoHideAsync();
+
+        // const imageAssets = cacheImages([
+        //   "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+        //   require("./assets/images/circle.jpg"),
+        // ]);
+
+        const fontAssets = cacheFonts([FontAwesome.font, Feather.font]);
+
+        await Promise.all([...fontAssets]); // spread image assets if needed
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    loadResourcesAndDataAsync();
+  }, []);
+
   useEffect(() => {
     startup();
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
@@ -60,7 +107,7 @@ const WrappedApp: FC = () => {
 
   useEffect(() => {
     const prepare = async () => {
-      if (fontsLoaded && !initializing) {
+      if (fontsLoaded && !initializing && appIsReady) {
         await SplashScreen.hideAsync();
       }
     };
@@ -72,10 +119,12 @@ const WrappedApp: FC = () => {
   }
 
   return (
-    <NavigationContainer ref={navigationRef} theme={Theme}>
-      <RootNavigator />
-      <IncomingCall />
-    </NavigationContainer>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <NavigationContainer ref={navigationRef} theme={Theme}>
+        <RootNavigator />
+        <IncomingCall />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 

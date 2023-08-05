@@ -3901,7 +3901,7 @@ expo-application@~5.3.0:
   resolved "https://registry.yarnpkg.com/expo-application/-/expo-application-5.3.0.tgz#0811f2de69a3a7f521762fd7f8a0a4563276dada"
   integrity sha512-XLkaELwmiXW6JjFVkwuiFQaGZoNKAxNAcSJkFdz8s4rCljEwehylbzoPk37QHw3cxqb4v0/2EICtg4C4kpEVCA==
 
-expo-asset@~8.10.1:
+expo-asset@^8.10.1, expo-asset@~8.10.1:
   version "8.10.1"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-8.10.1.tgz#a7e8cf1c555ab8f844599822cb084fee95a93644"
   integrity sha512-5VMTESxgY9GBsspO/esY25SKEa7RyascVkLe/OcL1WgblNFm7xCCEEUIW8VWS1nHJQGYxpMZPr3bEfjMpdWdyA==

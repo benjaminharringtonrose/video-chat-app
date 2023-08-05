@@ -184,7 +184,7 @@ export const RootNavigator: FC = () => {
           <RootStack.Screen
             name={Routes.VideoChat}
             component={VideoChatScreen}
-            options={({ navigation }) => ({
+            options={{
               headerShown: true,
               headerTransparent: true,
               headerTitle: "",
@@ -193,17 +193,7 @@ export const RootNavigator: FC = () => {
               contentStyle: {
                 backgroundColor: Color.background,
               },
-              headerLeft: () => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={{ zIndex: 999 }}
-                  >
-                    <Icon name={"close"} size={30} color={Color.text} />
-                  </TouchableOpacity>
-                );
-              },
-            })}
+            }}
           />
         </>
       ) : (

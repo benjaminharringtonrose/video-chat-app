@@ -6,6 +6,7 @@ import {
   SectionListRenderItemInfo,
   SectionListData,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 
 import styles from "./styles";
@@ -69,25 +70,27 @@ const HomeScreen: FC = () => {
   if (loadingFriends || (user?.friends && !friends.length)) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={"large"} />
+        <ActivityIndicator size={"large"} color={Color.primary} />
       </View>
     );
   }
 
   if (isEmpty) {
     return (
-      <EmptyStateView
-        title={"You don't have any friends yet"}
-        description={
-          "Search for your friends or send them an invitation to download the app"
-        }
-        lottie={require("../../../assets/lottie/empty.json")}
-      />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <EmptyStateView
+          title={"You don't have any friends yet"}
+          description={
+            "Search for your friends or send them an invitation to download the app"
+          }
+          lottie={require("../../../assets/lottie/empty.json")}
+        />
+      </View>
     );
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: Color.background }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: Color.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}
@@ -97,7 +100,7 @@ const HomeScreen: FC = () => {
         refreshing={loadingFriends}
         ItemSeparatorComponent={ItemSeparator}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
