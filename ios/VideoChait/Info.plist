@@ -57,6 +57,8 @@
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>This app uses speech recognition to convert your speech to text.</string>
     <key>UIBackgroundModes</key>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>photo library description</string>
     <array>
       <string>audio</string>
     </array>
