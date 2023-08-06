@@ -90,7 +90,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             case Routes.HomeStack:
               return <Icon name={"home"} size={24} color={color} />;
             case Routes.SearchStack:
-              return <Icon name={"search"} size={24} color={color} />;
+              return <Icon name={"user-plus"} size={24} color={color} />;
             case Routes.NotificationsStack:
               return (
                 <View>

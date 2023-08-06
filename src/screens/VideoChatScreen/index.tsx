@@ -5,6 +5,7 @@ import { RTCView } from "react-native-webrtc";
 import LottieView from "lottie-react-native";
 import { useRoute } from "@react-navigation/native";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
+import InCallManager from "react-native-incall-manager";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import { useRoom } from "../../atoms/room";
@@ -14,7 +15,6 @@ import { NavProp } from "../../navigation/types";
 import { Timer } from "../../components";
 import { CallMode, Collection, ICall } from "../../types";
 import styles from "./styles";
-import { useSpeechRecognition } from "../../constants/useSpeechRecognition";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
@@ -51,6 +51,9 @@ const VideoChatScreen: FC = () => {
 
   useEffect(() => {
     const bootstrap = async () => {
+      InCallManager.start();
+      InCallManager.setKeepScreenOn(true);
+      InCallManager.setForceSpeakerphoneOn(true);
       await startWebcam();
       switch (params?.mode) {
         case CallMode.Join: {
@@ -65,6 +68,9 @@ const VideoChatScreen: FC = () => {
       }
     };
     bootstrap();
+    return () => {
+      InCallManager.stop();
+    };
   }, []);
 
   return (

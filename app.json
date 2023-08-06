@@ -49,8 +49,5 @@
       }
     }
   },
-  "plugins": [
-    "@config-plugins/react-native-webrtc",
-    "@react-native-voice/voice"
-  ]
+  "plugins": ["@config-plugins/react-native-webrtc"]
 }

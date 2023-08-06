@@ -2703,6 +2703,11 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
+"@types/react-native-incall-manager@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-incall-manager/-/react-native-incall-manager-4.0.0.tgz#4d3dd3cc901e7a3027207b2c868da37c882485f3"
+  integrity sha512-gDwGhiX8GU8DrsR8Ap3whi/5W+9ZqEAB7/jFgI5TYWp8O8gvAbQ0jwOqb0YldYGB02Ay9MpF6m7rPNoSVNGJQQ==
+
 "@types/react@~18.0.14":
   version "18.0.38"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.38.tgz#02a23bef8848b360a0d1dceef4432c15c21c600c"
