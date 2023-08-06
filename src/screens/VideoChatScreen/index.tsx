@@ -2,23 +2,26 @@ import React, { FC, useEffect, useState } from "react";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { RTCView } from "react-native-webrtc";
-import { useWebRTC } from "../../hooks/useWebRTC";
-import { Color } from "../../constants";
+import LottieView from "lottie-react-native";
 import { useRoute } from "@react-navigation/native";
-import { NavProp } from "../../navigation/types";
+import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
+import { useRoom } from "../../atoms/room";
+import { useTimer } from "../../atoms/timer";
+import { useWebRTC } from "../../hooks/useWebRTC";
+import { NavProp } from "../../navigation/types";
+import { Timer } from "../../components";
 import { CallMode, Collection, ICall } from "../../types";
 import styles from "./styles";
-import { useRoom } from "../../atoms/room";
-import { Timer } from "../../components";
-import { useTimer } from "../../atoms/timer";
-import LottieView from "lottie-react-native";
-import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
-import Voice from "@react-native-voice/voice";
+import { useSpeechRecognition } from "../../constants/useSpeechRecognition";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
+  const { params } = useRoute<NavProp["route"]>();
+  const { user } = useAuth();
+  const { setRoomId, roomId, showRemoteStream, setCurrentCall } = useRoom();
+  const { isRunning } = useTimer();
   const {
     localStream,
     remoteStream,
@@ -28,17 +31,6 @@ const VideoChatScreen: FC = () => {
     endStream,
     webcamStarted,
   } = useWebRTC();
-
-  const { params } = useRoute<NavProp["route"]>();
-  const { user } = useAuth();
-  const { setRoomId, roomId, showRemoteStream, setCurrentCall } = useRoom();
-
-  const [speecResult, setSpeechResult] = useState<string | undefined>("");
-
-  const { isRunning } = useTimer();
-
-  const localWidth = width / 3;
-  const localHeight = height / 3;
 
   const sendCallInvite = async (roomId?: string) => {
     if (!roomId) {
@@ -53,72 +45,35 @@ const VideoChatScreen: FC = () => {
       roomId,
       createdAt: new Date().toISOString(),
     };
-    await callDoc.set(call);
     setCurrentCall(call);
+    await callDoc.set(call);
   };
 
   useEffect(() => {
     const bootstrap = async () => {
       await startWebcam();
-      if (params?.mode === CallMode.Join) {
-        try {
-          await joinRoom(roomId);
-        } catch (e) {
-          console.log("bootstrap join Error:", e);
+      switch (params?.mode) {
+        case CallMode.Join: {
+          return await joinRoom(roomId);
         }
-      } else if (params?.mode === CallMode.Host) {
-        try {
+        case CallMode.Host: {
           const roomDoc = db.collection(Collection.Rooms).doc();
           setRoomId(roomDoc.id);
           await createRoom(roomDoc.id);
-          await sendCallInvite(roomDoc.id);
-        } catch (e) {
-          console.log("bootstrap host Error:", e);
+          return await sendCallInvite(roomDoc.id);
         }
       }
     };
     bootstrap();
   }, []);
 
-  useEffect(() => {
-    if (!webcamStarted) return;
-    const setup = async () => {
-      await Voice.start("en-US");
-
-      Voice.onSpeechStart = (e) => {
-        console.log("speechStart successful", e);
-      };
-      Voice.onSpeechEnd = (e) => {
-        console.log("stop handler");
-      };
-      Voice.onSpeechResults = (e) => {
-        console.log(e);
-        const text = e.value?.[0];
-        setSpeechResult(text);
-      };
-    };
-    setup();
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, [webcamStarted]);
-
   return (
-    <View style={{ flex: 1, backgroundColor: Color.background }}>
-      {isRunning && (
-        <Timer style={{ zIndex: 3, alignItems: "center", marginTop: 50 }} />
-      )}
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          paddingTop: 60,
-        }}
-      >
+    <View style={styles.root}>
+      {isRunning && <Timer style={styles.timer} />}
+      <View style={styles.lottieContainer}>
         <LottieView
           source={require("../../../assets/lottie/calling2.json")}
-          style={{ width: 150, height: 150 }}
+          style={styles.lottie}
           loop={true}
           autoPlay={true}
         />
@@ -127,16 +82,11 @@ const VideoChatScreen: FC = () => {
         <Reanimated.View
           entering={FadeIn}
           exiting={FadeOut}
-          style={{ position: "absolute" }}
+          style={styles.remoteStreamContainer}
         >
           <RTCView
             streamURL={remoteStream.toURL()}
-            style={{
-              position: "absolute",
-              width,
-              height: height + 30,
-              zIndex: 0,
-            }}
+            style={[styles.remoteStream, { width, height: height + 30 }]}
             objectFit={"cover"}
             mirror
             zOrder={0}
@@ -153,8 +103,8 @@ const VideoChatScreen: FC = () => {
             <RTCView
               objectFit={"cover"}
               style={{
-                width: localWidth,
-                height: localHeight,
+                width: width / 3,
+                height: height / 3,
                 borderRadius: 10,
               }}
               streamURL={localStream.toURL()}
@@ -166,7 +116,9 @@ const VideoChatScreen: FC = () => {
         <View style={styles.endCallContainer}>
           <TouchableOpacity
             style={styles.endCallButton}
-            onPress={() => endStream({ roomId })}
+            onPress={() => {
+              endStream({ roomId });
+            }}
           >
             <Icon name={"call-end"} color={"white"} size={40} />
           </TouchableOpacity>
@@ -177,3 +129,11 @@ const VideoChatScreen: FC = () => {
 };
 
 export default VideoChatScreen;
+
+function findDifference(str1: string, str2: string) {
+  const words1 = str1?.split(/\s+/);
+  const words2 = str2?.split(/\s+/);
+  const uniqueWords2 = words2.filter((word) => !words1?.includes(word));
+  const difference = uniqueWords2.join(" ");
+  return difference;
+}

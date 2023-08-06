@@ -20,61 +20,61 @@ const CallListener: FC = () => {
   const incomingCallRef = useRef<Sound | null>(null);
   const outgoingCallRef = useRef<Sound | null>(null);
 
-  // const loadSounds = async () => {
-  //   const { sound: incomingCall } = await Audio.Sound.createAsync(
-  //     require("../../../assets/sounds/incoming-call.mp3")
-  //   );
-  //   const { sound: outgoingCall } = await Audio.Sound.createAsync(
-  //     require("../../../assets/sounds/outgoing-call-2.mp3")
-  //   );
-  //   incomingCallRef.current = incomingCall;
-  //   outgoingCallRef.current = outgoingCall;
-  // };
+  const loadSounds = async () => {
+    const { sound: incomingCall } = await Audio.Sound.createAsync(
+      require("../../../assets/sounds/incoming-call.mp3")
+    );
+    const { sound: outgoingCall } = await Audio.Sound.createAsync(
+      require("../../../assets/sounds/outgoing-call-2.mp3")
+    );
+    incomingCallRef.current = incomingCall;
+    outgoingCallRef.current = outgoingCall;
+  };
 
-  // const playIncomingCall = async () => {
-  //   await incomingCallRef.current?.playAsync();
-  //   await incomingCallRef.current?.setIsLoopingAsync(true);
-  // };
+  const playIncomingCall = async () => {
+    await incomingCallRef.current?.playAsync();
+    await incomingCallRef.current?.setIsLoopingAsync(true);
+  };
 
-  // const stopIncomingCall = async () => {
-  //   await incomingCallRef.current?.setIsLoopingAsync(false);
-  //   await incomingCallRef.current?.stopAsync();
-  // };
+  const stopIncomingCall = async () => {
+    await incomingCallRef.current?.setIsLoopingAsync(false);
+    await incomingCallRef.current?.stopAsync();
+  };
 
-  // const playOutgoingCall = async () => {
-  //   await outgoingCallRef.current?.playAsync();
-  //   await outgoingCallRef.current?.setIsLoopingAsync(true);
-  // };
+  const playOutgoingCall = async () => {
+    await outgoingCallRef.current?.playAsync();
+    await outgoingCallRef.current?.setIsLoopingAsync(true);
+  };
 
-  // const stopOutgoingCall = async () => {
-  //   await outgoingCallRef.current?.setIsLoopingAsync(false);
-  //   await outgoingCallRef.current?.stopAsync();
-  // };
+  const stopOutgoingCall = async () => {
+    await outgoingCallRef.current?.setIsLoopingAsync(false);
+    await outgoingCallRef.current?.stopAsync();
+  };
 
-  // useEffect(() => {
-  //   loadSounds();
-  // }, []);
+  useEffect(() => {
+    loadSounds();
+  }, []);
 
-  // useEffect(() => {
-  //   if (incomingCall) {
-  //     playIncomingCall();
-  //   } else {
-  //     stopIncomingCall();
-  //   }
-  // }, [incomingCall]);
+  useEffect(() => {
+    if (incomingCall) {
+      playIncomingCall();
+    } else {
+      stopIncomingCall();
+    }
+  }, [incomingCall]);
 
-  // useEffect(() => {
-  //   if (outgoingCall) {
-  //     console.log("playing outgoing call", user?.username);
-  //     playOutgoingCall();
-  //   } else if (!currentCall) {
-  //     console.log("stopping outgoing call", user?.username);
-  //     stopOutgoingCall();
-  //   } else {
-  //     console.log("stopping outgoing call", user?.username);
-  //     stopOutgoingCall();
-  //   }
-  // }, [outgoingCall, currentCall]);
+  useEffect(() => {
+    if (outgoingCall) {
+      console.log("playing outgoing call", user?.username);
+      playOutgoingCall();
+    } else if (!currentCall) {
+      console.log("stopping outgoing call", user?.username);
+      stopOutgoingCall();
+    } else {
+      console.log("stopping outgoing call", user?.username);
+      stopOutgoingCall();
+    }
+  }, [outgoingCall, currentCall]);
 
   useEffect(() => {
     if (!user?.uid) return;
