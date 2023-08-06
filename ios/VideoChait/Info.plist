@@ -54,11 +54,11 @@
     <string>This app uses the camera to scan barcodes on event tickets.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Microphone permission description</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This is photo library permission</string>
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>This app uses speech recognition to convert your speech to text.</string>
     <key>UIBackgroundModes</key>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>photo library description</string>
     <array>
       <string>audio</string>
     </array>

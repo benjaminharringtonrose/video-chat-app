@@ -64,6 +64,10 @@ const HomeScreen: FC = () => {
       title: "Friends",
       data: friends,
     },
+    {
+      title: "Recents",
+      data: [],
+    },
   ];
 
   const isEmpty = !friends.length;

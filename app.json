@@ -19,7 +19,8 @@
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets.",
         "NSMicrophoneUsageDescription": "Microphone permission description",
         "UIBackgroundModes": ["audio"],
-        "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your speech to text."
+        "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your speech to text.",
+        "NSPhotoLibraryUsageDescription": "This is photo library permission"
       },
       "config": {
         "usesNonExemptEncryption": false
