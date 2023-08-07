@@ -11,8 +11,9 @@ import {
 import { db } from "../api/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../navigation/types";
-import { Collection } from "../types";
+import { CallMode, Collection } from "../types";
 import { useRoom } from "../atoms/room";
+import { useSpeechRecognition } from "./useSpeechRecognition";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -32,8 +33,6 @@ let sessionConstraints = {
 };
 
 export const useWebRTC = () => {
-  const [roomJoined, setRoomJoined] = useState(false);
-
   const [localStream, setLocalStream] = useState<MediaStream>();
   const [remoteStream, setRemoteStream] = useState<MediaStream>();
 
@@ -41,6 +40,7 @@ export const useWebRTC = () => {
     roomId,
     webcamStarted,
     currentCall,
+    callMode,
     setWebcamStarted,
     setIncomingCall,
     setOutgoingCall,
@@ -103,7 +103,7 @@ export const useWebRTC = () => {
   }, []);
 
   useEffect(() => {
-    if (!roomId) return;
+    if (!roomId || callMode !== CallMode.Host) return;
 
     const room = db.collection(Collection.Rooms).doc(roomId);
     const offerCandidates = room.collection(Collection.OfferCandidates);
@@ -130,11 +130,7 @@ export const useWebRTC = () => {
         snapshot.docChanges().forEach(async (change) => {
           if (change.type === "added") {
             const data = change.doc.data();
-            try {
-              await peerConnection.addIceCandidate(new RTCIceCandidate(data));
-            } catch (e) {
-              console.error(e);
-            }
+            await peerConnection.addIceCandidate(new RTCIceCandidate(data));
           }
         });
       }
@@ -148,7 +144,9 @@ export const useWebRTC = () => {
   }, [roomId]);
 
   useEffect(() => {
-    if (!roomId || !roomJoined) return;
+    if (!roomId || callMode !== CallMode.Join) return;
+
+    joinRoom(roomId);
 
     const room = db.collection(Collection.Rooms).doc(roomId);
     const offerCandidates = room.collection(Collection.OfferCandidates);
@@ -167,11 +165,7 @@ export const useWebRTC = () => {
         snapshot.docChanges().forEach(async (change) => {
           if (change.type === "added") {
             const data = change.doc.data();
-            try {
-              await peerConnection.addIceCandidate(new RTCIceCandidate(data));
-            } catch (e) {
-              console.error(e);
-            }
+            await peerConnection.addIceCandidate(new RTCIceCandidate(data));
           }
         });
       }
@@ -181,7 +175,7 @@ export const useWebRTC = () => {
       peerConnection.removeEventListener("icecandidate", onIceCandidateAdded);
       unsubscribeOfferCandidates();
     };
-  }, [roomId, roomJoined]);
+  }, [roomId, callMode]);
 
   const startWebcam = async () => {
     try {
@@ -260,8 +254,6 @@ export const useWebRTC = () => {
       };
 
       await roomDoc.update({ answer });
-
-      setRoomJoined(true);
     } catch (e) {
       console.error("joinRoom Error:", e);
     }

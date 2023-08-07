@@ -8,6 +8,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
 import { CallMode, IUser } from "../../types";
 import Icon from "@expo/vector-icons/Feather";
+import { useRoom } from "../../atoms/room";
 
 const FriendDetailScreen: FC = () => {
   const [selectedFriend, setSelectedFriend] = useState<IUser>();
@@ -15,6 +16,7 @@ const FriendDetailScreen: FC = () => {
   const { friends } = useFriends();
   const { params } = useRoute<NavProp["route"]>();
   const { navigate } = useNavigation<NavProp["navigation"]>();
+  const { setCallMode } = useRoom();
 
   const friendId = params?.friendId;
 
@@ -83,9 +85,9 @@ const FriendDetailScreen: FC = () => {
           >
             <TouchableOpacity
               onPress={() => {
+                setCallMode(CallMode.Host);
                 navigate(Routes.VideoChat, {
                   friendId,
-                  mode: CallMode.Host,
                 });
               }}
               style={{

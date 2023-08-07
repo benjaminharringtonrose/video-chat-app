@@ -2630,13 +2630,6 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.4.tgz#0b92dcc0cc1c81f6f306a381f28e31b1a56536e9"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
-"@types/@react-native-voice/voice":
-  version "3.2.4"
-  resolved "https://codeload.github.com/react-native-voice/voice/tar.gz/444bdcd35b4383f2f152d6ea85dd5502bb781929"
-  dependencies:
-    "@expo/config-plugins" "^2.0.0"
-    invariant "^2.2.4"
-
 "@types/firebase@^3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@types/firebase/-/firebase-3.2.1.tgz#17c1c8fee7485ab09668d2461e34540bdf44b3b1"

@@ -1,5 +1,5 @@
 import { atom, useRecoilState } from "recoil";
-import { ICall } from "../types";
+import { CallMode, ICall } from "../types";
 
 interface IRoomState {
   roomId: string;
@@ -9,6 +9,7 @@ interface IRoomState {
   outgoingCall: boolean;
   showRemoteStream: boolean;
   currentCall?: ICall;
+  callMode?: CallMode;
 }
 
 export const roomState = atom<IRoomState>({
@@ -20,7 +21,6 @@ export const roomState = atom<IRoomState>({
     incomingCall: false,
     outgoingCall: false,
     showRemoteStream: false,
-    currentCall: undefined,
   },
 });
 
@@ -55,6 +55,10 @@ export const useRoom = () => {
     setState((state) => ({ ...state, currentCall }));
   };
 
+  const setCallMode = (callMode: CallMode) => {
+    setState((state) => ({ ...state, callMode }));
+  };
+
   return {
     roomId: state.roomId,
     callId: state.callId,
@@ -63,6 +67,7 @@ export const useRoom = () => {
     outgoingCall: state.outgoingCall,
     showRemoteStream: state.showRemoteStream,
     currentCall: state.currentCall,
+    callMode: state.callMode,
     setRoomId,
     setCallId,
     setWebcamStarted,
@@ -70,5 +75,6 @@ export const useRoom = () => {
     setOutgoingCall,
     setShowRemoteStream,
     setCurrentCall,
+    setCallMode,
   };
 };

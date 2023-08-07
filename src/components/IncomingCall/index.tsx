@@ -25,6 +25,7 @@ const IncomingCall: FC = () => {
     setCurrentCall,
     currentCall,
     setRoomId,
+    setCallMode,
   } = useRoom();
 
   const y = useSharedValue(-100);
@@ -61,8 +62,8 @@ const IncomingCall: FC = () => {
       return console.log("acceptCall Error: no currentCall");
     }
     setRoomId(currentCall?.roomId);
+    setCallMode(CallMode.Join);
     navigate(Routes.VideoChat, {
-      mode: CallMode.Join,
       friendId: currentCall?.senderId,
     });
   };

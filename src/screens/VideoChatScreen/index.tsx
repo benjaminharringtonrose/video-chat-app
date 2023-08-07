@@ -15,19 +15,20 @@ import { NavProp } from "../../navigation/types";
 import { Timer } from "../../components";
 import { CallMode, Collection, ICall } from "../../types";
 import styles from "./styles";
+import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 
 const VideoChatScreen: FC = () => {
   const { width, height } = useWindowDimensions();
   const { params } = useRoute<NavProp["route"]>();
   const { user } = useAuth();
-  const { setRoomId, roomId, showRemoteStream, setCurrentCall } = useRoom();
+  const { setRoomId, roomId, showRemoteStream, setCurrentCall, callMode } =
+    useRoom();
   const { isRunning } = useTimer();
   const {
     localStream,
     remoteStream,
     startWebcam,
     createRoom,
-    joinRoom,
     endStream,
     webcamStarted,
   } = useWebRTC();
@@ -55,16 +56,11 @@ const VideoChatScreen: FC = () => {
       InCallManager.setKeepScreenOn(true);
       InCallManager.setForceSpeakerphoneOn(true);
       await startWebcam();
-      switch (params?.mode) {
-        case CallMode.Join: {
-          return await joinRoom(roomId);
-        }
-        case CallMode.Host: {
-          const roomDoc = db.collection(Collection.Rooms).doc();
-          setRoomId(roomDoc.id);
-          await createRoom(roomDoc.id);
-          return await sendCallInvite(roomDoc.id);
-        }
+      if (callMode === CallMode.Host) {
+        const roomDoc = db.collection(Collection.Rooms).doc();
+        setRoomId(roomDoc.id);
+        await createRoom(roomDoc.id);
+        await sendCallInvite(roomDoc.id);
       }
     };
     bootstrap();
