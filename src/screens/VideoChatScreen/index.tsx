@@ -29,26 +29,10 @@ const VideoChatScreen: FC = () => {
     remoteStream,
     startWebcam,
     createRoom,
+    sendCallInvite,
     endStream,
     webcamStarted,
   } = useWebRTC();
-
-  const sendCallInvite = async (roomId?: string) => {
-    if (!roomId) {
-      return console.warn("No roomId");
-    }
-    const callDoc = db.collection(Collection.Calls).doc();
-    const call: ICall = {
-      id: callDoc.id,
-      senderUsername: user?.username,
-      senderId: user?.uid,
-      receiverId: params?.friendId,
-      roomId,
-      createdAt: new Date().toISOString(),
-    };
-    setCurrentCall(call);
-    await callDoc.set(call);
-  };
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -60,7 +44,7 @@ const VideoChatScreen: FC = () => {
         const roomDoc = db.collection(Collection.Rooms).doc();
         setRoomId(roomDoc.id);
         await createRoom(roomDoc.id);
-        await sendCallInvite(roomDoc.id);
+        await sendCallInvite(roomDoc.id, params?.friendId);
       }
     };
     bootstrap();

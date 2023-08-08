@@ -11,9 +11,10 @@ import {
 import { db } from "../api/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { NavProp, Routes } from "../navigation/types";
-import { CallMode, Collection } from "../types";
+import { CallMode, Collection, ICall } from "../types";
 import { useRoom } from "../atoms/room";
 import { useSpeechRecognition } from "./useSpeechRecognition";
+import { useAuth } from "../atoms/auth";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -45,7 +46,10 @@ export const useWebRTC = () => {
     setIncomingCall,
     setOutgoingCall,
     setShowRemoteStream,
+    setCurrentCall,
   } = useRoom();
+
+  const { user } = useAuth();
 
   const peerConnection = useRef<RTCPeerConnection>(
     new RTCPeerConnection(configuration)
@@ -224,6 +228,23 @@ export const useWebRTC = () => {
     }
   };
 
+  const sendCallInvite = async (roomId?: string, friendId?: string) => {
+    if (!roomId) {
+      return console.warn("No roomId");
+    }
+    const callDoc = db.collection(Collection.Calls).doc();
+    const call: ICall = {
+      id: callDoc.id,
+      senderUsername: user?.username,
+      senderId: user?.uid,
+      receiverId: friendId,
+      roomId,
+      createdAt: new Date().toISOString(),
+    };
+    setCurrentCall(call);
+    await callDoc.set(call);
+  };
+
   const joinRoom = async (roomId: string) => {
     try {
       const roomDoc = db.collection(Collection.Rooms).doc(roomId);
@@ -294,6 +315,7 @@ export const useWebRTC = () => {
     remoteStream,
     startWebcam,
     createRoom,
+    sendCallInvite,
     joinRoom,
     endStream,
   };
