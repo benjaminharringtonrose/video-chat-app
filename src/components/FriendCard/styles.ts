@@ -1,12 +1,11 @@
 import { StyleSheet } from "react-native";
-import { Color, FontFamily } from "../../constants";
+import { FontFamily } from "../../constants";
 
 const styles = StyleSheet.create({
   friends: {
     minHeight: 50,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Color.background,
     padding: 10,
   },
   avatar: {
@@ -21,7 +20,6 @@ const styles = StyleSheet.create({
   },
   friendLabel: {
     paddingLeft: 10,
-    color: Color.text,
     fontFamily: FontFamily.Bold,
   },
 });

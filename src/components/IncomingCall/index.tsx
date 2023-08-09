@@ -17,8 +17,10 @@ import { CallMode, Collection } from "../../types";
 import { navigate } from "../../navigation/RootNavigation";
 import { Routes } from "../../navigation/types";
 import Avatar from "../Avatar";
+import { useTheme } from "@react-navigation/native";
 
 const IncomingCall: FC = () => {
+  const { colors } = useTheme();
   const {
     incomingCall,
     setIncomingCall,
@@ -81,7 +83,7 @@ const IncomingCall: FC = () => {
                 source={{ uri: "https://picsum.photos/id/239/200/300" }}
                 imageStyle={{ width: 60, height: 60, borderRadius: 30 }}
               />
-              <Text style={styles.usernameText}>
+              <Text style={[styles.usernameText, { color: colors.text }]}>
                 {currentCall?.senderUsername}
               </Text>
             </View>

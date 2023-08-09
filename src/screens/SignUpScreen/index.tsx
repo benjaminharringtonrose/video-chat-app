@@ -16,6 +16,7 @@ import {
   FormPasswordInput,
   FormSection,
 } from "../../components";
+import { useTheme } from "@react-navigation/native";
 
 export interface ILoginForm {
   username: string;
@@ -36,6 +37,8 @@ const DEFAULT_VALUES: ILoginForm = {
 };
 
 const SignUpScreen: FC = () => {
+  const { colors } = useTheme();
+
   const { control, handleSubmit, setFocus, formState } = useForm({
     defaultValues: DEFAULT_VALUES,
     mode: "onSubmit",
@@ -70,9 +73,9 @@ const SignUpScreen: FC = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: Color.background }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
       <KeyboardAwareScrollView
-        style={{ flex: 1, backgroundColor: Color.background }}
+        style={{ flex: 1, backgroundColor: colors.background }}
         showsVerticalScrollIndicator={false}
         extraScrollHeight={50}
       >
@@ -118,8 +121,8 @@ const SignUpScreen: FC = () => {
         <Button
           label="Sign Up"
           onPress={handleSubmit(onSubmit)}
-          labelColor={Color.white}
-          backgroundColor={Color.primary}
+          labelColor={colors.text}
+          backgroundColor={colors.primary}
           style={{ marginHorizontal: 10 }}
         />
       </KeyboardAwareScrollView>

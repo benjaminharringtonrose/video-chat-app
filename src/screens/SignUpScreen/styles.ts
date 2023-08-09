@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import { Color } from "../../constants/Color";
 
 const styles = StyleSheet.create({
   margin: {
@@ -7,7 +6,6 @@ const styles = StyleSheet.create({
   },
   root: {
     flex: 1,
-    backgroundColor: Color.white,
   },
 });
 

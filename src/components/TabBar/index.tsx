@@ -7,20 +7,21 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { useTheme } from "@react-navigation/native";
 import Icon from "@expo/vector-icons/Feather";
-import { Color } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Routes } from "../../navigation/types";
 import Reanimated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import styles from "./styles";
 import { useNotifications } from "../../atoms/notifications";
+import { Routes } from "../../navigation/types";
 import Badge from "../Badge";
+import styles from "./styles";
 
 const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+  const { colors } = useTheme();
   const indicatorOffset = useSharedValue(0);
 
   const { bottom } = useSafeAreaInsets();
@@ -52,7 +53,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             ios: bottom,
             android: bottom + 10,
           }),
-          backgroundColor: Color.card,
+          backgroundColor: colors.card,
         },
       ]}
     >
@@ -85,7 +86,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
         };
 
         const getIcon = (routeName: Routes) => {
-          const color = isFocused ? Color.primary : Color.grey;
+          const color = isFocused ? colors.primary : colors.grey;
           switch (routeName) {
             case Routes.HomeStack:
               return <Icon name={"home"} size={24} color={color} />;
@@ -125,7 +126,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
       <Reanimated.View
         style={[
           styles.tabIndicator,
-          { width: tabWidth, backgroundColor: Color.primary },
+          { width: tabWidth, backgroundColor: colors.primary },
           tabIndicatorStyle,
         ]}
       />

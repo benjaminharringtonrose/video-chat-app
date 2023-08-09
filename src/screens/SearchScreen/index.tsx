@@ -17,11 +17,12 @@ import {
 import { useAuth } from "../../atoms/auth";
 import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
 import { ListItemType } from "../../components/ListItem";
-import { Color } from "../../constants";
 import { isFriend } from "../../utils";
 import { useFriends } from "../../atoms/friends";
+import { useTheme } from "@react-navigation/native";
 
 const SearchScreen: FC = () => {
+  const { colors } = useTheme();
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState<IUser[]>([]);
 
@@ -78,7 +79,7 @@ const SearchScreen: FC = () => {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: Color.background }]}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <SearchInput
         value={searchText}
         onChangeText={setSearchText}

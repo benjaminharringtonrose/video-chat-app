@@ -6,6 +6,7 @@ import styles from "./styles";
 import { usePasswordStrengthIndicator } from "./usePasswordStrengthIndicator";
 import { Color } from "../../constants";
 import { TRequirements } from "../../types";
+import { useTheme } from "@react-navigation/native";
 
 export { usePasswordStrengthIndicator };
 
@@ -15,6 +16,7 @@ interface IProps {
 }
 
 const PasswordStrengthIndicator: FC<IProps> = ({ password, requirements }) => {
+  const { colors } = useTheme();
   const { requirementsArr, validRequirements, charactersRemainingLabel } =
     usePasswordStrengthIndicator({
       password,
@@ -53,7 +55,7 @@ const PasswordStrengthIndicator: FC<IProps> = ({ password, requirements }) => {
         })}
       </View>
       <View>
-        <Text style={[styles.charactersText, { color: Color.text }]}>
+        <Text style={[styles.charactersText, { color: colors.text }]}>
           {charactersRemainingLabel}
         </Text>
         <View style={styles.row}>
@@ -71,7 +73,7 @@ const PasswordStrengthIndicator: FC<IProps> = ({ password, requirements }) => {
                       color={isSelectedAndValid ? Color.success : Color.error}
                     />
                     <Text
-                      style={[styles.requirementText, { color: Color.text }]}
+                      style={[styles.requirementText, { color: colors.text }]}
                     >
                       {fieldName}
                     </Text>

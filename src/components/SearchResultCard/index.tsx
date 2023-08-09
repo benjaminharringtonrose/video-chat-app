@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import styles from "./styles";
-import { Color } from "../../constants";
+import { useTheme } from "@react-navigation/native";
 
 interface IProps {
   username?: string;
@@ -10,6 +10,7 @@ interface IProps {
 }
 
 const SearchResultCard: FC<IProps> = ({ username = "--", onPress }) => {
+  const { colors } = useTheme();
   const [pressed, setPressed] = useState(false);
 
   return (
@@ -19,17 +20,19 @@ const SearchResultCard: FC<IProps> = ({ username = "--", onPress }) => {
         source={{ uri: "https://picsum.photos/id/239/200/300" }}
       />
       <View style={styles.searchResultInner}>
-        <Text style={styles.searchResultLabel}>{username}</Text>
+        <Text style={[styles.searchResultLabel, { color: colors.text }]}>
+          {username}
+        </Text>
       </View>
 
       <TouchableOpacity
         style={[
           styles.searchResultButton,
-          { backgroundColor: Color.primary },
+          { backgroundColor: colors.primary },
           pressed && {
-            backgroundColor: Color.background,
+            backgroundColor: colors.background,
             borderWidth: 1,
-            borderColor: Color.primary,
+            borderColor: colors.primary,
           },
         ]}
         disabled={pressed}
@@ -41,8 +44,8 @@ const SearchResultCard: FC<IProps> = ({ username = "--", onPress }) => {
         <Text
           style={[
             styles.addButton,
-            { color: Color.text },
-            pressed && { color: Color.primary },
+            { color: colors.text },
+            pressed && { color: colors.primary },
           ]}
         >
           {pressed ? "added" : "add"}

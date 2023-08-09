@@ -1,9 +1,8 @@
 import React, { FC } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Image } from "expo-image";
 import styles from "./styles";
-import { Color } from "../../constants";
 import Avatar from "../Avatar";
+import { useTheme } from "@react-navigation/native";
 
 interface IProps {
   username?: string;
@@ -20,9 +19,13 @@ const FriendRequestCard: FC<IProps> = ({
   isFriend,
   onPress,
 }) => {
+  const { colors } = useTheme();
   return (
     <View
-      style={[styles.friendRequest, !viewed && { backgroundColor: Color.card }]}
+      style={[
+        styles.friendRequest,
+        !viewed && { backgroundColor: colors.card },
+      ]}
     >
       <Avatar source={{ uri: "https://picsum.photos/id/239/200/300" }} />
       <View style={styles.friendRequestInner}>
@@ -35,11 +38,11 @@ const FriendRequestCard: FC<IProps> = ({
       <TouchableOpacity
         style={[
           styles.searchResultButton,
-          { backgroundColor: Color.primary },
+          { backgroundColor: colors.primary },
           isFriend && {
-            backgroundColor: Color.background,
+            backgroundColor: colors.background,
             borderWidth: 1,
-            borderColor: Color.primary,
+            borderColor: colors.primary,
           },
         ]}
         disabled={isFriend}
@@ -50,8 +53,8 @@ const FriendRequestCard: FC<IProps> = ({
         <Text
           style={[
             styles.addButton,
-            { color: Color.text },
-            isFriend && { color: Color.primary },
+            { color: colors.text },
+            isFriend && { color: colors.primary },
           ]}
         >
           {isFriend ? "added" : "add"}

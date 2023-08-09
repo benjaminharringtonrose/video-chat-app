@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
+  StyleSheet,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import styles from "./styles";
 import { Color } from "../../constants";
+import { useTheme } from "@react-navigation/native";
 
 interface IProps {
   isEnabled?: boolean;
@@ -30,17 +32,32 @@ const SettingRow: FC<IProps> = ({
   type = "button",
   isEnabled,
 }) => {
+  const { colors } = useTheme();
   if (type === "button") {
     return (
-      <View style={[style, { paddingBottom: 10 }]}>
+      <View
+        style={[
+          style,
+          {
+            paddingVertical: 10,
+            borderTopWidth: 0.5,
+            borderBottomWidth: 0.5,
+            justifyContent: "center",
+          },
+        ]}
+      >
         <TouchableOpacity onPress={onPress}>
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            <Text style={[styles.label, { color: Color.text }, textStyle]}>
+            <Text style={[styles.label, { color: colors.text }, textStyle]}>
               {label}
             </Text>
-            <Ionicons name={"chevron-forward"} color={Color.grey} size={30} />
+            <Ionicons name={"chevron-forward"} color={colors.grey} size={30} />
           </View>
         </TouchableOpacity>
       </View>
@@ -49,13 +66,13 @@ const SettingRow: FC<IProps> = ({
     return (
       <View style={[style, { paddingBottom: 10 }]}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={[styles.label, { color: Color.text }, textStyle]}>
+          <Text style={[styles.label, { color: colors.text }, textStyle]}>
             {label}
           </Text>
           <Switch
-            ios_backgroundColor={Color.medDarkGrey}
-            thumbColor={Color.white}
-            trackColor={{ false: Color.medDarkGrey, true: Color.primary }}
+            ios_backgroundColor={colors.medDarkGrey}
+            thumbColor={colors.white}
+            trackColor={{ false: colors.medDarkGrey, true: colors.primary }}
             value={isEnabled}
             onValueChange={onPress}
           />

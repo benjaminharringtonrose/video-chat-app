@@ -1,11 +1,10 @@
 import Icon from "@expo/vector-icons/Ionicons";
 import React, { FC } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Image } from "expo-image";
 import styles from "./styles";
-import { Color } from "../../constants";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Avatar from "../Avatar";
+import { useTheme } from "@react-navigation/native";
 
 interface IProps {
   label?: string;
@@ -14,6 +13,8 @@ interface IProps {
 }
 
 const FriendCard: FC<IProps> = ({ label = "--", onPress, isOnline }) => {
+  const { colors } = useTheme();
+
   return (
     <Reanimated.View entering={FadeIn} exiting={FadeOut}>
       <TouchableOpacity style={styles.friends} onPress={onPress}>
@@ -22,8 +23,10 @@ const FriendCard: FC<IProps> = ({ label = "--", onPress, isOnline }) => {
           isOnline={!!isOnline}
         />
         <View style={styles.spaceBetween}>
-          <Text style={styles.friendLabel}>{label}</Text>
-          <Icon name={"chevron-forward"} size={20} color={Color.text} />
+          <Text style={[styles.friendLabel, { color: colors.text }]}>
+            {label}
+          </Text>
+          <Icon name={"chevron-forward"} size={20} color={colors.text} />
         </View>
       </TouchableOpacity>
     </Reanimated.View>

@@ -11,8 +11,9 @@ import {
 } from "react-native";
 
 import styles from "./styles";
-import { Color } from "../../constants";
 import FormError from "../FormError";
+import { useTheme } from "@react-navigation/native";
+import { Color } from "../../constants";
 
 export interface IFormInputProps {
   label: string;
@@ -40,6 +41,7 @@ const FormInput: FC<IFormInputProps> = ({
   onSubmitEditing,
   autoCapitalize,
 }) => {
+  const { colors } = useTheme();
   return (
     <View style={{ flexDirection: "column" }}>
       <View style={[styles.root, style]}>
@@ -47,8 +49,8 @@ const FormInput: FC<IFormInputProps> = ({
           style={[
             styles.labelText,
             {
-              color: Color.text,
-              backgroundColor: Color.background,
+              color: colors.text,
+              backgroundColor: colors.background,
             },
           ]}
         >
@@ -65,10 +67,10 @@ const FormInput: FC<IFormInputProps> = ({
               onChangeText={onChange}
               onBlur={onBlur}
               value={value}
-              style={[styles.input, { color: Color.text }]}
+              style={[styles.input, { color: colors.text }]}
               placeholderTextColor={Color.placeholder}
               cursorColor={Color.placeholder}
-              selectionColor={Color.primary}
+              selectionColor={colors.primary}
               keyboardType={keyboardType}
               returnKeyType={returnKeyType}
               onSubmitEditing={onSubmitEditing}

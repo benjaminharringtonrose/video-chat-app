@@ -1,8 +1,7 @@
 import { FC } from "react";
 import { View, Text } from "react-native";
 import LottieView from "lottie-react-native";
-
-import { Color } from "../../constants";
+import { useTheme } from "@react-navigation/native";
 import styles from "./styles";
 
 interface IProps {
@@ -12,6 +11,7 @@ interface IProps {
 }
 
 const EmptyStateView: FC<IProps> = ({ title, description, lottie }) => {
+  const { colors } = useTheme();
   return (
     <View style={[styles.noResultsContainer]}>
       <View style={styles.tophalf}>
@@ -25,10 +25,10 @@ const EmptyStateView: FC<IProps> = ({ title, description, lottie }) => {
         )}
       </View>
       <View style={styles.bottomHalf}>
-        <Text style={[styles.noResultsTitle, { color: Color.text }]}>
+        <Text style={[styles.noResultsTitle, { color: colors.text }]}>
           {title}
         </Text>
-        <Text style={[styles.noResultsDescription, { color: Color.text }]}>
+        <Text style={[styles.noResultsDescription, { color: colors.text }]}>
           {description}
         </Text>
       </View>

@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import styles from "./styles";
 import { Color, FontFamily } from "../../constants";
 import { useFriends } from "../../atoms/friends";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation, useTheme } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
 import { CallMode, IUser } from "../../types";
 import Icon from "@expo/vector-icons/Feather";
@@ -13,6 +13,7 @@ import { useRoom } from "../../atoms/room";
 const FriendDetailScreen: FC = () => {
   const [selectedFriend, setSelectedFriend] = useState<IUser>();
 
+  const { colors } = useTheme();
   const { friends } = useFriends();
   const { params } = useRoute<NavProp["route"]>();
   const { navigate } = useNavigation<NavProp["navigation"]>();
@@ -33,11 +34,11 @@ const FriendDetailScreen: FC = () => {
   }, [friendId]);
 
   return (
-    <View style={[styles.root, { backgroundColor: Color.background }]}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <View
         style={{
           flex: 1,
-          backgroundColor: Color.primary,
+          backgroundColor: colors.primary,
           borderBottomStartRadius: 40,
           borderTopStartRadius: 40,
         }}
@@ -56,7 +57,7 @@ const FriendDetailScreen: FC = () => {
           >
             <Text
               style={{
-                color: Color.text,
+                color: colors.text,
                 fontFamily: FontFamily.SemiBold,
                 fontSize: 24,
                 paddingRight: 10,
@@ -96,7 +97,7 @@ const FriendDetailScreen: FC = () => {
                 borderRadius: 10,
               }}
             >
-              <Icon name={"video"} size={30} color={Color.text} />
+              <Icon name={"video"} size={30} color={colors.text} />
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -106,12 +107,12 @@ const FriendDetailScreen: FC = () => {
                 marginLeft: 10,
               }}
             >
-              <Icon name={"mail"} size={30} color={Color.text} />
+              <Icon name={"mail"} size={30} color={colors.text} />
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      <View style={{ flex: 1, backgroundColor: Color.background }}></View>
+      <View style={{ flex: 1, backgroundColor: colors.background }}></View>
     </View>
   );
 };

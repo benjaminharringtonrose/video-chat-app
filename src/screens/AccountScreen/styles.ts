@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Color, FontFamily } from "../../constants";
+import { FontFamily } from "../../constants";
 
 const styles = StyleSheet.create({
   root: {
@@ -8,14 +8,13 @@ const styles = StyleSheet.create({
   sectionText: {
     fontFamily: FontFamily.Bold,
     fontSize: 22,
-    color: Color.text,
     paddingBottom: 10,
   },
   avatarPlaceholder: {
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: Color.grey,
+
     marginRight: 10,
   },
 });

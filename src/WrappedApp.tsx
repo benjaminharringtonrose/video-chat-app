@@ -9,7 +9,11 @@ import {
 } from "@expo-google-fonts/nunito";
 import { Caveat_400Regular } from "@expo-google-fonts/caveat";
 import {} from "expo-font";
-import { DarkTheme, NavigationContainer } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from "@react-navigation/native";
 import { FC, useEffect, useState } from "react";
 import { RootNavigator } from "./navigation";
 import { Color } from "./constants";
@@ -29,10 +33,13 @@ import {
   SafeAreaProvider,
   initialWindowMetrics,
 } from "react-native-safe-area-context";
+import { DarkColors, LightColors } from "./constants/Color";
+import { useSettings } from "./atoms/settings";
 
 const WrappedApp: FC = () => {
-  const { initializing, setUser, startup } = useAuth();
   const [appIsReady, setAppIsReady] = useState(false);
+  const { initializing, setUser, startup } = useAuth();
+  const { theme, setTheme } = useSettings();
 
   const [fontsLoaded] = useFonts({
     Nunito_300Light,
@@ -43,15 +50,32 @@ const WrappedApp: FC = () => {
     Caveat_400Regular,
   });
 
+  const isLightTheme = theme === "light";
+
   const Theme = {
-    ...DarkTheme,
+    ...(isLightTheme ? DefaultTheme : DarkTheme),
     colors: {
-      ...DarkTheme.colors,
-      background: Color.background,
+      ...(isLightTheme ? DefaultTheme.colors : DarkTheme.colors),
+      ...(isLightTheme ? LightColors : DarkColors),
     },
   };
 
-  async function onAuthStateChanged(user: firebase.User | null) {
+  const getInitialTheme = async () => {
+    const theme = await deviceStorage.getTheme();
+    if (!theme) {
+      await deviceStorage.setTheme("dark");
+      setTheme("dark");
+    }
+    switch (theme) {
+      case "light":
+        return setTheme("light");
+      case "dark":
+      default:
+        return setTheme("dark");
+    }
+  };
+
+  const onAuthStateChanged = async (user: firebase.User | null) => {
     if (user) {
       const doc = await db.collection(Collection.Users).doc(user.uid).get();
       if (doc.exists) {
@@ -60,26 +84,28 @@ const WrappedApp: FC = () => {
         setUser(userData);
       }
     }
-  }
+  };
 
-  function cacheImages(images: string[]) {
-    return images.map((image) => {
-      if (typeof image === "string") {
-        return Image.prefetch(image);
-      } else {
-        return Asset.fromModule(image).downloadAsync();
-      }
-    });
-  }
+  // const cacheImages = (images: string[]) => {
+  //   return images.map((image) => {
+  //     if (typeof image === "string") {
+  //       return Image.prefetch(image);
+  //     } else {
+  //       return Asset.fromModule(image).downloadAsync();
+  //     }
+  //   });
+  // }
 
   const cacheFonts = (fonts: any[]) => {
     return fonts.map((font) => Font.loadAsync(font));
   };
 
   useEffect(() => {
-    async function loadResourcesAndDataAsync() {
+    const loadResourcesAndDataAsync = async () => {
       try {
         SplashScreen.preventAutoHideAsync();
+
+        await getInitialTheme();
 
         // const imageAssets = cacheImages([
         //   "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
@@ -94,7 +120,7 @@ const WrappedApp: FC = () => {
       } finally {
         setAppIsReady(true);
       }
-    }
+    };
 
     loadResourcesAndDataAsync();
   }, []);
@@ -113,10 +139,6 @@ const WrappedApp: FC = () => {
     };
     prepare();
   }, [fontsLoaded, initializing, appIsReady]);
-
-  if (!fontsLoaded || initializing || !appIsReady) {
-    return null;
-  }
 
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>

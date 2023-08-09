@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
   },
   usernameText: {
     fontFamily: FontFamily.Bold,
-    color: Color.white,
     paddingLeft: 10,
   },
 });

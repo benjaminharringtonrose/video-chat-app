@@ -15,11 +15,12 @@ import { ListItemType } from "../../components/ListItem";
 import { useFriends } from "../../atoms/friends";
 import { IUser } from "../../types";
 import { Color } from "../../constants";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
 import { useAuth } from "../../atoms/auth";
 
 const HomeScreen: FC = () => {
+  const { colors } = useTheme();
   const { user } = useAuth();
   const { friends, getFriends, loadingFriends } = useFriends();
   const { navigate } = useNavigation<NavProp["navigation"]>();
@@ -36,8 +37,8 @@ const HomeScreen: FC = () => {
     section: SectionListData<any>;
   }) => {
     return (
-      <View style={{ backgroundColor: Color.background }}>
-        <Text style={[styles.sectionHeaderText, { color: Color.text }]}>
+      <View style={{ backgroundColor: colors.background }}>
+        <Text style={[styles.sectionHeaderText, { color: colors.text }]}>
           {section.title}
         </Text>
       </View>
@@ -75,7 +76,7 @@ const HomeScreen: FC = () => {
   if (loadingFriends || (user?.friends && !friends.length)) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={"large"} color={Color.primary} />
+        <ActivityIndicator size={"large"} color={colors.primary} />
       </View>
     );
   }
@@ -95,7 +96,7 @@ const HomeScreen: FC = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: Color.background }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}

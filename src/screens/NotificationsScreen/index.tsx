@@ -14,25 +14,24 @@ import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
 import {
-  CallMode,
   Collection,
   INotification,
   NotificationType,
   QueryKey,
 } from "../../types";
 import { useFriends } from "../../atoms/friends";
-import { Color, FontFamily } from "../../constants";
+import { FontFamily } from "../../constants";
 import { isFriend } from "../../utils";
 import {
   useFocusEffect,
   useIsFocused,
   useNavigation,
+  useTheme,
 } from "@react-navigation/native";
-import { NavProp, Routes } from "../../navigation/types";
-import { useRoom } from "../../atoms/room";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { NavProp } from "../../navigation/types";
 
 const NotificationsScreen: FC = () => {
+  const { colors } = useTheme();
   const { user } = useAuth();
   const { friends } = useFriends();
   const isFocused = useIsFocused();
@@ -106,12 +105,12 @@ const NotificationsScreen: FC = () => {
   }) => {
     if (section.data?.length) {
       return (
-        <View style={{ backgroundColor: Color.background }}>
+        <View style={{ backgroundColor: colors.background }}>
           <Text
             style={{
               paddingLeft: 10,
               fontFamily: FontFamily.Light,
-              color: Color.text,
+              color: colors.text,
             }}
           >
             {section.title}
@@ -155,7 +154,7 @@ const NotificationsScreen: FC = () => {
   ];
 
   return (
-    <View style={[styles.root, { backgroundColor: Color.background }]}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <SectionList
         sections={sections}
         renderSectionHeader={renderSectionHeader}

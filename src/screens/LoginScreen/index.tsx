@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -8,7 +8,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import * as yup from "yup";
 
 import styles from "./styles";
-import { Color, FontFamily } from "../../constants";
+import { FontFamily } from "../../constants";
 import { NavProp, Routes } from "../../navigation/types";
 import { auth } from "../../api/firebase";
 import { Button, FormInput, FormPasswordInput } from "../../components";
@@ -29,6 +29,7 @@ const DEFAULT_VALUES: ILoginForm = {
 };
 
 const LoginScreen: FC = () => {
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation<NavProp["navigation"]>();
 
@@ -52,9 +53,9 @@ const LoginScreen: FC = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: Color.background }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
       <KeyboardAwareScrollView
-        style={{ flex: 1, backgroundColor: Color.background }}
+        style={{ flex: 1, backgroundColor: colors.background }}
         showsVerticalScrollIndicator={false}
         extraScrollHeight={50}
       >
@@ -92,8 +93,8 @@ const LoginScreen: FC = () => {
         <Button
           label="Login"
           onPress={handleSubmit(onSubmit)}
-          labelColor={Color.white}
-          backgroundColor={Color.primary}
+          labelColor={colors.text}
+          backgroundColor={colors.primary}
           loading={loading}
           style={{ marginHorizontal: 10, marginBottom: 10 }}
         />
@@ -102,7 +103,7 @@ const LoginScreen: FC = () => {
             style={{
               textAlign: "right",
               paddingRight: 20,
-              color: Color.primary,
+              color: colors.primary,
               fontFamily: FontFamily.Bold,
             }}
           >

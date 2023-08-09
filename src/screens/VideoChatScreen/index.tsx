@@ -3,26 +3,23 @@ import Icon from "@expo/vector-icons/MaterialIcons";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { RTCView } from "react-native-webrtc";
 import LottieView from "lottie-react-native";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useTheme } from "@react-navigation/native";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
 import InCallManager from "react-native-incall-manager";
 import { db } from "../../api/firebase";
-import { useAuth } from "../../atoms/auth";
 import { useRoom } from "../../atoms/room";
 import { useTimer } from "../../atoms/timer";
 import { useWebRTC } from "../../hooks/useWebRTC";
 import { NavProp } from "../../navigation/types";
 import { Timer } from "../../components";
-import { CallMode, Collection, ICall } from "../../types";
+import { CallMode, Collection } from "../../types";
 import styles from "./styles";
-import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 
 const VideoChatScreen: FC = () => {
+  const { colors } = useTheme();
   const { width, height } = useWindowDimensions();
   const { params } = useRoute<NavProp["route"]>();
-  const { user } = useAuth();
-  const { setRoomId, roomId, showRemoteStream, setCurrentCall, callMode } =
-    useRoom();
+  const { setRoomId, roomId, showRemoteStream, callMode } = useRoom();
   const { isRunning } = useTimer();
   const {
     localStream,
@@ -54,7 +51,7 @@ const VideoChatScreen: FC = () => {
   }, []);
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       {isRunning && <Timer style={styles.timer} />}
       <View style={styles.lottieContainer}>
         <LottieView

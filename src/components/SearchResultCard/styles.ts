@@ -18,15 +18,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     fontFamily: FontFamily.Light,
-    color: Color.text,
   },
   searchResultInner: {
     flex: 1,
     flexDirection: "row",
-  },
-  searchResultUsername: {
-    fontFamily: FontFamily.Bold,
-    color: Color.text,
   },
   searchResultButton: {
     padding: 10,

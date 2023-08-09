@@ -1,11 +1,10 @@
 import React, { FC } from "react";
 import Icon from "@expo/vector-icons/Ionicons";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Image } from "expo-image";
 import styles from "./styles";
-import { Color } from "../../constants";
 import Badge from "../Badge";
 import Avatar from "../Avatar";
+import { useTheme } from "@react-navigation/native";
 
 interface IProps {
   label?: string;
@@ -26,6 +25,7 @@ const InvitationCard: FC<IProps> = ({
   callEnded,
   callAnswered,
 }) => {
+  const { colors } = useTheme();
   const getLabel = () => {
     if (callEnded && !callAnswered) {
       return `You missed a call from ${username}`;
@@ -36,12 +36,12 @@ const InvitationCard: FC<IProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.root, !viewed && { backgroundColor: Color.card }]}
+      style={[styles.root, !viewed && { backgroundColor: colors.card }]}
       disabled={disabled}
     >
       <Avatar source={{ uri: "https://picsum.photos/id/239/200/300" }} />
       <View style={styles.rowContainer}>
-        <Text style={styles.label}>{getLabel()}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{getLabel()}</Text>
       </View>
       {calling && (
         <View style={{ top: 5 }}>
@@ -49,7 +49,7 @@ const InvitationCard: FC<IProps> = ({
         </View>
       )}
       {!disabled && (
-        <Icon name={"chevron-forward"} size={20} color={Color.text} />
+        <Icon name={"chevron-forward"} size={20} color={colors.text} />
       )}
     </TouchableOpacity>
   );

@@ -17,164 +17,185 @@ import { Color, FontFamily } from "../constants";
 import { AnyParams, Routes } from "./types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TabBar } from "../components";
+import { useTheme } from "@react-navigation/native";
 
 const routesWithBackNav = new Set([Routes.FriendDetail, Routes.VideoChat]);
 
 const HomeStack = createNativeStackNavigator();
 
-const HomeStackNavigator: FC = () => (
-  <HomeStack.Navigator
-    screenOptions={({ navigation, route }) => ({
-      cardStyle: {
-        backgroundColor: Color.background,
-      },
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Color.background,
-      },
-      headerTitle: "VideoChait",
-      headerTitleStyle: {
-        color: Color.text,
-        fontFamily: FontFamily.Bold,
-        fontSize: 28,
-      },
-      headerShadowVisible: false,
-      headerLeft: () => {
-        if (routesWithBackNav.has(route.name as Routes)) {
-          return (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{ zIndex: 999 }}
-            >
-              <Icon name={"chevron-back"} size={30} color={Color.text} />
-            </TouchableOpacity>
-          );
-        }
-        return null;
-      },
-    })}
-  >
-    <HomeStack.Screen name={Routes.Home} component={HomeScreen} />
-    <HomeStack.Screen
-      name={Routes.FriendDetail}
-      component={FriendDetailScreen}
-      options={{ headerTitle: "" }}
-    />
-  </HomeStack.Navigator>
-);
+const HomeStackNavigator: FC = () => {
+  const { colors } = useTheme();
+  return (
+    <HomeStack.Navigator
+      screenOptions={({ navigation, route }) => ({
+        cardStyle: {
+          backgroundColor: colors.background,
+        },
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTitle: "VideoChait",
+        headerTitleStyle: {
+          color: colors.text,
+          fontFamily: FontFamily.Bold,
+          fontSize: 28,
+        },
+        headerShadowVisible: false,
+        headerLeft: () => {
+          if (routesWithBackNav.has(route.name as Routes)) {
+            return (
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={{ zIndex: 999 }}
+              >
+                <Icon name={"chevron-back"} size={30} color={colors.text} />
+              </TouchableOpacity>
+            );
+          }
+          return null;
+        },
+      })}
+    >
+      <HomeStack.Screen name={Routes.Home} component={HomeScreen} />
+      <HomeStack.Screen
+        name={Routes.FriendDetail}
+        component={FriendDetailScreen}
+        options={{ headerTitle: "" }}
+      />
+    </HomeStack.Navigator>
+  );
+};
 
 const SearchStack = createNativeStackNavigator();
 
-const SearchStackNavigator: FC = () => (
-  <SearchStack.Navigator
-    screenOptions={() => ({
-      headerStyle: {
-        backgroundColor: Color.background,
-      },
-      headerTitleStyle: {
-        color: Color.white,
-        fontFamily: FontFamily.Bold,
-        fontSize: 28,
-      },
-      headerShadowVisible: false,
-    })}
-  >
-    <SearchStack.Screen name={Routes.Search} component={SearchScreen} />
-  </SearchStack.Navigator>
-);
+const SearchStackNavigator: FC = () => {
+  const { colors } = useTheme();
+
+  return (
+    <SearchStack.Navigator
+      screenOptions={() => ({
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+          fontFamily: FontFamily.Bold,
+          fontSize: 28,
+        },
+        headerShadowVisible: false,
+      })}
+    >
+      <SearchStack.Screen name={Routes.Search} component={SearchScreen} />
+    </SearchStack.Navigator>
+  );
+};
 
 const NotificationsStack = createNativeStackNavigator();
 
-const NotificationsStackNavigator: FC = () => (
-  <NotificationsStack.Navigator
-    screenOptions={() => ({
-      headerStyle: {
-        backgroundColor: Color.background,
-      },
-      headerTitleStyle: {
-        color: Color.white,
-        fontFamily: FontFamily.Bold,
-        fontSize: 28,
-      },
-      headerShadowVisible: false,
-    })}
-  >
-    <NotificationsStack.Screen
-      name={Routes.Notifications}
-      component={NotificationsScreen}
-    />
-  </NotificationsStack.Navigator>
-);
+const NotificationsStackNavigator: FC = () => {
+  const { colors } = useTheme();
+
+  return (
+    <NotificationsStack.Navigator
+      screenOptions={() => ({
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+          fontFamily: FontFamily.Bold,
+          fontSize: 28,
+        },
+        headerShadowVisible: false,
+      })}
+    >
+      <NotificationsStack.Screen
+        name={Routes.Notifications}
+        component={NotificationsScreen}
+      />
+    </NotificationsStack.Navigator>
+  );
+};
 
 const AccountStack = createNativeStackNavigator();
 
-const AccountStackNavigator: FC = () => (
-  <AccountStack.Navigator
-    screenOptions={() => ({
-      headerStyle: {
-        backgroundColor: Color.background,
-      },
-      headerTitleStyle: {
-        color: Color.white,
-        fontFamily: FontFamily.Bold,
-        fontSize: 28,
-      },
-      headerShadowVisible: false,
-    })}
-  >
-    <AccountStack.Screen name={Routes.Account} component={AccountScreen} />
-  </AccountStack.Navigator>
-);
+const AccountStackNavigator: FC = () => {
+  const { colors } = useTheme();
+
+  return (
+    <AccountStack.Navigator
+      screenOptions={() => ({
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+          fontFamily: FontFamily.Bold,
+          fontSize: 28,
+        },
+        headerShadowVisible: false,
+      })}
+    >
+      <AccountStack.Screen name={Routes.Account} component={AccountScreen} />
+    </AccountStack.Navigator>
+  );
+};
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator: FC = () => (
-  <Tab.Navigator
-    tabBar={(props) => <TabBar {...props} />}
-    screenOptions={{
-      headerStyle: {
-        backgroundColor: Color.background,
-      },
-      headerTitleStyle: {
-        color: Color.white,
-        fontFamily: FontFamily.Bold,
-        fontSize: 28,
-      },
-    }}
-  >
-    <Tab.Screen
-      name={Routes.HomeStack}
-      component={HomeStackNavigator}
-      options={{ headerShown: false }}
-    />
-    <Tab.Screen
-      name={Routes.SearchStack}
-      component={SearchStackNavigator}
-      options={{ headerShown: false }}
-    />
-    <Tab.Screen
-      name={Routes.NotificationsStack}
-      component={NotificationsStackNavigator}
-      options={{ headerShown: false }}
-    />
-    <Tab.Screen
-      name={Routes.AccountStack}
-      component={AccountStackNavigator}
-      options={{ headerShown: false }}
-    />
-  </Tab.Navigator>
-);
+const TabNavigator: FC = () => {
+  const { colors } = useTheme();
+
+  return (
+    <Tab.Navigator
+      tabBar={(props) => <TabBar {...props} />}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+          fontFamily: FontFamily.Bold,
+          fontSize: 28,
+        },
+      }}
+    >
+      <Tab.Screen
+        name={Routes.HomeStack}
+        component={HomeStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name={Routes.SearchStack}
+        component={SearchStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name={Routes.NotificationsStack}
+        component={NotificationsStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name={Routes.AccountStack}
+        component={AccountStackNavigator}
+        options={{ headerShown: false }}
+      />
+    </Tab.Navigator>
+  );
+};
 
 const RootStack = createNativeStackNavigator();
 
 export const RootNavigator: FC = () => {
+  const { colors } = useTheme();
   const { user } = useAuth();
   return (
     <RootStack.Navigator
       screenOptions={{
         headerShown: false,
         contentStyle: {
-          backgroundColor: Color.background,
+          backgroundColor: colors.background,
         },
       }}
     >
@@ -191,7 +212,7 @@ export const RootNavigator: FC = () => {
               presentation: "fullScreenModal",
               animation: "slide_from_bottom",
               contentStyle: {
-                backgroundColor: Color.background,
+                backgroundColor: colors.background,
               },
             }}
           />
@@ -201,12 +222,12 @@ export const RootNavigator: FC = () => {
           screenOptions={{
             headerTitle: "VideoChait",
             headerTitleStyle: {
-              color: Color.white,
+              color: colors.text,
               fontFamily: FontFamily.Bold,
               fontSize: 28,
             },
             headerStyle: {
-              backgroundColor: Color.background,
+              backgroundColor: colors.background,
             },
           }}
         >
@@ -218,7 +239,7 @@ export const RootNavigator: FC = () => {
               headerLeft: () => {
                 return (
                   <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon name={"chevron-back"} size={30} color={Color.text} />
+                    <Icon name={"chevron-back"} size={30} color={colors.text} />
                   </TouchableOpacity>
                 );
               },
