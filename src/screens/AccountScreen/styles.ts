@@ -8,13 +8,13 @@ const styles = StyleSheet.create({
   sectionText: {
     fontFamily: FontFamily.Bold,
     fontSize: 22,
+    paddingTop: 20,
     paddingBottom: 10,
   },
   avatarPlaceholder: {
     width: 70,
     height: 70,
     borderRadius: 35,
-
     marginRight: 10,
   },
 });

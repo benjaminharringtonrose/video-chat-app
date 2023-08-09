@@ -7,7 +7,7 @@ const ItemSeparator: FC = () => {
   return (
     <View
       style={{
-        height: StyleSheet.hairlineWidth,
+        height: 1,
         backgroundColor: colors.border,
       }}
     />

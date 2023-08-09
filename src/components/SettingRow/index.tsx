@@ -9,10 +9,9 @@ import {
   ViewStyle,
   StyleSheet,
 } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import Icon from "@expo/vector-icons/Ionicons";
 
 import styles from "./styles";
-import { Color } from "../../constants";
 import { useTheme } from "@react-navigation/native";
 
 interface IProps {
@@ -37,13 +36,13 @@ const SettingRow: FC<IProps> = ({
     return (
       <View
         style={[
-          style,
           {
             paddingVertical: 10,
-            borderTopWidth: 0.5,
-            borderBottomWidth: 0.5,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
             justifyContent: "center",
           },
+          style,
         ]}
       >
         <TouchableOpacity onPress={onPress}>
@@ -57,15 +56,30 @@ const SettingRow: FC<IProps> = ({
             <Text style={[styles.label, { color: colors.text }, textStyle]}>
               {label}
             </Text>
-            <Ionicons name={"chevron-forward"} color={colors.grey} size={30} />
+            <Icon name={"chevron-forward"} color={colors.text} size={20} />
           </View>
         </TouchableOpacity>
       </View>
     );
   } else {
     return (
-      <View style={[style, { paddingBottom: 10 }]}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={[
+          {
+            paddingVertical: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
+          },
+          style,
+        ]}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Text style={[styles.label, { color: colors.text }, textStyle]}>
             {label}
           </Text>

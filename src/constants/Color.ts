@@ -44,7 +44,7 @@ export const LightColors = {
   text: "black",
   input: "black",
   placeholder: "#a9a9a9",
-  border: "#0b0c0f",
+  border: "#dde0e7",
   lightGreen: "#A3D92F",
 };
 
@@ -69,6 +69,6 @@ export const DarkColors = {
   text: "white",
   input: "white",
   placeholder: "#a9a9a9",
-  border: "#0b0c0f",
+  border: "#252a34",
   lightGreen: "#A3D92F",
 };

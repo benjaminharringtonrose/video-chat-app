@@ -1,5 +1,11 @@
 import React, { FC, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { useAuth } from "../../atoms/auth";
 import Icon from "@expo/vector-icons/Ionicons";
 
@@ -30,13 +36,14 @@ const AccountScreen: FC = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingVertical: 10,
-              marginBottom: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: colors.border,
+              borderTopColor: colors.border,
             }}
           >
             <Avatar
               source={{ uri: "https://picsum.photos/id/239/200/300" }}
-              imageStyle={styles.avatarPlaceholder}
+              imageStyle={[styles.avatarPlaceholder, { marginVertical: 20 }]}
             />
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text
@@ -56,7 +63,7 @@ const AccountScreen: FC = () => {
                 {user?.email ?? "--"}
               </Text>
             </View>
-            <Icon name={"chevron-forward"} color={colors.grey} size={30} />
+            <Icon name={"chevron-forward"} color={colors.text} size={20} />
           </TouchableOpacity>
           <SettingRow
             label={"Delete Account"}
@@ -65,14 +72,12 @@ const AccountScreen: FC = () => {
           />
           <SettingRow
             label={"Notifications"}
-            style={{ marginBottom: 20 }}
             textStyle={{ color: colors.text }}
             onPress={() => {}}
           />
           <SettingRow
             isEnabled={pushEnabled}
             label={"Push Notifications"}
-            style={{ marginBottom: 20 }}
             type={"switch"}
             onPress={() => setPushEnabled((prevState) => !prevState)}
           />
@@ -102,6 +107,7 @@ const AccountScreen: FC = () => {
           <SettingRow
             label={"FAQ"}
             textStyle={{ color: colors.text }}
+            style={{ marginBottom: 20 }}
             onPress={() => {}}
           />
         </View>
@@ -113,7 +119,7 @@ const AccountScreen: FC = () => {
             setUser(null);
           }}
           backgroundColor={colors.primary}
-          labelColor={colors.text}
+          labelColor={colors.white}
           style={{ marginBottom: 40, marginHorizontal: 10 }}
         />
       </ScrollView>
