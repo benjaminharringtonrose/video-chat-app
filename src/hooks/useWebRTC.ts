@@ -250,7 +250,7 @@ export const useWebRTC = () => {
 
       setIncomingCall(false);
 
-      await updateRoom(roomId, {
+      await roomDoc.update({
         calling: false,
         callAnswered: true,
       });
@@ -258,17 +258,22 @@ export const useWebRTC = () => {
       const snapshot = await roomDoc.get();
       const room = snapshot.data();
 
+      const offerDescription = room?.offer;
+
       await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(room?.offer)
+        new RTCSessionDescription(offerDescription)
       );
 
       const answerDescription = await peerConnection.createAnswer();
+
       await peerConnection.setLocalDescription(answerDescription);
 
-      await updateRoom(roomId, {
+      const answer = {
         type: answerDescription.type,
         sdp: answerDescription.sdp,
-      });
+      };
+
+      await roomDoc.update({ answer });
     } catch (e) {
       console.error("joinRoom Error:", e);
     }
