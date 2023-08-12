@@ -53,7 +53,7 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             ios: bottom,
             android: bottom + 10,
           }),
-          backgroundColor: colors.card,
+          backgroundColor: colors.tabBar,
           bottom: 0,
           left: 0,
           right: 0,

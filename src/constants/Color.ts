@@ -46,6 +46,7 @@ export const LightColors = {
   placeholder: "#a9a9a9",
   border: "#dde0e7",
   lightGreen: "#A3D92F",
+  tabBar: "#c1c5d0",
 };
 
 export const DarkColors = {
@@ -71,5 +72,6 @@ export const DarkColors = {
   placeholder: "#a9a9a9",
   border: "#31353c",
   lightGreen: "#A3D92F",
+  tabBar: "#050607",
 };
 // background: "#1F232B",

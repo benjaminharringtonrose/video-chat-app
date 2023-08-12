@@ -19,14 +19,14 @@ import { Avatar, Button, SettingRow } from "../../components";
 import styles from "./styles";
 
 const AccountScreen: FC = () => {
-  const { colors, dark } = useTheme();
   const [pushEnabled, setPushEnabled] = useState(false);
-  const { setTheme } = useSettings();
 
+  const { colors, dark } = useTheme();
+  const { setTheme } = useSettings();
   const { setUser, user } = useAuth();
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 80 }}
@@ -128,12 +128,12 @@ const AccountScreen: FC = () => {
             deviceStorage.removeUser();
             setUser(null);
           }}
-          backgroundColor={colors.primary}
+          backgroundColor={colors.card}
           labelColor={colors.white}
           style={{ marginHorizontal: 10 }}
         />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
