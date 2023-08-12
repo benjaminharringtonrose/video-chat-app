@@ -7,6 +7,7 @@ import { useSetRecoilState } from "recoil";
 import { timerState } from "../../atoms/timer";
 import { navigate } from "../../navigation/RootNavigation";
 import { useAuth } from "../../atoms/auth";
+import { deleteCall, deleteRoom } from "../../api/firestore";
 
 const RoomListener: FC = () => {
   const { roomId, currentCall, setOutgoingCall, setRoomId, setCurrentCall } =
@@ -46,8 +47,10 @@ const RoomListener: FC = () => {
             isRunning: false,
           }));
           setOutgoingCall(false);
+
           setRoomId("");
-          await db.collection(Collection.Calls).doc(currentCall?.id).delete();
+          await deleteCall(currentCall?.id);
+          deleteRoom(roomId);
           navigate(Routes.Home);
         }
       });

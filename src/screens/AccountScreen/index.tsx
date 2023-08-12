@@ -9,14 +9,14 @@ import {
 } from "react-native";
 import { useAuth } from "../../atoms/auth";
 import Icon from "@expo/vector-icons/Ionicons";
+import { useTheme } from "@react-navigation/native";
 
 import { auth } from "../../api/firebase";
+import { useSettings } from "../../atoms/settings";
 import * as deviceStorage from "../../utils";
 import { FontFamily } from "../../constants";
 import { Avatar, Button, SettingRow } from "../../components";
 import styles from "./styles";
-import { useTheme } from "@react-navigation/native";
-import { useSettings } from "../../atoms/settings";
 
 const AccountScreen: FC = () => {
   const { colors, dark } = useTheme();
