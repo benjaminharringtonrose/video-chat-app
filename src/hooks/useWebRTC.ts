@@ -10,7 +10,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 import { db } from "../api/firebase";
-import { deleteCall, updateRoom } from "../api/firestore";
+import { deleteCall, setRoom, updateRoom } from "../api/firestore";
 import { useRoom } from "../atoms/room";
 import { useAuth } from "../atoms/auth";
 import { NavProp, Routes } from "../navigation/types";
@@ -211,7 +211,7 @@ export const useWebRTC = () => {
       );
       await peerConnection.setLocalDescription(offerDescription);
 
-      await updateRoom(roomId, {
+      await setRoom(roomId, {
         offer: {
           sdp: offerDescription.sdp,
           type: offerDescription.type,

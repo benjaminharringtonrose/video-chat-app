@@ -49,7 +49,7 @@ const RoomListener: FC = () => {
           setOutgoingCall(false);
           setRoomId("");
           await deleteCall(currentCall?.id);
-          await deleteRoom(roomId);
+          // await deleteRoom(roomId);
           navigate(Routes.Home);
         }
       });

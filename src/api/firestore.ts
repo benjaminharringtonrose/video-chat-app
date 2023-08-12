@@ -19,6 +19,12 @@ export const updateCall = async (
   await callDoc.update(data);
 };
 
+export const setRoom = async (roomId?: string, data?: Record<string, any>) => {
+  if (!roomId || !data) return;
+  const roomDoc = db.collection(Collection.Rooms).doc(roomId);
+  await roomDoc.set(data);
+};
+
 export const deleteRoom = async (roomId?: string) => {
   if (!roomId) return;
   const roomRef = db.collection("rooms").doc(roomId);
