@@ -47,10 +47,9 @@ const RoomListener: FC = () => {
             isRunning: false,
           }));
           setOutgoingCall(false);
-
           setRoomId("");
           await deleteCall(currentCall?.id);
-          deleteRoom(roomId);
+          await deleteRoom(roomId);
           navigate(Routes.Home);
         }
       });

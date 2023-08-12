@@ -99,9 +99,7 @@ const VideoChatScreen: FC = () => {
         <View style={styles.endCallContainer}>
           <TouchableOpacity
             style={styles.endCallButton}
-            onPress={() => {
-              endStream({ roomId });
-            }}
+            onPress={() => endStream(roomId)}
           >
             <Icon name={"call-end"} color={"white"} size={40} />
           </TouchableOpacity>

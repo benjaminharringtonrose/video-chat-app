@@ -15,6 +15,7 @@ import { CallMode, Collection, ICall } from "../types";
 import { useRoom } from "../atoms/room";
 import { useSpeechRecognition } from "./useSpeechRecognition";
 import { useAuth } from "../atoms/auth";
+import { deleteCall } from "../api/firestore";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -280,17 +281,14 @@ export const useWebRTC = () => {
     }
   };
 
-  const endStream = async ({ roomId }: { roomId?: string }) => {
+  const endStream = async (roomId?: string) => {
     if (!roomId) {
       console.warn("endStream: No roomId");
     }
     try {
-      console.log("currentCall?.id", currentCall?.id ?? "none");
       setOutgoingCall(false);
       const roomDoc = db.collection(Collection.Rooms).doc(roomId);
-      const callDoc = db.collection(Collection.Calls).doc(currentCall?.id);
-
-      await callDoc.delete();
+      await deleteCall(currentCall?.id);
       await roomDoc.update({
         calling: false,
         callEnded: true,
