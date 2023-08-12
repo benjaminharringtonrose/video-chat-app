@@ -8,8 +8,7 @@ import {
 } from "react-native";
 import styles from "./styles";
 import { useNotifications } from "../../atoms/notifications";
-import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
-import { ListItemType } from "../../components/ListItem";
+import { EmptyStateView, ItemSeparator, Card } from "../../components";
 import firebase from "firebase/compat";
 import { db } from "../../api/firebase";
 import { useAuth } from "../../atoms/auth";
@@ -18,6 +17,7 @@ import {
   INotification,
   NotificationType,
   QueryKey,
+  CardType,
 } from "../../types";
 import { useFriends } from "../../atoms/friends";
 import { FontFamily } from "../../constants";
@@ -125,8 +125,8 @@ const NotificationsScreen: FC = () => {
     switch (item.type) {
       case NotificationType.FriendRequest:
         return (
-          <ListItem
-            type={ListItemType.FriendRequest}
+          <Card
+            type={CardType.FriendRequest}
             key={item.senderId}
             username={item.senderUsername}
             label={"wants to be your friend"}
@@ -168,6 +168,9 @@ const NotificationsScreen: FC = () => {
               <View style={{ flex: 1 }}>
                 <EmptyStateView
                   title={"You dont have any notifications"}
+                  description={
+                    "This is where you'll see your friend requests, group invitations, etc"
+                  }
                   lottie={require("../../../assets/lottie/no_notifications.json")}
                 />
               </View>

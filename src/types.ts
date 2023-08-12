@@ -16,6 +16,14 @@ export enum NotificationType {
   Invitation = "Invitation",
 }
 
+export enum CardType {
+  Results = "Results",
+  Friends = "Friends",
+  User = "User",
+  FriendRequest = "FriendRequest",
+  Invitation = "Invitation",
+}
+
 export interface INotification {
   id?: string;
   senderId?: string;

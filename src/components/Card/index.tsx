@@ -3,17 +3,10 @@ import FriendRequestCard from "../FriendRequestCard";
 import FriendCard from "../FriendCard";
 import SearchResultCard from "../SearchResultCard";
 import InvitationCard from "../InvitationCard";
-
-export enum ListItemType {
-  Results = "Results",
-  Friends = "Friends",
-  User = "User",
-  FriendRequest = "FriendRequest",
-  Invitation = "Invitation",
-}
+import { CardType } from "../../types";
 
 interface IProps {
-  type: ListItemType;
+  type: CardType;
   username?: string;
   label?: string;
   isFriend?: boolean;
@@ -25,7 +18,7 @@ interface IProps {
   isOnline?: boolean;
 }
 
-const ListItem: FC<IProps> = ({
+const Card: FC<IProps> = ({
   type,
   username,
   label,
@@ -38,11 +31,11 @@ const ListItem: FC<IProps> = ({
   isOnline,
 }) => {
   switch (type) {
-    case ListItemType.Friends:
+    case CardType.Friends:
       return <FriendCard label={label} onPress={onPress} isOnline={isOnline} />;
-    case ListItemType.Results:
+    case CardType.Results:
       return <SearchResultCard username={username} onPress={onPress} />;
-    case ListItemType.FriendRequest:
+    case CardType.FriendRequest:
       return (
         <FriendRequestCard
           username={username}
@@ -52,7 +45,7 @@ const ListItem: FC<IProps> = ({
           onPress={onPress}
         />
       );
-    case ListItemType.Invitation:
+    case CardType.Invitation:
     default:
       return (
         <InvitationCard
@@ -68,4 +61,4 @@ const ListItem: FC<IProps> = ({
   }
 };
 
-export default ListItem;
+export default Card;

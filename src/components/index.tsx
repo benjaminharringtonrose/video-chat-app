@@ -1,6 +1,6 @@
 export { default as Button } from "./Button";
 export { default as Listeners } from "../listeners/UserListener";
-export { default as ListItem } from "./ListItem";
+export { default as Card } from "./Card";
 export { default as SearchInput } from "./SearchInput";
 export { default as FormSection } from "./FormSection";
 export { default as FormInput } from "./FormInput";

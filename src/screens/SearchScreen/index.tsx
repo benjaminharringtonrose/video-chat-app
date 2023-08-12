@@ -16,7 +16,7 @@ import {
 } from "../../types";
 import { useAuth } from "../../atoms/auth";
 import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
-import { ListItemType } from "../../components/ListItem";
+import { ListItemType } from "../../components/Card";
 import { isFriend } from "../../utils";
 import { useFriends } from "../../atoms/friends";
 import { useTheme } from "@react-navigation/native";

@@ -9,15 +9,13 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import styles from "./styles";
-import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
-import { ListItemType } from "../../components/ListItem";
+import { Card, EmptyStateView, ItemSeparator } from "../../components";
 import { useFriends } from "../../atoms/friends";
-import { IUser } from "../../types";
-import { Color } from "../../constants";
+import { IUser, CardType } from "../../types";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { NavProp, Routes } from "../../navigation/types";
 import { useAuth } from "../../atoms/auth";
+import styles from "./styles";
 
 const HomeScreen: FC = () => {
   const { colors } = useTheme();
@@ -47,8 +45,8 @@ const HomeScreen: FC = () => {
 
   const renderItem = ({ item }: SectionListRenderItemInfo<IUser>) => {
     return (
-      <ListItem
-        type={ListItemType.Friends}
+      <Card
+        type={CardType.Friends}
         label={item.username ?? "--"}
         onPress={() =>
           navigate(Routes.FriendDetail, {
