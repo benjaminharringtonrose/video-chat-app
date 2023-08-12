@@ -68,6 +68,12 @@ target 'VideoChait' do
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
 
+    installer.pods_project.targets.each do |target|
+      if target.name == "React-Core-AccessibilityResources"
+        target.remove_from_project
+      end
+    end
+
     # This is necessary for Xcode 14, because it signs resource bundles by default
     # when building for devices.
     installer.target_installation_results.pod_target_installation_results
