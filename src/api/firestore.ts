@@ -1,6 +1,24 @@
 import { Collection } from "../types";
 import { db } from "./firebase";
 
+export const updateRoom = async (
+  roomId?: string,
+  data?: Record<string, any>
+) => {
+  if (!roomId || !data) return;
+  const roomDoc = db.collection(Collection.Rooms).doc(roomId);
+  await roomDoc.update(data);
+};
+
+export const updateCall = async (
+  callId?: string,
+  data?: Record<string, any>
+) => {
+  if (!callId || !data) return;
+  const callDoc = db.collection(Collection.Calls).doc(callId);
+  await callDoc.update(data);
+};
+
 export const deleteRoom = async (roomId?: string) => {
   if (!roomId) return;
   const roomRef = db.collection("rooms").doc(roomId);

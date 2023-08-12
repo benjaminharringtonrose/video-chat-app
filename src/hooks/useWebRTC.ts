@@ -7,15 +7,14 @@ import {
   RTCIceCandidate,
   MediaStreamTrack,
 } from "react-native-webrtc";
+import { useNavigation } from "@react-navigation/native";
 
 import { db } from "../api/firebase";
-import { useNavigation } from "@react-navigation/native";
+import { deleteCall, updateRoom } from "../api/firestore";
+import { useRoom } from "../atoms/room";
+import { useAuth } from "../atoms/auth";
 import { NavProp, Routes } from "../navigation/types";
 import { CallMode, Collection, ICall } from "../types";
-import { useRoom } from "../atoms/room";
-import { useSpeechRecognition } from "./useSpeechRecognition";
-import { useAuth } from "../atoms/auth";
-import { deleteCall } from "../api/firestore";
 
 const configuration: RTCConfiguration = {
   iceServers: [
@@ -195,9 +194,7 @@ export const useWebRTC = () => {
 
       const remote = new MediaStream(undefined);
       setRemoteStream(remote);
-
       setLocalStream(local);
-
       setWebcamStarted(true);
     } catch (e: any) {
       console.error("startWebcam Error:", e);
@@ -206,20 +203,18 @@ export const useWebRTC = () => {
 
   const createRoom = async (roomId: string) => {
     try {
-      const roomDoc = db.collection(Collection.Rooms).doc(roomId);
-
       setOutgoingCall(true);
 
       const offerDescription = await peerConnection.createOffer(
         sessionConstraints
       );
       await peerConnection.setLocalDescription(offerDescription);
-      const offer = {
-        sdp: offerDescription.sdp,
-        type: offerDescription.type,
-      };
-      await roomDoc.set({
-        offer,
+
+      await updateRoom(roomId, {
+        offer: {
+          sdp: offerDescription.sdp,
+          type: offerDescription.type,
+        },
         calling: true,
         callAnswered: false,
         callEnded: false,
@@ -252,7 +247,7 @@ export const useWebRTC = () => {
 
       setIncomingCall(false);
 
-      await roomDoc.update({
+      await updateRoom(roomId, {
         calling: false,
         callAnswered: true,
       });
@@ -260,22 +255,17 @@ export const useWebRTC = () => {
       const snapshot = await roomDoc.get();
       const room = snapshot.data();
 
-      const offerDescription = room?.offer;
-
       await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(offerDescription)
+        new RTCSessionDescription(room?.offer)
       );
 
       const answerDescription = await peerConnection.createAnswer();
-
       await peerConnection.setLocalDescription(answerDescription);
 
-      const answer = {
+      await updateRoom(roomId, {
         type: answerDescription.type,
         sdp: answerDescription.sdp,
-      };
-
-      await roomDoc.update({ answer });
+      });
     } catch (e) {
       console.error("joinRoom Error:", e);
     }
@@ -287,20 +277,18 @@ export const useWebRTC = () => {
     }
     try {
       setOutgoingCall(false);
-      const roomDoc = db.collection(Collection.Rooms).doc(roomId);
       await deleteCall(currentCall?.id);
-      await roomDoc.update({
+      await updateRoom(roomId, {
         calling: false,
         callEnded: true,
       });
-      setLocalStream(undefined);
-      setRemoteStream(undefined);
-      setShowRemoteStream(false);
-
       localStream?.getTracks().forEach((track) => {
         track.stop();
       });
       peerConnection.close();
+      setLocalStream(undefined);
+      setRemoteStream(undefined);
+      setShowRemoteStream(false);
     } catch (e) {
       console.log("endStream Error:", e);
     }

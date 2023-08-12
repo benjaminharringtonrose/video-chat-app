@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { RTCView } from "react-native-webrtc";
@@ -6,6 +6,7 @@ import LottieView from "lottie-react-native";
 import { useRoute, useTheme } from "@react-navigation/native";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
 import InCallManager from "react-native-incall-manager";
+
 import { db } from "../../api/firebase";
 import { useRoom } from "../../atoms/room";
 import { useTimer } from "../../atoms/timer";
@@ -110,11 +111,3 @@ const VideoChatScreen: FC = () => {
 };
 
 export default VideoChatScreen;
-
-function findDifference(str1: string, str2: string) {
-  const words1 = str1?.split(/\s+/);
-  const words2 = str2?.split(/\s+/);
-  const uniqueWords2 = words2.filter((word) => !words1?.includes(word));
-  const difference = uniqueWords2.join(" ");
-  return difference;
-}

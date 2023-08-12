@@ -86,6 +86,7 @@ const SearchStackNavigator: FC = () => {
           fontSize: 28,
         },
         headerShadowVisible: false,
+        headerTitle: "Find Friends",
       })}
     >
       <SearchStack.Screen name={Routes.Search} component={SearchScreen} />

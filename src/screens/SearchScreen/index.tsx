@@ -13,10 +13,10 @@ import {
   INotification,
   IUser,
   NotificationType,
+  CardType,
 } from "../../types";
 import { useAuth } from "../../atoms/auth";
-import { EmptyStateView, ItemSeparator, ListItem } from "../../components";
-import { ListItemType } from "../../components/Card";
+import { EmptyStateView, ItemSeparator, Card } from "../../components";
 import { isFriend } from "../../utils";
 import { useFriends } from "../../atoms/friends";
 import { useTheme } from "@react-navigation/native";
@@ -68,8 +68,8 @@ const SearchScreen: FC = () => {
 
   const renderItem = ({ item }: ListRenderItemInfo<IUser>) => {
     return (
-      <ListItem
-        type={ListItemType.Results}
+      <Card
+        type={CardType.Results}
         key={item.uid}
         username={item.username ?? "--"}
         isFriend={isFriend(item.uid, friends)}
@@ -94,7 +94,14 @@ const SearchScreen: FC = () => {
         ItemSeparatorComponent={ItemSeparator}
         ListHeaderComponent={() => {
           if (!searchResults.length) {
-            return <EmptyStateView title={"No search results"} />;
+            return (
+              <EmptyStateView
+                title={"No search results"}
+                description={
+                  "Search for your friends by their username or invite them to the app"
+                }
+              />
+            );
           }
           return null;
         }}
