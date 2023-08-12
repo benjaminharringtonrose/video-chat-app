@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginHorizontal: 10,
     borderRadius: 20,
-    bottom: 10,
+    // bottom: 10,
   },
   tabIndicator: {
     position: "absolute",

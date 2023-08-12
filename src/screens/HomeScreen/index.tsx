@@ -102,7 +102,7 @@ const HomeScreen: FC = () => {
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
         keyExtractor={(item) => item.uid}
-        contentContainerStyle={{ paddingTop: 20 }}
+        contentContainerStyle={{ paddingTop: 20, marginHorizontal: 10 }}
         refreshing={loadingFriends}
         ItemSeparatorComponent={ItemSeparator}
       />

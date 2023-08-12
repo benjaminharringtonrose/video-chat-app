@@ -13,11 +13,13 @@ import {
   FriendDetailScreen,
 } from "../screens";
 import { useAuth } from "../atoms/auth";
-import { Color, FontFamily } from "../constants";
-import { AnyParams, Routes } from "./types";
+import { FontFamily } from "../constants";
+import { Routes } from "./types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TabBar } from "../components";
 import { useTheme } from "@react-navigation/native";
+import { BlurView } from "expo-blur";
+import { StyleSheet } from "react-native";
 
 const routesWithBackNav = new Set([Routes.FriendDetail, Routes.VideoChat]);
 
@@ -158,6 +160,10 @@ const TabNavigator: FC = () => {
           color: colors.text,
           fontFamily: FontFamily.Bold,
           fontSize: 28,
+        },
+        tabBarStyle: {
+          position: "absolute",
+          backgroundColor: "transparent",
         },
       }}
     >

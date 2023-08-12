@@ -54,6 +54,10 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
             android: bottom + 10,
           }),
           backgroundColor: colors.card,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          position: "absolute",
         },
       ]}
     >

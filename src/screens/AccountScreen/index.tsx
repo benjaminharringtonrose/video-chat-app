@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import { useAuth } from "../../atoms/auth";
 import Icon from "@expo/vector-icons/Ionicons";
@@ -25,8 +26,11 @@ const AccountScreen: FC = () => {
   const { setUser, user } = useAuth();
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <ScrollView style={{ flex: 1 }}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 80 }}
+      >
         <View style={{ flex: 1, marginHorizontal: 10 }}>
           <Text style={[styles.sectionText, { color: colors.text }]}>
             {"General"}
@@ -36,14 +40,16 @@ const AccountScreen: FC = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              borderBottomWidth: 1,
-              borderBottomColor: colors.border,
-              borderTopColor: colors.border,
+              backgroundColor: colors.card,
+              borderRadius: 10,
+              paddingVertical: 20,
+              paddingHorizontal: 10,
+              marginBottom: 10,
             }}
           >
             <Avatar
               source={{ uri: "https://picsum.photos/id/239/200/300" }}
-              imageStyle={[styles.avatarPlaceholder, { marginVertical: 20 }]}
+              imageStyle={[styles.avatarPlaceholder]}
             />
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text
@@ -68,11 +74,13 @@ const AccountScreen: FC = () => {
           <SettingRow
             label={"Delete Account"}
             textStyle={{ color: colors.text }}
+            style={{ marginBottom: 10 }}
             onPress={() => {}}
           />
           <SettingRow
             label={"Notifications"}
             textStyle={{ color: colors.text }}
+            style={{ marginBottom: 10 }}
             onPress={() => {}}
           />
           <SettingRow
@@ -80,6 +88,7 @@ const AccountScreen: FC = () => {
             label={"Push Notifications"}
             type={"switch"}
             onPress={() => setPushEnabled((prevState) => !prevState)}
+            style={{ marginBottom: 10 }}
           />
           <SettingRow
             isEnabled={dark}
@@ -102,6 +111,7 @@ const AccountScreen: FC = () => {
           <SettingRow
             label={"Report an issue"}
             textStyle={{ color: colors.text }}
+            style={{ marginBottom: 10 }}
             onPress={() => {}}
           />
           <SettingRow
@@ -120,10 +130,10 @@ const AccountScreen: FC = () => {
           }}
           backgroundColor={colors.primary}
           labelColor={colors.white}
-          style={{ marginBottom: 40, marginHorizontal: 10 }}
+          style={{ marginHorizontal: 10 }}
         />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

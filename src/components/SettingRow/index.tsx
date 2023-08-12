@@ -37,10 +37,10 @@ const SettingRow: FC<IProps> = ({
       <View
         style={[
           {
-            paddingVertical: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border,
+            padding: 10,
+            borderRadius: 10,
             justifyContent: "center",
+            backgroundColor: colors.card,
           },
           style,
         ]}
@@ -66,9 +66,9 @@ const SettingRow: FC<IProps> = ({
       <View
         style={[
           {
-            paddingVertical: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border,
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: colors.card,
           },
           style,
         ]}
