@@ -204,18 +204,20 @@ export const useWebRTC = () => {
 
   const createRoom = async (roomId: string) => {
     try {
+      const roomDoc = db.collection(Collection.Rooms).doc(roomId);
+
       setOutgoingCall(true);
 
       const offerDescription = await peerConnection.createOffer(
         sessionConstraints
       );
       await peerConnection.setLocalDescription(offerDescription);
-
-      await setRoom(roomId, {
-        offer: {
-          sdp: offerDescription.sdp,
-          type: offerDescription.type,
-        },
+      const offer = {
+        sdp: offerDescription.sdp,
+        type: offerDescription.type,
+      };
+      await roomDoc.set({
+        offer,
         calling: true,
         callAnswered: false,
         callEnded: false,
