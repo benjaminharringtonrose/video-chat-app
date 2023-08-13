@@ -28,7 +28,6 @@ export const useWebRTC = () => {
     callMode,
     setWebcamStarted,
     setIncomingCall,
-    setOutgoingCall,
     setShowRemoteStream,
     setCurrentCall,
     setRoomId,
@@ -194,8 +193,6 @@ export const useWebRTC = () => {
       const roomDoc = db.collection(Collection.Rooms).doc();
       setRoomId(roomDoc.id);
 
-      setOutgoingCall(true);
-
       const offerDescription = await peerConnection.createOffer(
         sessionConstraints
       );
@@ -273,7 +270,6 @@ export const useWebRTC = () => {
       console.warn("endStream: No roomId");
     }
     try {
-      setOutgoingCall(false);
       await deleteCall(currentCall?.id);
       await updateRoom(roomId, {
         calling: false,

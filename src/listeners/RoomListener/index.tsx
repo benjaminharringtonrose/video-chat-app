@@ -1,4 +1,5 @@
 import { FC, useEffect } from "react";
+import InCallManager from "react-native-incall-manager";
 import { Collection, IRoom } from "../../types";
 import { Routes } from "../../navigation/types";
 import { db } from "../../api/firebase";
@@ -10,8 +11,7 @@ import { useAuth } from "../../atoms/auth";
 import { deleteCall, deleteRoom } from "../../api/firestore";
 
 const RoomListener: FC = () => {
-  const { roomId, currentCall, setOutgoingCall, setRoomId, setCurrentCall } =
-    useRoom();
+  const { roomId, currentCall, setRoomId } = useRoom();
 
   const { user } = useAuth();
 
@@ -36,7 +36,7 @@ const RoomListener: FC = () => {
             ...state,
             isRunning: true,
           }));
-          setOutgoingCall(false);
+          InCallManager.stopRingback();
         }
         if (room?.callEnded) {
           console.log("IN ROOM CALL ENDED", user?.username);
@@ -46,10 +46,9 @@ const RoomListener: FC = () => {
             seconds: 0,
             isRunning: false,
           }));
-          setOutgoingCall(false);
           setRoomId("");
           await deleteCall(currentCall?.id);
-          // await deleteRoom(roomId);
+          await deleteRoom(roomId);
           navigate(Routes.Home);
         }
       });

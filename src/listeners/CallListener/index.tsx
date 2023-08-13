@@ -1,80 +1,15 @@
-import { Sound } from "expo-av/build/Audio";
-import { FC, useEffect, useRef } from "react";
-import { Audio } from "expo-av";
-import { useRoom } from "../../atoms/room";
-import { useAuth } from "../../atoms/auth";
-import { db } from "../../api/firebase";
-import { Collection, ICall, QueryKey } from "../../types";
+import InCallManager from "react-native-incall-manager";
+import { FC, useEffect } from "react";
 import { orderBy } from "lodash";
+import { useSetRecoilState } from "recoil";
+import { db } from "../../api/firebase";
+import { roomState } from "../../atoms/room";
+import { useAuth } from "../../atoms/auth";
+import { Collection, ICall, QueryKey } from "../../types";
 
 const CallListener: FC = () => {
+  const setRoomState = useSetRecoilState(roomState);
   const { user } = useAuth();
-  const {
-    incomingCall,
-    outgoingCall,
-    currentCall,
-    setIncomingCall,
-    setOutgoingCall,
-    setCurrentCall,
-  } = useRoom();
-  const incomingCallRef = useRef<Sound | null>(null);
-  const outgoingCallRef = useRef<Sound | null>(null);
-
-  const loadSounds = async () => {
-    const { sound: incomingCall } = await Audio.Sound.createAsync(
-      require("../../../assets/sounds/incoming-call.mp3")
-    );
-    const { sound: outgoingCall } = await Audio.Sound.createAsync(
-      require("../../../assets/sounds/outgoing-call-2.mp3")
-    );
-    incomingCallRef.current = incomingCall;
-    outgoingCallRef.current = outgoingCall;
-  };
-
-  const playIncomingCall = async () => {
-    await incomingCallRef.current?.playAsync();
-    await incomingCallRef.current?.setIsLoopingAsync(true);
-  };
-
-  const stopIncomingCall = async () => {
-    await incomingCallRef.current?.setIsLoopingAsync(false);
-    await incomingCallRef.current?.stopAsync();
-  };
-
-  const playOutgoingCall = async () => {
-    await outgoingCallRef.current?.playAsync();
-    await outgoingCallRef.current?.setIsLoopingAsync(true);
-  };
-
-  const stopOutgoingCall = async () => {
-    await outgoingCallRef.current?.setIsLoopingAsync(false);
-    await outgoingCallRef.current?.stopAsync();
-  };
-
-  useEffect(() => {
-    loadSounds();
-  }, []);
-
-  useEffect(() => {
-    if (incomingCall) {
-      playIncomingCall();
-    } else {
-      stopIncomingCall();
-    }
-  }, [incomingCall]);
-
-  useEffect(() => {
-    if (outgoingCall) {
-      console.log("playing outgoing call", user?.username);
-      playOutgoingCall();
-    } else if (!currentCall) {
-      console.log("stopping outgoing call", user?.username);
-      stopOutgoingCall();
-    } else {
-      console.log("stopping outgoing call", user?.username);
-      stopOutgoingCall();
-    }
-  }, [outgoingCall, currentCall]);
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -90,13 +25,19 @@ const CallListener: FC = () => {
         console.log(incomingCall);
         if (incomingCall) {
           console.log("INCOMING CALL", user?.username);
-          setIncomingCall(true);
-          setCurrentCall(incomingCall);
+          InCallManager.startRingtone("_BUNDLE_");
+          setRoomState((state) => ({
+            ...state,
+            incomingCall: true,
+            currentCall: incomingCall,
+          }));
         } else {
           console.log("NO INCOMING CALLS", user?.username);
-          setIncomingCall(false);
-          setCurrentCall(undefined);
-          setOutgoingCall(false);
+          setRoomState((state) => ({
+            ...state,
+            incomingCall: false,
+            currentCall: undefined,
+          }));
         }
       });
     return () => {

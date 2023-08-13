@@ -6,7 +6,6 @@ interface IRoomState {
   callId: string;
   webcamStarted: boolean;
   incomingCall: boolean;
-  outgoingCall: boolean;
   showRemoteStream: boolean;
   currentCall?: ICall;
   callMode?: CallMode;
@@ -19,7 +18,6 @@ export const roomState = atom<IRoomState>({
     callId: "",
     webcamStarted: false,
     incomingCall: false,
-    outgoingCall: false,
     showRemoteStream: false,
   },
 });
@@ -43,10 +41,6 @@ export const useRoom = () => {
     setState((state) => ({ ...state, incomingCall }));
   };
 
-  const setOutgoingCall = (outgoingCall: boolean) => {
-    setState((state) => ({ ...state, outgoingCall }));
-  };
-
   const setShowRemoteStream = (showRemoteStream: boolean) => {
     setState((state) => ({ ...state, showRemoteStream }));
   };
@@ -64,7 +58,6 @@ export const useRoom = () => {
     callId: state.callId,
     webcamStarted: state.webcamStarted,
     incomingCall: state.incomingCall,
-    outgoingCall: state.outgoingCall,
     showRemoteStream: state.showRemoteStream,
     currentCall: state.currentCall,
     callMode: state.callMode,
@@ -72,7 +65,6 @@ export const useRoom = () => {
     setCallId,
     setWebcamStarted,
     setIncomingCall,
-    setOutgoingCall,
     setShowRemoteStream,
     setCurrentCall,
     setCallMode,

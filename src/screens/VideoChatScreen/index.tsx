@@ -33,7 +33,12 @@ const VideoChatScreen: FC = () => {
 
   useEffect(() => {
     const bootstrap = async () => {
-      InCallManager.start({ media: "video", auto: true });
+      InCallManager.stopRingtone();
+      InCallManager.start({
+        media: "video",
+        auto: true,
+        ringback: "_DEFAULT_",
+      });
       InCallManager.setKeepScreenOn(true);
       InCallManager.setForceSpeakerphoneOn(true);
       await startWebcam();
@@ -44,7 +49,7 @@ const VideoChatScreen: FC = () => {
     };
     bootstrap();
     return () => {
-      InCallManager.stop();
+      InCallManager.stop({ busytone: "_DTMF_" });
     };
   }, []);
 
