@@ -109,6 +109,8 @@ const TabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
               );
             case Routes.AccountStack:
               return <Icon name={"user"} size={24} color={color} />;
+            case Routes.MessagesStack:
+              return <Icon name={"mail"} size={24} color={color} />;
           }
         };
 

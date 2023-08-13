@@ -1,5 +1,4 @@
 import * as SplashScreen from "expo-splash-screen";
-import * as Device from "expo-device";
 import {
   useFonts,
   Nunito_300Light,
@@ -33,8 +32,6 @@ import {
 } from "react-native-safe-area-context";
 import { DarkColors, LightColors } from "./constants/Color";
 import { useSettings } from "./atoms/settings";
-import { Platform } from "react-native";
-import { updateUser } from "./api/firestore";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

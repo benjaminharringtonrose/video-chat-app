@@ -11,6 +11,7 @@ import {
   SearchScreen,
   NotificationsScreen,
   FriendDetailScreen,
+  MessagesScreen,
 } from "../screens";
 import { useAuth } from "../atoms/auth";
 import { FontFamily } from "../constants";
@@ -20,6 +21,7 @@ import { TabBar } from "../components";
 import { useTheme } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { StyleSheet } from "react-native";
+import MessageThreadScreen from "../screens/MessageThreadScreen";
 
 const routesWithBackNav = new Set([Routes.FriendDetail, Routes.VideoChat]);
 
@@ -145,6 +147,34 @@ const AccountStackNavigator: FC = () => {
   );
 };
 
+const MessagesStack = createNativeStackNavigator();
+
+const MessagesStackNavigator: FC = () => {
+  const { colors } = useTheme();
+
+  return (
+    <MessagesStack.Navigator
+      screenOptions={() => ({
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+          fontFamily: FontFamily.Bold,
+          fontSize: 28,
+        },
+        headerShadowVisible: false,
+      })}
+    >
+      <MessagesStack.Screen name={Routes.Messages} component={MessagesScreen} />
+      <MessagesStack.Screen
+        name={Routes.MessageThread}
+        component={MessageThreadScreen}
+      />
+    </MessagesStack.Navigator>
+  );
+};
+
 const Tab = createBottomTabNavigator();
 
 const TabNavigator: FC = () => {
@@ -171,6 +201,11 @@ const TabNavigator: FC = () => {
       <Tab.Screen
         name={Routes.HomeStack}
         component={HomeStackNavigator}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name={Routes.MessagesStack}
+        component={MessagesStackNavigator}
         options={{ headerShown: false }}
       />
       <Tab.Screen
@@ -222,6 +257,11 @@ export const RootNavigator: FC = () => {
                 backgroundColor: colors.background,
               },
             }}
+          />
+          <RootStack.Screen
+            name={Routes.MessageThread}
+            component={MessageThreadScreen}
+            options={{ headerTitle: "Message Thread" }}
           />
         </>
       ) : (

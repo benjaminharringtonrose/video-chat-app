@@ -100,6 +100,11 @@ const FriendDetailScreen: FC = () => {
               <Icon name={"video"} size={30} color={colors.text} />
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() =>
+                navigate(Routes.MessageThread, {
+                  friendId,
+                })
+              }
               style={{
                 backgroundColor: Color.primaryLight,
                 padding: 10,

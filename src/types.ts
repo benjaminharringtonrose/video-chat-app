@@ -22,6 +22,7 @@ export enum CardType {
   User = "User",
   FriendRequest = "FriendRequest",
   Invitation = "Invitation",
+  MessageThread = "MessageThread",
 }
 
 export interface INotification {

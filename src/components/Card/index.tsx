@@ -4,6 +4,7 @@ import FriendCard from "../FriendCard";
 import SearchResultCard from "../SearchResultCard";
 import InvitationCard from "../InvitationCard";
 import { CardType } from "../../types";
+import MessageThreadCard from "../MessageThreadCard";
 
 interface IProps {
   type: CardType;
@@ -12,10 +13,11 @@ interface IProps {
   isFriend?: boolean;
   onPress: () => void;
   viewed?: boolean;
-  calling?: boolean;
-  callEnded?: boolean;
-  callAnswered?: boolean;
   isOnline?: boolean;
+  avatar?: string;
+  lastMessage?: string;
+  unreadCount?: number;
+  updatedAt?: string;
 }
 
 const Card: FC<IProps> = ({
@@ -25,10 +27,11 @@ const Card: FC<IProps> = ({
   isFriend,
   onPress,
   viewed,
-  calling,
-  callEnded,
-  callAnswered,
   isOnline,
+  avatar,
+  lastMessage,
+  unreadCount,
+  updatedAt,
 }) => {
   switch (type) {
     case CardType.Friends:
@@ -45,19 +48,18 @@ const Card: FC<IProps> = ({
           onPress={onPress}
         />
       );
-    case CardType.Invitation:
-    default:
+    case CardType.MessageThread:
       return (
-        <InvitationCard
+        <MessageThreadCard
           username={username}
-          label={label}
-          onPress={onPress}
-          viewed={!!viewed}
-          calling={!!calling}
-          callEnded={!!callEnded}
-          callAnswered={!!callAnswered}
+          avatar={avatar}
+          lastMessage={lastMessage}
+          unreadCount={unreadCount}
+          updatedAt={updatedAt}
         />
       );
+    default:
+      return null;
   }
 };
 

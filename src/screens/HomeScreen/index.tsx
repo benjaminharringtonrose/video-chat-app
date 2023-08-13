@@ -35,11 +35,9 @@ const HomeScreen: FC = () => {
     section: SectionListData<any>;
   }) => {
     return (
-      <View style={{ backgroundColor: colors.background }}>
-        <Text style={[styles.sectionHeaderText, { color: colors.text }]}>
-          {section.title}
-        </Text>
-      </View>
+      <Text style={[styles.sectionHeaderText, { color: colors.text }]}>
+        {section.title}
+      </Text>
     );
   };
 

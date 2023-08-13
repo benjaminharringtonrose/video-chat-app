@@ -8,12 +8,15 @@ export enum Routes {
   SearchStack = "SearchStack",
   NotificationsStack = "NotificationsStack",
   AccountStack = "AccountStack",
+  MessagesStack = "MessagesStack",
   Home = "Home",
   VideoChat = "VideoChat",
   Search = "Search",
   Account = "Account",
   Notifications = "Notifications",
   FriendDetail = "FriendDetail",
+  Messages = "Messages",
+  MessageThread = "MessageThread",
 }
 
 export type AnyParams = {
