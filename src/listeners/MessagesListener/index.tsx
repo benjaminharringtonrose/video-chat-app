@@ -1,18 +1,22 @@
 import { FC, useEffect } from "react";
 import { useAuth } from "../../atoms/auth";
 import { db } from "../../api/firebase";
-import { Collection, IMessage } from "../../types";
-import { useSetRecoilState } from "recoil";
-import { messagesState, useMessages } from "../../atoms/messages";
+import { Collection, IUser } from "../../types";
+import { useMessages } from "../../atoms/messages";
 import { orderBy } from "lodash";
 
 const MessagesListener: FC = () => {
   const { user } = useAuth();
 
-  const { friendId, setMessages } = useMessages();
+  const { friendId, setMessages, setSelectedFriend } = useMessages();
 
   useEffect(() => {
+    const fetchFriend = async () => {
+      const friend = await db.collection(Collection.Users).doc(friendId).get();
+      setSelectedFriend(friend.data() as IUser);
+    };
     if (friendId) {
+      fetchFriend();
     }
   }, [friendId]);
 
@@ -30,7 +34,7 @@ const MessagesListener: FC = () => {
         for (const key in messages) {
           friendMessages.push(messages[key]);
         }
-        setMessages(orderBy(friendMessages, ["createdAt"], ["desc"]));
+        setMessages(orderBy(friendMessages, ["createdAt"], ["asc"]));
       });
     return () => unsubscribe();
   }, [user?.uid, friendId]);

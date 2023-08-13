@@ -4,12 +4,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  Text,
   View,
 } from "react-native";
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
-import { MessageInput } from "../../components";
+import { ItemSeparator, MessageInput } from "../../components";
 import { useMessages } from "../../atoms/messages";
 import { db } from "../../api/firebase";
 import { Collection } from "../../types";
@@ -17,11 +18,14 @@ import { useAuth } from "../../atoms/auth";
 import uuid from "react-native-uuid";
 
 const MessageThreadScreen: FC = () => {
+  const { colors } = useTheme();
   const [message, setMessage] = useState("");
   const { top, bottom } = useSafeAreaInsets();
 
   const { user } = useAuth();
   const { messages, friendId } = useMessages();
+
+  console.log(messages);
 
   const onSendMessage = async () => {
     await db
@@ -35,6 +39,7 @@ const MessageThreadScreen: FC = () => {
             sender: user?.uid,
             message,
             createdAt: Date.now(),
+            avatar: "https://picsum.photos/id/239/200/300",
           },
         },
         { merge: true }
@@ -50,6 +55,7 @@ const MessageThreadScreen: FC = () => {
             sender: user?.uid,
             message,
             createdAt: Date.now(),
+            avatar: "https://picsum.photos/id/239/200/300",
           },
         },
         { merge: true }
@@ -62,11 +68,29 @@ const MessageThreadScreen: FC = () => {
       style={{ flex: 1, marginTop: top + 100 }}
     >
       <FlatList
-        contentContainerStyle={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1, marginHorizontal: 10 }}
         data={messages ?? []}
         renderItem={({ item }) => {
-          return null;
+          const isMyMessage = item.sender === user?.uid;
+          return (
+            <View
+              style={{ alignItems: isMyMessage ? "flex-end" : "flex-start" }}
+            >
+              <Text
+                style={{
+                  color: colors.text,
+                  backgroundColor: isMyMessage ? colors.primary : colors.card,
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  padding: 20,
+                }}
+              >
+                {item.message}
+              </Text>
+            </View>
+          );
         }}
+        ItemSeparatorComponent={ItemSeparator}
       />
       <MessageInput
         value={message}
