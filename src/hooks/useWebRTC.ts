@@ -10,29 +10,12 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 import { db } from "../api/firebase";
-import { deleteCall, setRoom, updateRoom } from "../api/firestore";
+import { deleteCall, updateRoom } from "../api/firestore";
 import { useRoom } from "../atoms/room";
 import { useAuth } from "../atoms/auth";
 import { NavProp, Routes } from "../navigation/types";
+import { rtcConfig, sessionConstraints } from "../constants";
 import { CallMode, Collection, ICall } from "../types";
-
-const configuration: RTCConfiguration = {
-  iceServers: [
-    {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
-    },
-  ],
-  iceTransportPolicy: "all",
-  iceCandidatePoolSize: 2,
-};
-
-let sessionConstraints = {
-  mandatory: {
-    OfferToReceiveAudio: true,
-    OfferToReceiveVideo: true,
-    VoiceActivityDetection: true,
-  },
-};
 
 export const useWebRTC = () => {
   const [localStream, setLocalStream] = useState<MediaStream>();
@@ -48,12 +31,13 @@ export const useWebRTC = () => {
     setOutgoingCall,
     setShowRemoteStream,
     setCurrentCall,
+    setRoomId,
   } = useRoom();
 
   const { user } = useAuth();
 
   const peerConnection = useRef<RTCPeerConnection>(
-    new RTCPeerConnection(configuration)
+    new RTCPeerConnection(rtcConfig)
   ).current;
 
   const { navigate } = useNavigation<NavProp["navigation"]>();
@@ -84,6 +68,10 @@ export const useWebRTC = () => {
         }
         case "failed": {
           console.log("FAILED");
+          break;
+        }
+        case "closed": {
+          console.log("CLOSED");
           break;
         }
         default:
@@ -201,10 +189,10 @@ export const useWebRTC = () => {
       console.error("startWebcam Error:", e);
     }
   };
-
-  const createRoom = async (roomId: string) => {
+  const createRoom = async () => {
     try {
-      const roomDoc = db.collection(Collection.Rooms).doc(roomId);
+      const roomDoc = db.collection(Collection.Rooms).doc();
+      setRoomId(roomDoc.id);
 
       setOutgoingCall(true);
 
@@ -222,6 +210,7 @@ export const useWebRTC = () => {
         callAnswered: false,
         callEnded: false,
       });
+      return roomDoc.id;
     } catch (e) {
       console.error("startCall Error:", e);
     }

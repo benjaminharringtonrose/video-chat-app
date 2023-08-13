@@ -38,7 +38,9 @@
         "ACCESS_NETWORK_STATE",
         "CHANGE_NETWORK_STATE",
         "MODIFY_AUDIO_SETTINGS",
-        "INTERNET"
+        "INTERNET",
+        "BLUETOOTH",
+        "BLUETOOTH_CONNECT"
       ]
     },
     "web": {

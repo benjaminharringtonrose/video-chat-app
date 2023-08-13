@@ -7,20 +7,19 @@ import { useRoute, useTheme } from "@react-navigation/native";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
 import InCallManager from "react-native-incall-manager";
 
-import { db } from "../../api/firebase";
 import { useRoom } from "../../atoms/room";
 import { useTimer } from "../../atoms/timer";
 import { useWebRTC } from "../../hooks/useWebRTC";
 import { NavProp } from "../../navigation/types";
 import { Timer } from "../../components";
-import { CallMode, Collection } from "../../types";
+import { CallMode } from "../../types";
 import styles from "./styles";
 
 const VideoChatScreen: FC = () => {
   const { colors } = useTheme();
   const { width, height } = useWindowDimensions();
   const { params } = useRoute<NavProp["route"]>();
-  const { setRoomId, roomId, showRemoteStream, callMode } = useRoom();
+  const { roomId, showRemoteStream, callMode } = useRoom();
   const { isRunning } = useTimer();
   const {
     localStream,
@@ -34,15 +33,13 @@ const VideoChatScreen: FC = () => {
 
   useEffect(() => {
     const bootstrap = async () => {
-      InCallManager.start();
+      InCallManager.start({ media: "video", auto: true });
       InCallManager.setKeepScreenOn(true);
       InCallManager.setForceSpeakerphoneOn(true);
       await startWebcam();
       if (callMode === CallMode.Host) {
-        const roomDoc = db.collection(Collection.Rooms).doc();
-        setRoomId(roomDoc.id);
-        await createRoom(roomDoc.id);
-        await sendCallInvite(roomDoc.id, params?.friendId);
+        const roomId = await createRoom();
+        await sendCallInvite(roomId, params?.friendId);
       }
     };
     bootstrap();

@@ -1,12 +1,5 @@
 import React, { FC, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useAuth } from "../../atoms/auth";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useTheme } from "@react-navigation/native";
