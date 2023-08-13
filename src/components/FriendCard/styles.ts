@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
+    borderRadius: 10,
   },
   avatar: {
     width: 40,

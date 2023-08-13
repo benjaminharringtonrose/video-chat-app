@@ -1,17 +1,8 @@
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { FC } from "react";
-import { useTheme } from "@react-navigation/native";
 
 const ItemSeparator: FC = () => {
-  const { colors } = useTheme();
-  return (
-    <View
-      style={{
-        height: 1,
-        backgroundColor: colors.border,
-      }}
-    />
-  );
+  return <View style={{ height: 5 }} />;
 };
 
 export default ItemSeparator;

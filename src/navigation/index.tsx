@@ -261,7 +261,12 @@ export const RootNavigator: FC = () => {
           <RootStack.Screen
             name={Routes.MessageThread}
             component={MessageThreadScreen}
-            options={{ headerTitle: "Message Thread" }}
+            options={({ route }) => ({
+              headerShown: true,
+              headerTransparent: true,
+              // @ts-ignore
+              headerTitle: route?.params?.friendUsername,
+            })}
           />
         </>
       ) : (

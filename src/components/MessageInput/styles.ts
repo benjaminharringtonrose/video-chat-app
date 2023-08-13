@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: FontFamily.Regular,
     fontSize: 16,
+    paddingLeft: 10,
   },
 });
 

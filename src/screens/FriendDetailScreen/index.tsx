@@ -9,17 +9,20 @@ import { NavProp, Routes } from "../../navigation/types";
 import { CallMode, IUser } from "../../types";
 import Icon from "@expo/vector-icons/Feather";
 import { useRoom } from "../../atoms/room";
+import { useMessages } from "../../atoms/messages";
 
 const FriendDetailScreen: FC = () => {
   const [selectedFriend, setSelectedFriend] = useState<IUser>();
 
   const { colors } = useTheme();
   const { friends } = useFriends();
+  const { setFriendId } = useMessages();
   const { params } = useRoute<NavProp["route"]>();
   const { navigate } = useNavigation<NavProp["navigation"]>();
   const { setCallMode } = useRoom();
 
   const friendId = params?.friendId;
+  const friendUsername = params?.friendUsername;
 
   const isOnline = true;
 
@@ -65,7 +68,7 @@ const FriendDetailScreen: FC = () => {
             >
               {selectedFriend?.username}
             </Text>
-            {isOnline && (
+            {selectedFriend?.isOnline && (
               <View
                 style={{
                   width: 10,
@@ -100,11 +103,12 @@ const FriendDetailScreen: FC = () => {
               <Icon name={"video"} size={30} color={colors.text} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() =>
+              onPress={() => {
+                setFriendId(friendId);
                 navigate(Routes.MessageThread, {
-                  friendId,
-                })
-              }
+                  friendUsername,
+                });
+              }}
               style={{
                 backgroundColor: Color.primaryLight,
                 padding: 10,

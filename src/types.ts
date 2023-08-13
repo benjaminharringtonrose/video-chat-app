@@ -9,6 +9,13 @@ export interface IUser {
   friends?: string[];
   invitations?: string[];
   isOnline?: boolean;
+  messages?: string[];
+}
+
+export interface IMessage {
+  id: string;
+  friendId: string;
+  message: string;
 }
 
 export enum NotificationType {
@@ -81,6 +88,8 @@ export enum Collection {
   OfferCandidates = "offerCandidates",
   AnswerCandidates = "answerCandidates",
   Calls = "calls",
+  MessageThreads = "messageThreads",
+  Messages = "messages",
 }
 
 export enum CallMode {

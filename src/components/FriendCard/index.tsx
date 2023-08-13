@@ -17,7 +17,10 @@ const FriendCard: FC<IProps> = ({ label = "--", onPress, isOnline }) => {
 
   return (
     <Reanimated.View entering={FadeIn} exiting={FadeOut}>
-      <TouchableOpacity style={styles.friends} onPress={onPress}>
+      <TouchableOpacity
+        style={[styles.friends, { backgroundColor: colors.card }]}
+        onPress={onPress}
+      >
         <Avatar
           source={{ uri: "https://picsum.photos/id/239/200/300" }}
           isOnline={!!isOnline}

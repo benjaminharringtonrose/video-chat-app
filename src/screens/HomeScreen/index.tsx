@@ -49,6 +49,7 @@ const HomeScreen: FC = () => {
         onPress={() =>
           navigate(Routes.FriendDetail, {
             friendId: item.uid,
+            friendUsername: item.username,
           })
         }
         isOnline={item.isOnline}

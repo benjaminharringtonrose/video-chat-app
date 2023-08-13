@@ -8,6 +8,7 @@ import WrappedApp from "./src/WrappedApp";
 import { LogBox } from "react-native";
 import {
   CallListener,
+  MessagesListener,
   NotificationListener,
   OnlineStatusListener,
   UserListener,
@@ -33,6 +34,7 @@ export default function App() {
           <RoomListener />
           <CallListener />
           <OnlineStatusListener />
+          <MessagesListener />
         </RecoilRoot>
       </Host>
     </GestureHandlerRootView>
