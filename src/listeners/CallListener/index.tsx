@@ -33,6 +33,7 @@ const CallListener: FC = () => {
           }));
         } else {
           console.log("NO INCOMING CALLS", user?.username);
+          InCallManager.stopRingtone();
           setRoomState((state) => ({
             ...state,
             incomingCall: false,

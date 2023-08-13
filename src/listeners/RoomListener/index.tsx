@@ -47,6 +47,7 @@ const RoomListener: FC = () => {
             isRunning: false,
           }));
           setRoomId("");
+          InCallManager.stopRingback();
           await deleteCall(currentCall?.id);
           await deleteRoom(roomId);
           navigate(Routes.Home);
