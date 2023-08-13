@@ -18,3 +18,5 @@ export { default as Timer } from "./Timer";
 export { default as IncomingCall } from "./IncomingCall";
 export { default as Avatar } from "./Avatar";
 export { default as MessageInput } from "./MessageInput";
+export { default as LeftMessage } from "./LeftMessage";
+export { default as RightMessage } from "./RightMessage";

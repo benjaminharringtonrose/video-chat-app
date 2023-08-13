@@ -10,12 +10,19 @@ import {
 import styles from "./styles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
-import { ItemSeparator, MessageInput } from "../../components";
+import {
+  Avatar,
+  ItemSeparator,
+  LeftMessage,
+  MessageInput,
+  RightMessage,
+} from "../../components";
 import { useMessages } from "../../atoms/messages";
 import { db } from "../../api/firebase";
 import { Collection } from "../../types";
 import { useAuth } from "../../atoms/auth";
 import uuid from "react-native-uuid";
+import { FontFamily } from "../../constants";
 
 const MessageThreadScreen: FC = () => {
   const { colors } = useTheme();
@@ -40,6 +47,7 @@ const MessageThreadScreen: FC = () => {
             message,
             createdAt: Date.now(),
             avatar: "https://picsum.photos/id/239/200/300",
+            username: user?.username,
           },
         },
         { merge: true }
@@ -56,41 +64,44 @@ const MessageThreadScreen: FC = () => {
             message,
             createdAt: Date.now(),
             avatar: "https://picsum.photos/id/239/200/300",
+            username: user?.username,
           },
         },
         { merge: true }
       );
+    setMessage("");
   };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, marginTop: top + 100 }}
+      style={{ flex: 1, marginTop: top + 50 }}
     >
       <FlatList
         contentContainerStyle={{ flex: 1, marginHorizontal: 10 }}
         data={messages ?? []}
         renderItem={({ item }) => {
           const isMyMessage = item.sender === user?.uid;
+          const formattedDate = new Intl.DateTimeFormat("en-US", {
+            weekday: "long",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          }).format(item.createdAt);
+
+          if (isMyMessage) {
+            return <RightMessage date={formattedDate} message={item.message} />;
+          }
           return (
-            <View
-              style={{ alignItems: isMyMessage ? "flex-end" : "flex-start" }}
-            >
-              <Text
-                style={{
-                  color: colors.text,
-                  backgroundColor: isMyMessage ? colors.primary : colors.card,
-                  borderRadius: 10,
-                  overflow: "hidden",
-                  padding: 20,
-                }}
-              >
-                {item.message}
-              </Text>
-            </View>
+            <LeftMessage
+              avatar={item.avatar}
+              username={item.username}
+              date={formattedDate}
+              message={item.message}
+            />
           );
         }}
-        ItemSeparatorComponent={ItemSeparator}
+        ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
       />
       <MessageInput
         value={message}

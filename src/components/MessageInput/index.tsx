@@ -1,6 +1,14 @@
 import React, { FC } from "react";
-import { StyleProp, TextInput, View, ViewStyle } from "react-native";
+import {
+  Keyboard,
+  StyleProp,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
+import Icon from "@expo/vector-icons/Ionicons";
 import styles from "./styles";
 
 interface IProps {
@@ -35,6 +43,15 @@ const MessageInput: FC<IProps> = ({ value, onChangeText, onSubmit, style }) => {
         returnKeyType={"send"}
         autoCapitalize={"none"}
       />
+      <TouchableOpacity
+        style={{ paddingRight: 10 }}
+        onPress={() => {
+          onSubmit();
+          Keyboard.dismiss();
+        }}
+      >
+        <Icon color={colors.placeholder} name={"send"} size={24} />
+      </TouchableOpacity>
     </View>
   );
 };
