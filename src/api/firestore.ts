@@ -1,6 +1,12 @@
 import { Collection } from "../types";
 import { db } from "./firebase";
 
+export const updateUser = async (uid?: string, data?: Record<string, any>) => {
+  if (!uid || !data) return;
+  const userDoc = db.collection(Collection.Users).doc(uid);
+  await userDoc.update(data);
+};
+
 export const updateRoom = async (
   roomId?: string,
   data?: Record<string, any>
