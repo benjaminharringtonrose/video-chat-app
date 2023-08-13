@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   username: {
     fontFamily: FontFamily.Bold,
     fontSize: 15,
+    paddingBottom: 5,
   },
   lastMessage: {
     fontFamily: FontFamily.Light,
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
   updatedAt: {
     fontFamily: FontFamily.Light,
     paddingRight: 6,
+    paddingBottom: 5,
   },
 });
 

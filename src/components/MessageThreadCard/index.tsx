@@ -35,21 +35,34 @@ const MessageThreadCard: FC<IProps> = ({
           {lastMessage}
         </Text>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        <Text style={[styles.updatedAt, { color: colors.text }]}>
-          {updatedAt}
-        </Text>
-        <Icon name={"chevron-forward"} size={20} color={colors.text} />
-      </View>
-      {unreadCount && unreadCount > 0 && (
-        <View style={{ position: "absolute", left: "96%", top: "75%" }}>
-          <Badge />
+      <View style={{ alignItems: "flex-end" }}>
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <Text style={[styles.updatedAt, { color: colors.text }]}>
+            {updatedAt}
+          </Text>
+          <Icon name={"chevron-forward"} size={20} color={colors.text} />
         </View>
-      )}
+
+        <Text style={{ color: colors.text, paddingRight: 30 }}>
+          {unreadCount}
+        </Text>
+        {unreadCount && unreadCount > 0 && (
+          <View
+            style={{
+              position: "absolute",
+              left: "70%",
+              top: "40%",
+              flexDirection: "row",
+            }}
+          >
+            <Badge />
+          </View>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };
