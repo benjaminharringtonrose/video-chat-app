@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontFamily: FontFamily.Light,
+    fontSize: 12,
   },
   messageText: {
     fontFamily: FontFamily.Regular,

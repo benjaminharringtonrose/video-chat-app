@@ -15,7 +15,6 @@ const RightMessage: FC<IProps> = ({ date, message }) => {
     <View style={styles.root}>
       <View style={styles.flex}>
         <View style={styles.topTextContainer}>
-          <Text style={[styles.you, { color: colors.text }]}>{"You"}</Text>
           <Text style={[styles.date, { color: colors.text }]}>{date}</Text>
         </View>
         <View style={{ alignItems: "flex-end" }}>

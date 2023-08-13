@@ -19,9 +19,6 @@ const LeftMessage: FC<IProps> = ({ avatar, username, date, message }) => {
       <Avatar source={{ uri: avatar }} style={styles.avatar} />
       <View style={styles.flex}>
         <View style={styles.topTextContainer}>
-          <Text style={[styles.username, { color: colors.text }]}>
-            {username}
-          </Text>
           <Text style={[styles.date, { color: colors.text }]}>{date}</Text>
         </View>
         <View style={{ alignItems: "flex-start" }}>

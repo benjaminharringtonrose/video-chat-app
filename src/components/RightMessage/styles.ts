@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontFamily: FontFamily.Light,
-    paddingLeft: 10,
+    fontSize: 12,
   },
 });
 
