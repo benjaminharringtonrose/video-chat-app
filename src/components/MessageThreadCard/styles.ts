@@ -25,6 +25,15 @@ const styles = StyleSheet.create({
     paddingRight: 6,
     paddingBottom: 5,
   },
+  unreadCount: {
+    paddingRight: 30,
+  },
+  badgeContainer: {
+    position: "absolute",
+    left: "70%",
+    top: "40%",
+    flexDirection: "row",
+  },
 });
 
 export default styles;
