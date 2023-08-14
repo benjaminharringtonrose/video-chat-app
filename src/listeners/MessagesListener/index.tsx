@@ -21,6 +21,18 @@ const MessagesListener: FC = () => {
   }, [friendId]);
 
   useEffect(() => {
+    if (!user?.uid) return;
+    const unsubscribe = db
+      .collection(Collection.MessageThreads)
+      .doc(user?.uid)
+      .onSnapshot((snapshot) => {
+        const data = snapshot.data();
+        console.log(JSON.stringify(data));
+      });
+    return () => unsubscribe();
+  }, [user?.uid]);
+
+  useEffect(() => {
     if (!user?.uid || !friendId) return;
     const unsubscribe = db
       .collection(Collection.MessageThreads)

@@ -1,5 +1,6 @@
 import { Collection } from "../types";
 import { db } from "./firebase";
+import uuid from "react-native-uuid";
 
 export const updateUser = async (uid?: string, data?: Record<string, any>) => {
   if (!uid || !data) return;
@@ -50,4 +51,26 @@ export const deleteRoom = async (roomId?: string) => {
 export const deleteCall = async (callId?: string) => {
   if (!callId) return;
   await db.collection(Collection.Calls).doc(callId).delete();
+};
+
+export const createMessageThread = async (
+  uid?: string,
+  friendId?: string,
+  data?: any
+) => {
+  if (!uid || !friendId || !data) return;
+  const messageThreadDoc = db.collection(Collection.MessageThreads).doc(uid);
+  if ((await messageThreadDoc.get()).exists) {
+    await messageThreadDoc.update({
+      id: uuid.v4() as string,
+    });
+  } else {
+    await messageThreadDoc.set({
+      id: uuid.v4() as string,
+    });
+  }
+  messageThreadDoc
+    .collection(Collection.Messages)
+    .doc(friendId)
+    .set(data, { merge: true });
 };

@@ -41,7 +41,7 @@ const MessageInput: FC<IProps> = ({ value, onChangeText, onSubmit, style }) => {
         cursorColor={colors.placeholder}
         onSubmitEditing={onSubmit}
         returnKeyType={"send"}
-        autoCapitalize={"none"}
+        autoCapitalize={"sentences"}
       />
       <TouchableOpacity
         style={{ paddingRight: 10 }}

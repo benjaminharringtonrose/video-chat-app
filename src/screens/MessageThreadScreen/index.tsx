@@ -23,6 +23,7 @@ import { Collection } from "../../types";
 import { useAuth } from "../../atoms/auth";
 import uuid from "react-native-uuid";
 import { FontFamily } from "../../constants";
+import { createMessageThread } from "../../api/firestore";
 
 const MessageThreadScreen: FC = () => {
   const { colors } = useTheme();
@@ -35,40 +36,24 @@ const MessageThreadScreen: FC = () => {
   console.log(messages);
 
   const onSendMessage = async () => {
-    await db
-      .collection(Collection.MessageThreads)
-      .doc(user?.uid)
-      .collection(Collection.Messages)
-      .doc(friendId)
-      .set(
-        {
-          [uuid.v4() as string]: {
-            sender: user?.uid,
-            message,
-            createdAt: Date.now(),
-            avatar: "https://picsum.photos/id/239/200/300",
-            username: user?.username,
-          },
-        },
-        { merge: true }
-      );
-    await db
-      .collection(Collection.MessageThreads)
-      .doc(friendId)
-      .collection(Collection.Messages)
-      .doc(user?.uid)
-      .set(
-        {
-          [uuid.v4() as string]: {
-            sender: user?.uid,
-            message,
-            createdAt: Date.now(),
-            avatar: "https://picsum.photos/id/239/200/300",
-            username: user?.username,
-          },
-        },
-        { merge: true }
-      );
+    await createMessageThread(user?.uid, friendId, {
+      [uuid.v4() as string]: {
+        sender: user?.uid,
+        message,
+        createdAt: Date.now(),
+        avatar: "https://picsum.photos/id/239/200/300",
+        username: user?.username,
+      },
+    });
+    await createMessageThread(friendId, user?.uid, {
+      [uuid.v4() as string]: {
+        sender: user?.uid,
+        message,
+        createdAt: Date.now(),
+        avatar: "https://picsum.photos/id/239/200/300",
+        username: user?.username,
+      },
+    });
     setMessage("");
   };
 
