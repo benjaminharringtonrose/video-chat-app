@@ -53,7 +53,7 @@ export const deleteCall = async (callId?: string) => {
   await db.collection(Collection.Calls).doc(callId).delete();
 };
 
-export const createMessageThread = async (
+export const sendMessage = async (
   uid?: string,
   friendId?: string,
   data?: any

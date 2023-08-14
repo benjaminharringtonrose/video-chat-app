@@ -1,61 +1,16 @@
 import React, { FC, useState } from "react";
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  TextInput,
-  Text,
-  View,
-} from "react-native";
-import styles from "./styles";
+import { FlatList, KeyboardAvoidingView, Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native";
-import {
-  Avatar,
-  ItemSeparator,
-  LeftMessage,
-  MessageInput,
-  RightMessage,
-} from "../../components";
+import { LeftMessage, MessageInput, RightMessage } from "../../components";
 import { useMessages } from "../../atoms/messages";
-import { db } from "../../api/firebase";
-import { Collection } from "../../types";
 import { useAuth } from "../../atoms/auth";
-import uuid from "react-native-uuid";
-import { FontFamily } from "../../constants";
-import { createMessageThread } from "../../api/firestore";
 
 const MessageThreadScreen: FC = () => {
-  const { colors } = useTheme();
   const [message, setMessage] = useState("");
   const { top, bottom } = useSafeAreaInsets();
 
   const { user } = useAuth();
-  const { messages, friendId } = useMessages();
-
-  console.log(messages);
-
-  const onSendMessage = async () => {
-    await createMessageThread(user?.uid, friendId, {
-      [uuid.v4() as string]: {
-        sender: user?.uid,
-        message,
-        createdAt: Date.now(),
-        avatar: "https://picsum.photos/id/239/200/300",
-        username: user?.username,
-      },
-    });
-    await createMessageThread(friendId, user?.uid, {
-      [uuid.v4() as string]: {
-        sender: user?.uid,
-        message,
-        createdAt: Date.now(),
-        avatar: "https://picsum.photos/id/239/200/300",
-        username: user?.username,
-      },
-    });
-    setMessage("");
-  };
+  const { messages, friendId, onSendMessage } = useMessages();
 
   return (
     <KeyboardAvoidingView
@@ -91,7 +46,12 @@ const MessageThreadScreen: FC = () => {
       <MessageInput
         value={message}
         onChangeText={setMessage}
-        onSubmit={onSendMessage}
+        onSubmit={async () => {
+          await onSendMessage(user, friendId, {
+            message,
+          });
+          setMessage("");
+        }}
         style={{ marginBottom: bottom, marginHorizontal: 10 }}
       />
     </KeyboardAvoidingView>
